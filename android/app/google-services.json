@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "940236812223",
+    "project_id": "bikecompanion-a0672",
+    "storage_bucket": "bikecompanion-a0672.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940236812223:android:605c907fa610d07b6afb0a",
+        "android_client_info": {
+          "package_name": "com.app.bike_companion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoz4D06Y1fJOFIaBjjsCnapuhPiwnSWDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

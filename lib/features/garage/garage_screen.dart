@@ -1,0 +1,354 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/providers/active_bike_provider.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
+import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/shimmer_box.dart';
+import 'garage_provider.dart';
+import 'widgets/bike_card.dart';
+
+class GarageScreen extends ConsumerWidget {
+  const GarageScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final garageAsync = ref.watch(garageProvider);
+    final activeBikeId = ref.watch(activeBikeIdProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Garage'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => context.push('/settings'),
+          ),
+        ],
+      ),
+      body: garageAsync.when(
+        loading: () => const _GarageSkeleton(),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        data: (items) {
+          if (items.isEmpty) {
+            return EmptyState(
+              icon: Icons.two_wheeler_rounded,
+              heading: 'No bikes yet',
+              body: 'Add your first bike to start tracking fuel, service and expenses.',
+              ctaLabel: 'Add my bike',
+              onCta: () => context.go('/onboarding'),
+            );
+          }
+
+          final totalMonthly = items.fold(0.0, (s, i) => s + i.monthTotal);
+          final totalAlerts =
+              items.fold(0, (s, i) => s + i.healthScore.alerts.length);
+
+          return RefreshIndicator(
+            onRefresh: () => ref.read(garageProvider.notifier).refresh(),
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              children: [
+                _SummaryStrip(
+                  bikeCount: items.length,
+                  monthTotal: totalMonthly,
+                  alertCount: totalAlerts,
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                Text('Your bikes',
+                    style: AppTextStyles.heading3.copyWith(
+                        color: isDark
+                            ? AppColors.textPrimaryDark
+                            : AppColors.textPrimary)),
+                const SizedBox(height: AppSpacing.md),
+
+                // Bike cards with stagger entrance
+                ...items.asMap().entries.map((e) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: _StaggeredItem(
+                      index: e.key,
+                      child: BikeCard(
+                        item: e.value,
+                        isActive: e.value.bike.id == activeBikeId,
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          setActiveBike(ref, e.value.bike.id);
+                          context.go('/garage/dashboard/${e.value.bike.id}');
+                        },
+                        onDelete: () => ref
+                            .read(garageProvider.notifier)
+                            .deleteBike(e.value.bike.id),
+                      ),
+                    ),
+                  );
+                }),
+
+                const SizedBox(height: AppSpacing.sm),
+
+                // Add another bike
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    context.push('/onboarding');
+                  },
+                  child: Container(
+                    height: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      border: Border.all(
+                        color: isDark ? AppColors.borderDark : AppColors.border,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add_rounded, size: 18, color: textSecondary),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text('Add another bike',
+                            style: AppTextStyles.bodyMedium
+                                .copyWith(color: textSecondary)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxxl),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Skeleton loading state
+// ---------------------------------------------------------------------------
+class _GarageSkeleton extends StatelessWidget {
+  const _GarageSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      children: [
+        // Summary strip skeleton
+        const ShimmerBox(height: 72, borderRadius: 12),
+        const SizedBox(height: AppSpacing.xl),
+        const ShimmerBox(width: 100, height: 20, borderRadius: 6),
+        const SizedBox(height: AppSpacing.md),
+        // Bike card skeletons
+        const _BikeCardSkeleton(),
+        const SizedBox(height: AppSpacing.md),
+        const _BikeCardSkeleton(),
+      ],
+    );
+  }
+}
+
+class _BikeCardSkeleton extends StatelessWidget {
+  const _BikeCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 110,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.surfaceDark
+            : AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppColors.borderDark
+              : AppColors.border,
+        ),
+      ),
+      child: Row(
+        children: [
+          const ShimmerBox(width: 48, height: 48, borderRadius: 24),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                ShimmerBox(width: 120, height: 16, borderRadius: 4),
+                SizedBox(height: 8),
+                ShimmerBox(width: 180, height: 12, borderRadius: 4),
+                SizedBox(height: 8),
+                ShimmerBox(width: 80, height: 12, borderRadius: 4),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          const ShimmerBox(width: 48, height: 48, borderRadius: 8),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Stagger entrance animation
+// ---------------------------------------------------------------------------
+class _StaggeredItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const _StaggeredItem({required this.index, required this.child});
+
+  @override
+  State<_StaggeredItem> createState() => _StaggeredItemState();
+}
+
+class _StaggeredItemState extends State<_StaggeredItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _opacity;
+  late final Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      duration: AppDuration.slow,
+      vsync: this,
+    );
+    _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
+    _slide = Tween(begin: const Offset(0, 0.12), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+
+    Future.delayed(Duration(milliseconds: widget.index * 70), () {
+      if (mounted) _ctrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: _opacity,
+        child: SlideTransition(position: _slide, child: widget.child),
+      );
+}
+
+// ---------------------------------------------------------------------------
+// Summary strip
+// ---------------------------------------------------------------------------
+class _SummaryStrip extends StatelessWidget {
+  final int bikeCount;
+  final double monthTotal;
+  final int alertCount;
+
+  const _SummaryStrip({
+    required this.bikeCount,
+    required this.monthTotal,
+    required this.alertCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
+    final border = isDark ? AppColors.borderDark : AppColors.border;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final rupeeFormat = NumberFormat.currency(
+        locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(color: border),
+      ),
+      child: Row(
+        children: [
+          _Stat(
+            label: 'bikes',
+            value: '$bikeCount',
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+          ),
+          _Divider(color: border),
+          _Stat(
+            label: 'this month',
+            value: rupeeFormat.format(monthTotal),
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+          ),
+          _Divider(color: border),
+          _Stat(
+            label: 'alerts',
+            value: '$alertCount',
+            valueColor: alertCount > 0
+                ? (isDark ? AppColors.warningDark : AppColors.warning)
+                : null,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Stat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? valueColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _Stat({
+    required this.label,
+    required this.value,
+    this.valueColor,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+        child: Column(
+          children: [
+            Text(value,
+                style: AppTextStyles.heading2
+                    .copyWith(color: valueColor ?? textPrimary)),
+            const SizedBox(height: 2),
+            Text(label,
+                style: AppTextStyles.caption.copyWith(color: textSecondary)),
+          ],
+        ),
+      );
+}
+
+class _Divider extends StatelessWidget {
+  final Color color;
+  const _Divider({required this.color});
+
+  @override
+  Widget build(BuildContext context) => Container(
+      width: 1,
+      height: 36,
+      color: color,
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md));
+}

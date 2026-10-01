@@ -180,13 +180,26 @@ class SettingsScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AppRadius.medium),
               border: Border.all(color: border),
             ),
-            child: ListTile(
-              leading: const Icon(Icons.delete_forever_rounded,
-                  color: AppColors.danger),
-              title: Text('Clear all data',
-                  style:
-                      AppTextStyles.body.copyWith(color: AppColors.danger)),
-              onTap: () => _confirmClear(context),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.delete_forever_rounded,
+                      color: AppColors.danger),
+                  title: Text('Clear all data',
+                      style: AppTextStyles.body.copyWith(color: AppColors.danger)),
+                  onTap: () => _confirmClear(context),
+                ),
+                Divider(height: 1, color: border),
+                ListTile(
+                  leading: const Icon(Icons.no_accounts_rounded,
+                      color: AppColors.danger),
+                  title: Text('Delete account',
+                      style: AppTextStyles.body.copyWith(color: AppColors.danger)),
+                  subtitle: Text('Permanently removes your account (GDPR)',
+                      style: AppTextStyles.label.copyWith(color: textSecondary)),
+                  onTap: () => _confirmDeleteAccount(context),
+                ),
+              ],
             ),
           ),
         ],
@@ -212,6 +225,43 @@ class SettingsScreen extends ConsumerWidget {
               // Router auth stream fires → redirects to /auth automatically.
             },
             child: const Text('Sign out', style: TextStyle(color: AppColors.danger)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDeleteAccount(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete account?'),
+        content: const Text(
+            'This permanently deletes your Firebase account. Your local data stays on this device. This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                await getIt<AuthService>().deleteAccount();
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'Could not delete account. Please sign in again and retry.'),
+                      backgroundColor: AppColors.danger,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Delete account',
+                style: TextStyle(color: AppColors.danger)),
           ),
         ],
       ),

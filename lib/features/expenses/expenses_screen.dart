@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
@@ -39,7 +40,17 @@ class ExpensesScreen extends ConsumerWidget {
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Expenses')),
+      appBar: AppBar(
+        title: const Text('Expenses'),
+        actions: [
+          if (stateAsync.valueOrNull?.expenses.isNotEmpty ?? false)
+            IconButton(
+              icon: const Icon(Icons.ios_share_rounded),
+              tooltip: 'Export CSV',
+              onPressed: () => _exportCsv(stateAsync.value!),
+            ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddExpense(context, ref, bikeId),
         backgroundColor: AppColors.primary,
@@ -218,6 +229,21 @@ class ExpensesScreen extends ConsumerWidget {
       case 'fine': return Icons.gavel_rounded;
       default: return Icons.receipt_rounded;
     }
+  }
+
+  void _exportCsv(ExpensesState s) {
+    final monthName = DateFormat('MMMM yyyy').format(DateTime(s.year, s.month));
+    final buf = StringBuffer();
+    buf.writeln('Date,Category,Amount (₹),Note');
+    for (final e in s.expenses) {
+      final date = DateFormat('d MMM y').format(e.date);
+      final note = (e.note ?? '').replaceAll(',', ' ');
+      buf.writeln('$date,${e.category},${e.amount.toStringAsFixed(0)},$note');
+    }
+    Share.share(
+      buf.toString(),
+      subject: 'Expenses — $monthName',
+    );
   }
 }
 

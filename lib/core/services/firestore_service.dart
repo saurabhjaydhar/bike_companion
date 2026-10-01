@@ -81,4 +81,13 @@ class FirestoreService {
     final snap = await _bikesRef(uid).limit(1).get();
     return snap.docs.isNotEmpty;
   }
+
+  Future<void> saveUserProfile(
+      String uid, {String? name, String? email}) async {
+    await _db.collection('users').doc(uid).set({
+      'name': name ?? '',
+      'email': email ?? '',
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
 }

@@ -21,21 +21,10 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    signingConfigs {
-        create("release") {
-            // Set these four env vars in CI, or fill in the paths directly for local builds.
-            // Generate keystore once: keytool -genkey -v -keystore upload-keystore.jks
-            //   -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "upload-keystore.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-            keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: ""
-        }
-    }
 
     defaultConfig {
         applicationId = "com.app.bike_companion"
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
@@ -46,7 +35,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

@@ -6,6 +6,7 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   User? get currentUser => _auth.currentUser;
+  bool get isAnonymous => _auth.currentUser?.isAnonymous ?? false;
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   /// Returns null if the user cancelled the Google sign-in sheet.
@@ -21,8 +22,22 @@ class AuthService {
     return _auth.signInWithCredential(credential);
   }
 
+  /// Sign in anonymously so the user can use the app without a Google account.
+  Future<UserCredential> signInAnonymously() =>
+      _auth.signInAnonymously();
+
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
+  }
+
+  /// Delete the Firebase Auth account (GDPR compliance).
+  /// Note: Firebase requires recent sign-in — may throw
+  /// [FirebaseAuthException] with code 'requires-recent-login'.
+  Future<void> deleteAccount() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+    if (!user.isAnonymous) await _googleSignIn.signOut();
+    await user.delete();
   }
 }

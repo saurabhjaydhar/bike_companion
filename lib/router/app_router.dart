@@ -19,8 +19,11 @@ import '../features/expenses/expenses_screen.dart';
 import '../features/fuel/fuel_history_screen.dart';
 import '../features/fuel/fuel_log_screen.dart';
 import '../features/garage/garage_screen.dart';
+import '../features/onboarding/add_bike_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/onboarding/vehicle_details_screen.dart';
 import '../features/service/service_screen.dart';
+import '../data/models/vehicle.dart';
 import '../features/settings/settings_screen.dart';
 
 // Bridges Firebase auth stream → GoRouter refreshListenable.
@@ -189,6 +192,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/onboarding',
         pageBuilder: (context, state) =>
             _fade(state, const OnboardingScreen()),
+      ),
+
+      // RC lookup — add bike flow
+      GoRoute(
+        path: '/onboarding/add-bike',
+        pageBuilder: (context, state) =>
+            _slide(state, const AddBikeScreen()),
+      ),
+      GoRoute(
+        path: '/onboarding/vehicle-details',
+        pageBuilder: (context, state) {
+          final extra = state.extra! as Map<String, dynamic>;
+          return _slide(
+            state,
+            VehicleDetailsScreen(
+              vehicle: extra['vehicle'] as Vehicle,
+              prefillSuccess: extra['prefillSuccess'] as bool,
+              failureReason: extra['failureReason'] as String?,
+            ),
+          );
+        },
       ),
 
       // Main tabbed shell

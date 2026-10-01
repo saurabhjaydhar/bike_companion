@@ -1,12 +1,17 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/services/storage_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/document.dart';
+import '../../main.dart';
 import '../../shared/widgets/empty_state.dart';
 import 'documents_provider.dart';
 
@@ -338,6 +343,24 @@ class _DocDetailSheet extends StatelessWidget {
               textSecondary: textSecondary,
               highlight: expiryHighlight,
             ),
+
+          // Photo preview
+          if (doc.filePath != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            GestureDetector(
+              onTap: () => _showFullPhoto(context, doc.filePath!),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+                child: _DocImage(
+                  path: doc.filePath!,
+                  height: 160,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
+            ),
+          ],
+
           const SizedBox(height: AppSpacing.xl),
           SizedBox(
             width: double.infinity,
@@ -394,6 +417,81 @@ class _DetailRow extends StatelessWidget {
       ),
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Photo helpers
+// ---------------------------------------------------------------------------
+
+/// Renders a document image from either a local file path or a remote URL.
+class _DocImage extends StatelessWidget {
+  final String path;
+  final double? height;
+  final double? width;
+  final BoxFit fit;
+
+  const _DocImage({
+    required this.path,
+    this.height,
+    this.width,
+    this.fit = BoxFit.cover,
+  });
+
+  bool get _isRemote => path.startsWith('http');
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isRemote) {
+      return Image.network(
+        path,
+        height: height,
+        width: width,
+        fit: fit,
+        errorBuilder: (ctx, err, stack) => _placeholder(),
+        loadingBuilder: (_, child, progress) =>
+            progress == null ? child : _placeholder(),
+      );
+    }
+    return Image.file(
+      File(path),
+      height: height,
+      width: width,
+      fit: fit,
+      errorBuilder: (ctx, err, stack) => _placeholder(),
+    );
+  }
+
+  Widget _placeholder() => Container(
+        height: height,
+        width: width,
+        color: AppColors.border,
+        child: const Icon(Icons.broken_image_outlined,
+            color: AppColors.textSecondary),
+      );
+}
+
+/// Opens a full-screen photo viewer overlay.
+void _showFullPhoto(BuildContext context, String path) {
+  Navigator.push(
+    context,
+    MaterialPageRoute<void>(
+      fullscreenDialog: true,
+      builder: (_) => Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        body: Center(
+          child: InteractiveViewer(
+            minScale: 0.5,
+            maxScale: 4,
+            child: _DocImage(path: path, fit: BoxFit.contain),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -465,12 +563,28 @@ class _AddDocSheetState extends State<_AddDocSheet> {
     if (title.isEmpty) return;
     setState(() => _saving = true);
     try {
+      final docId = _uuid.v4();
+      String? finalPath = _imagePath;
+
+      // Upload photo to Firebase Storage when signed in (not anonymous).
+      if (_imagePath != null) {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null && !user.isAnonymous) {
+          try {
+            finalPath = await getIt<StorageService>()
+                .uploadDocument(widget.bikeId, docId, _imagePath!);
+          } catch (_) {
+            // Upload failed — store local path as fallback
+          }
+        }
+      }
+
       final doc = BikeDocument(
-        id: _uuid.v4(),
+        id: docId,
         bikeId: widget.bikeId,
         type: _type,
         title: title,
-        filePath: _imagePath,
+        filePath: finalPath,
         expiryDate: _expiryDate,
       );
       await widget.ref

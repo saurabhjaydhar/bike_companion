@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/firestore_service.dart';
 import '../../core/services/restore_service.dart';
 import '../../main.dart';
 
@@ -20,37 +21,78 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   String? _error;
 
   Future<void> _signInWithGoogle() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
+    _setLoading(true);
     HapticFeedback.lightImpact();
 
     try {
       final result = await getIt<AuthService>().signInWithGoogle();
       if (result == null) {
-        // User cancelled the Google sheet.
-        if (mounted) setState(() => _loading = false);
-        return;
+        _setLoading(false);
+        return; // User cancelled
       }
 
-      // Check Firestore for existing data (returning user on a new device).
       final uid = result.user!.uid;
-      final restored = await getIt<RestoreService>().restoreIfNeeded(uid);
 
+      // Save/update user profile in Firestore (non-blocking on failure)
+      getIt<FirestoreService>()
+          .saveUserProfile(uid,
+              name: result.user?.displayName, email: result.user?.email)
+          .ignore();
+
+      // Restore Firestore data if returning user on a new device
+      final restored = await getIt<RestoreService>().restoreIfNeeded(uid);
       if (restored) {
-        // Mark onboarding complete so router goes to /garage, not /onboarding.
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool(SharedPrefKeys.isOnboardingDone, true);
       }
-      // Auth stream fires → router redirects automatically.
+      // Auth stream fires → router redirects automatically
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = 'Sign-in failed. Please try again.';
+        _error = 'Sign-in failed: $e';
         _loading = false;
       });
     }
+  }
+
+  Future<void> _continueOffline() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Continue without account?'),
+        content: const Text(
+            'Your data will be saved on this device only. It won\'t be backed up or synced to other devices.\n\nYou can sign in anytime from Settings.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    _setLoading(true);
+    HapticFeedback.lightImpact();
+
+    try {
+      await getIt<AuthService>().signInAnonymously();
+      // Auth stream fires → router redirects automatically
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Could not start offline session. Please try again.';
+        _loading = false;
+      });
+    }
+  }
+
+  void _setLoading(bool v) {
+    if (mounted) setState(() => _loading = v);
   }
 
   @override
@@ -66,7 +108,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           child: Column(
             children: [
               const Spacer(flex: 2),
-              // App icon + name
               Icon(Icons.two_wheeler_rounded, size: 80, color: cs.primary),
               const SizedBox(height: 16),
               Text(
@@ -77,17 +118,30 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               const SizedBox(height: 8),
               Text(
                 'Track fuel, service & expenses\nfor your motorcycle',
-                style:
-                    tt.bodyMedium?.copyWith(color: cs.outline),
+                style: tt.bodyMedium?.copyWith(color: cs.outline),
                 textAlign: TextAlign.center,
               ),
               const Spacer(flex: 3),
-              // Google Sign-In button
+
+              // Google Sign-In
               _GoogleSignInButton(
                 loading: _loading,
                 onPressed: _signInWithGoogle,
                 isDark: isDark,
               ),
+
+              const SizedBox(height: 12),
+
+              // Skip / offline option
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: _loading ? null : _continueOffline,
+                  child: const Text('Continue without account'),
+                ),
+              ),
+
               if (_error != null) ...[
                 const SizedBox(height: 16),
                 Text(
@@ -96,6 +150,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   textAlign: TextAlign.center,
                 ),
               ],
+
               const Spacer(),
               Text(
                 'By continuing you agree to our Terms & Privacy Policy.',
@@ -111,6 +166,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Google Sign-In button
+// ---------------------------------------------------------------------------
 class _GoogleSignInButton extends StatelessWidget {
   final bool loading;
   final VoidCallback onPressed;
@@ -136,8 +194,8 @@ class _GoogleSignInButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           backgroundColor: bg,
           side: BorderSide(color: border),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8)),
           padding: EdgeInsets.zero,
         ),
         child: loading
@@ -167,18 +225,13 @@ class _GoogleSignInButton extends StatelessWidget {
   }
 }
 
-/// Hand-drawn Google "G" logo using Flutter canvas (no asset needed).
 class _GoogleLogo extends StatelessWidget {
   final double size;
   const _GoogleLogo({required this.size});
 
   @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _GoogleLogoPainter(),
-    );
-  }
+  Widget build(BuildContext context) =>
+      CustomPaint(size: Size(size, size), painter: _GoogleLogoPainter());
 }
 
 class _GoogleLogoPainter extends CustomPainter {
@@ -187,27 +240,23 @@ class _GoogleLogoPainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
     final r = size.width / 2;
-
-    // Draw the four colored arcs of the G.
-    const segments = [
-      // (startAngle °, sweepAngle °, color)
-      (330.0, 90.0, Color(0xFF4285F4)),   // blue  (top-right)
-      (60.0, 90.0, Color(0xFFEA4335)),    // red   (bottom-right) — adjusted
-      (150.0, 90.0, Color(0xFFFBBC05)),   // yellow (bottom-left)
-      (240.0, 90.0, Color(0xFF34A853)),   // green  (top-left)
-    ];
-
     const toRad = 3.14159265 / 180;
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.22
-      ..strokeCap = StrokeCap.butt;
 
     final innerR = r * 0.56;
     final arcR = (r + innerR) / 2;
-    final strokeW = (r - innerR);
+    final strokeW = r - innerR;
 
-    paint.strokeWidth = strokeW;
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeW
+      ..strokeCap = StrokeCap.butt;
+
+    const segments = [
+      (330.0, 90.0, Color(0xFF4285F4)),
+      (60.0, 90.0, Color(0xFFEA4335)),
+      (150.0, 90.0, Color(0xFFFBBC05)),
+      (240.0, 90.0, Color(0xFF34A853)),
+    ];
 
     for (final (startDeg, sweepDeg, color) in segments) {
       paint.color = color;
@@ -220,19 +269,14 @@ class _GoogleLogoPainter extends CustomPainter {
       );
     }
 
-    // White horizontal bar for the flat part of the G.
-    final barPaint = Paint()
-      ..color = const Color(0xFF4285F4)
-      ..style = PaintingStyle.fill;
+    // Blue crossbar for the G
     canvas.drawRect(
       Rect.fromLTRB(cx, cy - strokeW * 0.38, cx + r, cy + strokeW * 0.38),
-      barPaint,
+      Paint()..color = const Color(0xFF4285F4),
     );
-    // White cover over the extra arc portion for the G notch.
-    final whitePaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(cx, cy), innerR - 1, whitePaint);
+    // White inner circle (cutout)
+    canvas.drawCircle(Offset(cx, cy), innerR - 1,
+        Paint()..color = Colors.white);
   }
 
   @override

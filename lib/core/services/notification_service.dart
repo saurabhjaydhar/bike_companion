@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../../data/models/document.dart';
+import '../../l10n/l10n.dart';
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
@@ -65,16 +66,17 @@ class NotificationService {
       await cancelDocumentReminders(doc.id);
     }
 
+    final l = await loadAppLocalizations();
     for (final doc in docs) {
       if (doc.expiryDate == null) continue;
-      await _scheduleForDoc(doc, threshold: 30);
-      await _scheduleForDoc(doc, threshold: 7);
-      await _scheduleForDoc(doc, threshold: 1);
+      await _scheduleForDoc(l, doc, threshold: 30);
+      await _scheduleForDoc(l, doc, threshold: 7);
+      await _scheduleForDoc(l, doc, threshold: 1);
     }
   }
 
-  static Future<void> _scheduleForDoc(
-      BikeDocument doc, {required int threshold}) async {
+  static Future<void> _scheduleForDoc(AppLocalizations l, BikeDocument doc,
+      {required int threshold}) async {
     final expiry = doc.expiryDate!;
     final fireDate =
         expiry.subtract(Duration(days: threshold));
@@ -86,8 +88,8 @@ class NotificationService {
       if (daysSince <= 1) {
         await _showNow(
           id: _docId(doc.id, threshold),
-          title: _docTitle(threshold),
-          body: '${doc.title} expires in $threshold days',
+          title: _docTitle(l, threshold),
+          body: l.notifDocBody(doc.title, threshold),
         );
       }
       return;
@@ -97,8 +99,8 @@ class NotificationService {
 
     await _scheduleNotification(
       id: _docId(doc.id, threshold),
-      title: _docTitle(threshold),
-      body: '${doc.title} expires in $threshold days',
+      title: _docTitle(l, threshold),
+      body: l.notifDocBody(doc.title, threshold),
       scheduledDate: fireDate,
     );
   }
@@ -113,10 +115,11 @@ class NotificationService {
     required String bikeName,
     required String serviceType,
   }) async {
+    final l = await loadAppLocalizations();
     await _showNow(
       id: 50000 + serviceType.hashCode.abs() % 1000,
-      title: 'Service overdue — $bikeName',
-      body: '$serviceType needs attention',
+      title: l.notifServiceOverdueTitle(bikeName),
+      body: l.notifServiceOverdueBody(serviceType),
     );
   }
 
@@ -134,11 +137,8 @@ class NotificationService {
     return band + docId.hashCode.abs() % 9000;
   }
 
-  static String _docTitle(int threshold) => switch (threshold) {
-        30 => 'Document expiring in 30 days',
-        7 => 'Document expiring in 7 days',
-        _ => 'Document expires tomorrow!',
-      };
+  static String _docTitle(AppLocalizations l, int threshold) =>
+      threshold == 1 ? l.notifDocTomorrowTitle : l.notifDocTitle(threshold);
 
   static const _notifDetails = NotificationDetails(
     android: AndroidNotificationDetails(

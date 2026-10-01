@@ -9,6 +9,7 @@ import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
 import '../../features/dashboard/dashboard_provider.dart';
 import '../../features/garage/garage_provider.dart';
+import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import 'service_provider.dart';
 
@@ -41,13 +42,17 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Service'),
+        title: Text(l.expenseService),
         bottom: TabBar(
           controller: _tabs,
-          tabs: const [Tab(text: 'Due soon'), Tab(text: 'History')],
+          tabs: [
+            Tab(text: l.serviceDueSoon),
+            Tab(text: l.serviceHistory),
+          ],
           labelStyle: AppTextStyles.bodySemiBold,
           unselectedLabelStyle: AppTextStyles.body,
           labelColor: AppColors.primary,
@@ -136,6 +141,7 @@ class _ServiceRow extends StatelessWidget {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final l = context.l10n;
 
     final statusColor = switch (item.status) {
       HealthStatus.good =>
@@ -156,13 +162,14 @@ class _ServiceRow extends StatelessWidget {
         ),
         child: Icon(_icon(item.type), size: 20, color: statusColor),
       ),
-      title: Text(ServiceTypes.label(item.type),
+      title: Text(l.serviceTypeLabel(item.type),
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary)),
       subtitle: Text(
-        item.factor?.message ??
+        item.factor?.localizedMessage(l) ??
             (item.lastRecord != null
-                ? 'Last: ${DateFormat('d MMM y').format(item.lastRecord!.date)}'
-                : 'Not logged'),
+                ? l.serviceLast(DateFormat('d MMM y', l.localeName)
+                    .format(item.lastRecord!.date))
+                : l.dashboardNotLogged),
         style: AppTextStyles.caption.copyWith(color: textSecondary),
       ),
       trailing: Column(
@@ -176,7 +183,7 @@ class _ServiceRow extends StatelessWidget {
               color: statusColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(AppRadius.full),
             ),
-            child: Text(item.statusLabel,
+            child: Text(item.statusLabel(l),
                 style: AppTextStyles.label.copyWith(color: statusColor)),
           ),
         ],
@@ -196,11 +203,12 @@ class _HistoryTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     if (history.isEmpty) {
-      return const EmptyState(
+      return EmptyState(
         icon: Icons.build_rounded,
-        heading: 'No services logged',
-        body: 'Tap any item in "Due soon" to log a service.',
+        heading: l.serviceEmptyTitle,
+        body: l.serviceEmptyBody,
       );
     }
 
@@ -243,10 +251,10 @@ class _HistoryTab extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(ServiceTypes.label(r.serviceType),
+                                Text(l.serviceTypeLabel(r.serviceType),
                                     style: AppTextStyles.bodyMedium),
                                 Text(
-                                  DateFormat('d MMM y').format(r.date),
+                                  DateFormat('d MMM y', l.localeName).format(r.date),
                                   style: AppTextStyles.caption
                                       .copyWith(color: textSecondary),
                                 ),
@@ -369,6 +377,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final l = context.l10n;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg,
@@ -388,10 +397,10 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text('Log service', style: AppTextStyles.heading2),
+          Text(l.serviceLogTitle, style: AppTextStyles.heading2),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Service type',
+          Text(l.serviceType,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           DropdownButtonFormField<String>(
@@ -399,7 +408,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
             decoration: const InputDecoration(),
             items: ServiceTypes.all
                 .map((t) => DropdownMenuItem(
-                    value: t, child: Text(ServiceTypes.label(t))))
+                    value: t, child: Text(l.serviceTypeLabel(t))))
                 .toList(),
             onChanged: (v) => setState(() => _type = v!),
           ),
@@ -410,7 +419,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Odometer (km)',
+                  Text(l.serviceOdometerKm,
                       style:
                           AppTextStyles.label.copyWith(color: textSecondary)),
                   const SizedBox(height: AppSpacing.sm),
@@ -427,7 +436,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Cost (₹)',
+                  Text(l.serviceCost,
                       style:
                           AppTextStyles.label.copyWith(color: textSecondary)),
                   const SizedBox(height: AppSpacing.sm),
@@ -443,12 +452,12 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
           ]),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Notes (optional)',
+          Text(l.fieldNotesOptional,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _notesCtrl,
-            decoration: const InputDecoration(hintText: 'Shop name, parts replaced...'),
+            decoration: InputDecoration(hintText: l.serviceNotesHint),
           ),
           const SizedBox(height: AppSpacing.xl),
 
@@ -463,7 +472,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white))
-                  : const Text('Save service'),
+                  : Text(l.serviceSave),
             ),
           ),
         ],

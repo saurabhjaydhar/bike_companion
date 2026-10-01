@@ -13,6 +13,7 @@ import '../../data/models/bike.dart';
 import '../../data/models/vehicle.dart';
 import '../../data/repositories/bike_repository.dart';
 import '../../features/garage/garage_provider.dart';
+import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
 
@@ -122,11 +123,11 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
 
     bool hasError = false;
     if (brand.isEmpty) {
-      setState(() => _brandError = 'Brand is required');
+      setState(() => _brandError = context.l10n.vehicleBrandRequired);
       hasError = true;
     }
     if (model.isEmpty) {
-      setState(() => _modelError = 'Model is required');
+      setState(() => _modelError = context.l10n.vehicleModelRequired);
       hasError = true;
     }
     if (hasError) return;
@@ -164,7 +165,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
       if (mounted) context.go('/garage/dashboard/${bike.id}');
     } catch (_) {
       if (mounted) {
-        setState(() => _saveError = 'Failed to save bike. Please try again.');
+        setState(() => _saveError = context.l10n.vehicleSaveFailed);
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -176,6 +177,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
@@ -183,7 +185,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
           onPressed: () =>
               context.canPop() ? context.pop() : context.go('/garage'),
         ),
-        title: Text('Vehicle Details',
+        title: Text(l.vehicleDetailsTitle,
             style: AppTextStyles.heading3.copyWith(color: textPrimary)),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -207,27 +209,27 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // ── REGISTRATION ─────────────────────────────────────
-                    _SectionLabel('REGISTRATION'),
+                    _SectionLabel(l.vehicleSectionRegistration),
                     const SizedBox(height: AppSpacing.md),
                     _LockedField(
-                      label: 'RC Number',
+                      label: l.vehicleRcNumber,
                       value: widget.vehicle.rcNumber,
                       isDark: isDark,
                     ),
                     const SizedBox(height: AppSpacing.xl),
 
                     // ── VEHICLE INFO ──────────────────────────────────────
-                    _SectionLabel('VEHICLE INFO'),
+                    _SectionLabel(l.vehicleSectionInfo),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Manufacturer',
+                      label: l.vehicleManufacturer,
                       controller: _manufacturerCtrl,
                       isDark: isDark,
                       onChanged: _notifier.updateManufacturer,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Brand *',
+                      label: '${l.fieldBrand} *',
                       controller: _brandCtrl,
                       isDark: isDark,
                       errorText: _brandError,
@@ -240,7 +242,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Model *',
+                      label: '${l.fieldModel} *',
                       controller: _modelCtrl,
                       isDark: isDark,
                       errorText: _modelError,
@@ -253,21 +255,21 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Variant',
+                      label: l.vehicleVariant,
                       controller: _variantCtrl,
                       isDark: isDark,
                       onChanged: _notifier.updateVariant,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Fuel Type',
+                      label: l.vehicleFuelType,
                       controller: _fuelTypeCtrl,
                       isDark: isDark,
                       onChanged: _notifier.updateFuelType,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Vehicle Class',
+                      label: l.vehicleClass,
                       controller: _vehicleClassCtrl,
                       isDark: isDark,
                       onChanged: _notifier.updateVehicleClass,
@@ -275,10 +277,10 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // ── REGISTRATION DETAILS ──────────────────────────────
-                    _SectionLabel('REGISTRATION DETAILS'),
+                    _SectionLabel(l.vehicleSectionRegistrationDetails),
                     const SizedBox(height: AppSpacing.md),
                     _DatePickerField(
-                      label: 'Registration Date',
+                      label: l.vehicleRegistrationDate,
                       value: _registrationDate,
                       isDark: isDark,
                       onTap: () => _pickDate(
@@ -289,7 +291,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _DatePickerField(
-                      label: 'Insurance Expiry',
+                      label: l.fieldInsuranceExpiry,
                       value: _insuranceExpiry,
                       isDark: isDark,
                       onTap: () => _pickDate(
@@ -302,17 +304,17 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // ── IDENTIFIERS ───────────────────────────────────────
-                    _SectionLabel('IDENTIFIERS'),
+                    _SectionLabel(l.vehicleSectionIdentifiers),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Engine Number',
+                      label: l.vehicleEngineNumber,
                       controller: _engineCtrl,
                       isDark: isDark,
                       onChanged: _notifier.updateEngineNumber,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: 'Chassis Number',
+                      label: l.vehicleChassisNumber,
                       controller: _chassisCtrl,
                       isDark: isDark,
                       onChanged: _notifier.updateChassisNumber,
@@ -345,7 +347,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                 AppSpacing.xl,
               ),
               child: PrimaryButton(
-                label: 'Save Bike',
+                label: l.vehicleSaveBike,
                 onPressed: _save,
                 isLoading: _saving,
               ),
@@ -373,10 +375,8 @@ class _StatusBanner extends StatelessWidget {
         ? (isDark ? AppColors.successDark : AppColors.success)
         : (isDark ? AppColors.dangerDark : AppColors.danger);
     final message = success
-        ? 'Vehicle details fetched. Review and confirm.'
-        : (failureReason != null
-            ? "Couldn't fetch vehicle details. Please enter them manually below."
-            : "Couldn't fetch vehicle details. Please enter them manually below.");
+        ? context.l10n.vehicleFetchSuccess
+        : context.l10n.vehicleFetchFailure;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -539,7 +539,7 @@ class _DatePickerField extends StatelessWidget {
         ? '${value!.day.toString().padLeft(2, '0')} / '
             '${value!.month.toString().padLeft(2, '0')} / '
             '${value!.year}'
-        : 'Select date';
+        : context.l10n.fieldSelectDate;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

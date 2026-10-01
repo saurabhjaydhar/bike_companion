@@ -10,6 +10,7 @@ import '../core/constants/app_constants.dart';
 import '../core/providers/active_bike_provider.dart';
 import '../core/services/auth_service.dart';
 import '../core/theme/app_colors.dart';
+import '../l10n/l10n.dart';
 import '../main.dart';
 import '../shared/widgets/offline_banner.dart';
 import '../features/auth/auth_screen.dart';
@@ -48,16 +49,16 @@ class _RidesPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Rides')),
-      body: const Center(
+      appBar: AppBar(title: Text(context.l10n.navRides)),
+      body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.route_rounded, size: 48, color: Colors.grey),
-            SizedBox(height: 16),
-            Text('GPS ride tracking\ncoming soon',
+            const Icon(Icons.route_rounded, size: 48, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text(context.l10n.ridesComingSoon,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey)),
+                style: const TextStyle(color: Colors.grey)),
           ],
         ),
       ),
@@ -73,10 +74,10 @@ class _NoBikePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Select a bike from the Home tab first.',
-            style: TextStyle(color: Colors.grey)),
+        child: Text(context.l10n.noBikeSelected,
+            style: const TextStyle(color: Colors.grey)),
       ),
     );
   }
@@ -89,13 +90,13 @@ class _NavShell extends ConsumerWidget {
   final StatefulNavigationShell shell;
   const _NavShell({required this.shell});
 
-  static const _tabs = [
-    (icon: Icons.dashboard_rounded, label: 'Home'),
-    (icon: Icons.receipt_long_rounded, label: 'Expenses'),
-    (icon: Icons.build_rounded, label: 'Service'),
-    (icon: Icons.route_rounded, label: 'Rides'),
-    (icon: Icons.folder_rounded, label: 'Docs'),
-  ];
+  static List<({IconData icon, String label})> _tabs(AppLocalizations l) => [
+        (icon: Icons.dashboard_rounded, label: l.navHome),
+        (icon: Icons.receipt_long_rounded, label: l.expensesTitle),
+        (icon: Icons.build_rounded, label: l.expenseService),
+        (icon: Icons.route_rounded, label: l.navRides),
+        (icon: Icons.folder_rounded, label: l.navDocs),
+      ];
 
   void _onTap(BuildContext context, WidgetRef ref, int index) {
     HapticFeedback.selectionClick();
@@ -140,7 +141,7 @@ class _NavShell extends ConsumerWidget {
         selectedIndex: shell.currentIndex,
         onDestinationSelected: (i) => _onTap(context, ref, i),
         backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surface,
-        destinations: _tabs
+        destinations: _tabs(context.l10n)
             .map((t) => NavigationDestination(
                   icon: Icon(t.icon),
                   label: t.label,

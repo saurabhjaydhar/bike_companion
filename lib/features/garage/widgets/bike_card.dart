@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../l10n/l10n.dart';
 import '../../../data/models/health_score.dart';
 import '../../../shared/widgets/bike_avatar.dart';
 import '../garage_provider.dart';
@@ -138,7 +139,7 @@ class BikeCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'this month',
+                    context.l10n.commonThisMonth,
                     style:
                         AppTextStyles.label.copyWith(color: textSecondary),
                   ),
@@ -174,7 +175,7 @@ class BikeCard extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.delete_outline_rounded,
                   color: AppColors.danger),
-              title: Text('Delete ${item.bike.name}',
+              title: Text(context.l10n.garageDeleteBike(item.bike.name),
                   style: AppTextStyles.bodyMedium
                       .copyWith(color: AppColors.danger)),
               onTap: () {
@@ -193,19 +194,19 @@ class BikeCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Delete ${item.bike.name}?'),
-        content: const Text(
-            'All fuel logs, service records, and expenses will be deleted.'),
+        title: Text(context.l10n.garageDeleteBikeTitle(item.bike.name)),
+        content: Text(context.l10n.garageDeleteBikeBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')),
+              child: Text(context.l10n.commonCancel)),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onDelete();
             },
-            child: const Text('Delete', style: TextStyle(color: AppColors.danger)),
+            child: Text(context.l10n.commonDelete,
+                style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),

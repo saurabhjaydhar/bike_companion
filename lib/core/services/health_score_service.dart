@@ -2,6 +2,7 @@ import '../../data/models/bike.dart';
 import '../../data/models/fuel_log.dart';
 import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
+import '../../l10n/app_localizations.dart';
 import '../constants/app_constants.dart';
 
 class HealthScoreService {
@@ -52,13 +53,13 @@ class HealthScoreService {
       points: oilPts,
       maxPoints: 20,
       status: statusFor(oilPts, 20),
-      message: lastOil == null
-          ? 'No oil change recorded — log your first service'
+      message: (l) => lastOil == null
+          ? l.healthOilNone
           : kmOil < 3000
-              ? 'Oil changed ${kmOil.round()} km ago — all good'
+              ? l.healthOilGood(kmOil.round())
               : oilPts == 0
-                  ? 'Oil change overdue!'
-                  : 'Oil change due in ~${(5000 - kmOil).round()} km',
+                  ? l.healthOilOverdue
+                  : l.healthOilDue((5000 - kmOil).round()),
     ));
 
     // 2. Chain maintenance — 15 pts
@@ -74,11 +75,11 @@ class HealthScoreService {
       points: chainPts,
       maxPoints: 15,
       status: statusFor(chainPts, 15),
-      message: lastChain == null
-          ? 'No chain service recorded'
+      message: (l) => lastChain == null
+          ? l.healthChainNone
           : kmChain < 800
-              ? 'Chain serviced ${kmChain.round()} km ago'
-              : 'Chain service due in ~${(1500 - kmChain).round()} km',
+              ? l.healthChainGood(kmChain.round())
+              : l.healthChainDue((1500 - kmChain).round()),
     ));
 
     // 3. Air filter — 10 pts
@@ -93,11 +94,11 @@ class HealthScoreService {
       points: airPts,
       maxPoints: 10,
       status: statusFor(airPts, 10),
-      message: lastAir == null
-          ? 'No air filter service recorded'
+      message: (l) => lastAir == null
+          ? l.healthAirNone
           : kmAir < 8000
-              ? 'Air filter changed ${(kmAir / 1000).toStringAsFixed(1)}k km ago'
-              : 'Air filter change due soon',
+              ? l.healthAirGood((kmAir / 1000).toStringAsFixed(1))
+              : l.healthAirDue,
     ));
 
     // 4. Brake pads — 15 pts
@@ -112,11 +113,11 @@ class HealthScoreService {
       points: brakesPts,
       maxPoints: 15,
       status: statusFor(brakesPts, 15),
-      message: lastBrakes == null
-          ? 'No brake service recorded'
+      message: (l) => lastBrakes == null
+          ? l.healthBrakesNone
           : kmBrakes < 8000
-              ? 'Brakes checked ${(kmBrakes / 1000).toStringAsFixed(1)}k km ago'
-              : 'Brake inspection recommended',
+              ? l.healthBrakesGood((kmBrakes / 1000).toStringAsFixed(1))
+              : l.healthBrakesDue,
     ));
 
     // 5. Tyres — 10 pts (age-based)
@@ -131,11 +132,11 @@ class HealthScoreService {
       points: tyrePts,
       maxPoints: 10,
       status: statusFor(tyrePts, 10),
-      message: lastTyre == null
-          ? 'No tyre service recorded'
+      message: (l) => lastTyre == null
+          ? l.healthTyresNone
           : tyreYears < 2
-              ? 'Tyres replaced ${(tyreYears * 12).round()} months ago'
-              : 'Tyre inspection recommended',
+              ? l.healthTyresGood((tyreYears * 12).round())
+              : l.healthTyresDue,
     ));
 
     // 6. Battery — 10 pts (age-based)
@@ -150,19 +151,19 @@ class HealthScoreService {
       points: batteryPts,
       maxPoints: 10,
       status: statusFor(batteryPts, 10),
-      message: lastBattery == null
-          ? 'No battery service recorded'
+      message: (l) => lastBattery == null
+          ? l.healthBatteryNone
           : batteryYears < 2
-              ? 'Battery replaced ${(batteryYears * 12).round()} months ago'
-              : 'Battery check recommended',
+              ? l.healthBatteryGood((batteryYears * 12).round())
+              : l.healthBatteryDue,
     ));
 
     // 7. Insurance — 10 pts
     final double insurancePts;
-    final String insuranceMsg;
+    final String Function(AppLocalizations l) insuranceMsg;
     if (bike.insuranceExpiry == null) {
       insurancePts = 0;
-      insuranceMsg = 'Insurance expiry date not set';
+      insuranceMsg = (l) => l.healthInsuranceNotSet;
     } else {
       final days = bike.insuranceExpiry!.difference(now).inDays;
       insurancePts = days >= 30
@@ -170,11 +171,11 @@ class HealthScoreService {
           : days <= 0
               ? 0.0
               : 10.0 * days / 30;
-      insuranceMsg = days <= 0
-          ? 'Insurance EXPIRED — renew immediately'
+      insuranceMsg = (l) => days <= 0
+          ? l.healthInsuranceExpired
           : days <= 30
-              ? 'Insurance expires in $days days — renew now'
-              : 'Insurance valid for $days more days';
+              ? l.healthInsuranceExpiring(days)
+              : l.healthInsuranceValid(days);
     }
     factors.add(HealthFactor(
       label: 'Insurance',
@@ -186,14 +187,14 @@ class HealthScoreService {
 
     // 8. Fuel economy trend — 10 pts
     final double economyPts;
-    final String economyMsg;
+    final String Function(AppLocalizations l) economyMsg;
     final withMileage = (fuelLogs
           ..sort((a, b) => a.date.compareTo(b.date)))
         .where((f) => f.mileageCalculated != null)
         .toList();
     if (withMileage.length < 3) {
       economyPts = 10;
-      economyMsg = 'Log more fill-ups to track fuel economy';
+      economyMsg = (l) => l.healthEconomyNeedMore;
     } else {
       final recent = withMileage.reversed.take(3).toList();
       final recentAvg =
@@ -201,7 +202,8 @@ class HealthScoreService {
       final older = withMileage.reversed.skip(3).take(3).toList();
       if (older.isEmpty) {
         economyPts = 10;
-        economyMsg = 'Average: ${recentAvg.toStringAsFixed(1)} km/L';
+        economyMsg =
+            (l) => l.healthEconomyAverage(recentAvg.toStringAsFixed(1));
       } else {
         final olderAvg = older
                 .map((f) => f.mileageCalculated!)
@@ -210,13 +212,14 @@ class HealthScoreService {
         final change = (recentAvg - olderAvg) / olderAvg;
         if (change >= -0.05) {
           economyPts = 10;
-          economyMsg = 'Fuel economy stable at ${recentAvg.toStringAsFixed(1)} km/L';
+          economyMsg =
+              (l) => l.healthEconomyStable(recentAvg.toStringAsFixed(1));
         } else if (change <= -0.20) {
           economyPts = 0;
-          economyMsg = 'Fuel economy dropping — service may be needed';
+          economyMsg = (l) => l.healthEconomyDropping;
         } else {
           economyPts = 10 * (1 - (-change - 0.05) / 0.15);
-          economyMsg = 'Fuel economy slightly declining — monitor it';
+          economyMsg = (l) => l.healthEconomyDeclining;
         }
       }
     }

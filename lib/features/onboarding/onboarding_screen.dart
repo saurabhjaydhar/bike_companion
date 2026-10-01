@@ -10,6 +10,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../data/models/bike.dart';
 import '../../data/repositories/bike_repository.dart';
 import '../../features/garage/garage_provider.dart';
+import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
 
@@ -202,18 +203,18 @@ class _WelcomePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xxl),
           Text(
-            'Your bike,\nalways healthy',
+            context.l10n.onboardingWelcomeTitle,
             style: AppTextStyles.display.copyWith(color: textPrimary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Track fuel, service, expenses and documents — all in one place. Know exactly when your bike needs attention.',
+            context.l10n.onboardingWelcomeBody,
             style: AppTextStyles.body.copyWith(color: textSecondary),
             textAlign: TextAlign.center,
           ),
           const Spacer(),
-          PrimaryButton(label: 'Get started', onPressed: onStart),
+          PrimaryButton(label: context.l10n.onboardingGetStarted, onPressed: onStart),
           const SizedBox(height: AppSpacing.lg),
         ],
       ),
@@ -255,6 +256,7 @@ class _AddBikePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Form(
@@ -263,48 +265,49 @@ class _AddBikePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: AppSpacing.lg),
-            Text('Tell us about\nyour bike',
+            Text(l.onboardingAboutBikeTitle,
                 style: AppTextStyles.heading1),
             const SizedBox(height: AppSpacing.xxl),
 
             // Brand picker
-            Text('Brand', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldBrand, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             DropdownButtonFormField<String>(
               initialValue: brand,
               decoration: const InputDecoration(),
               items: kIndianBrands
-                  .map((b) => DropdownMenuItem(value: b, child: Text(b)))
+                  .map((b) => DropdownMenuItem(
+                      value: b, child: Text(b == 'Other' ? l.commonOther : b)))
                   .toList(),
               onChanged: (v) => onBrandChanged(v!),
             ),
             const SizedBox(height: AppSpacing.lg),
 
             // Model
-            Text('Model', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldModel, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: modelCtrl,
               decoration:
-                  const InputDecoration(hintText: 'e.g. Classic 350, Activa'),
+                  InputDecoration(hintText: l.fieldModelHint),
               validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Required' : null,
+                  v == null || v.trim().isEmpty ? l.validationRequired : null,
             ),
             const SizedBox(height: AppSpacing.lg),
 
             // Nickname
-            Text('Nickname', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldNickname, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: nameCtrl,
-              decoration: const InputDecoration(hintText: 'What do you call it?'),
+              decoration: InputDecoration(hintText: l.fieldNicknameHint),
               validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Required' : null,
+                  v == null || v.trim().isEmpty ? l.validationRequired : null,
             ),
             const SizedBox(height: AppSpacing.lg),
 
             // Colour picker
-            Text('Colour', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldColour, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             _ColourPicker(
               selected: colourHex,
@@ -313,42 +316,42 @@ class _AddBikePage extends StatelessWidget {
             const SizedBox(height: AppSpacing.lg),
 
             // Registration
-            Text('Registration number', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldRegNumber, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: regCtrl,
               textCapitalization: TextCapitalization.characters,
               decoration: const InputDecoration(hintText: 'MH 12 AB 1234'),
               validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Required' : null,
+                  v == null || v.trim().isEmpty ? l.validationRequired : null,
             ),
             const SizedBox(height: AppSpacing.lg),
 
             // Purchase date
-            Text('Purchase date (optional)', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldPurchaseDateOptional, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             _DateField(
               value: purchaseDate,
-              hint: 'Select date',
+              hint: l.fieldSelectDate,
               onChanged: onPurchaseDateChanged,
             ),
             const SizedBox(height: AppSpacing.lg),
 
             // Odometer
-            Text('Current odometer (km)', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+            Text(l.fieldCurrentOdometer, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: odometerCtrl,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(hintText: '0'),
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Required';
-                if (int.tryParse(v) == null) return 'Enter a number';
+                if (v == null || v.trim().isEmpty) return l.validationRequired;
+                if (int.tryParse(v) == null) return l.validationEnterNumber;
                 return null;
               },
             ),
             const SizedBox(height: AppSpacing.xxl),
-            PrimaryButton(label: 'Next', onPressed: onNext),
+            PrimaryButton(label: l.commonNext, onPressed: onNext),
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
@@ -379,40 +382,41 @@ class _KeyDatesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: AppSpacing.lg),
-          Text('Important dates', style: AppTextStyles.heading1),
+          Text(l.onboardingImportantDates, style: AppTextStyles.heading1),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'We\'ll remind you before anything expires.',
+            l.onboardingRemindBody,
             style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.xxl),
 
-          Text('Insurance expiry', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+          Text(l.fieldInsuranceExpiry, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           _DateField(
             value: insuranceExpiry,
-            hint: 'Select date',
+            hint: l.fieldSelectDate,
             onChanged: onInsuranceChanged,
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('PUC expiry', style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
+          Text(l.fieldPucExpiry, style: AppTextStyles.label.copyWith(color: AppColors.textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           _DateField(
             value: pucExpiry,
-            hint: 'Select date',
+            hint: l.fieldSelectDate,
             onChanged: onPucChanged,
           ),
           const SizedBox(height: AppSpacing.xxl),
 
           PrimaryButton(
-            label: 'Add my bike',
+            label: l.onboardingAddMyBike,
             onPressed: onFinish,
             isLoading: saving,
           ),

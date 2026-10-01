@@ -1,0 +1,475 @@
+{
+  "@@locale": "en",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
+  "commonOther": "Other",
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsSystemDefault": "System default",
+  "settingsLight": "Light",
+  "settingsDark": "Dark",
+  "settingsLanguage": "Language",
+  "settingsAbout": "About",
+  "settingsVersion": "Version",
+  "settingsBuiltWithFlutter": "Built with Flutter",
+  "settingsAccount": "Account",
+  "settingsSignedIn": "Signed in",
+  "settingsSignOut": "Sign out",
+  "settingsSignOutTitle": "Sign out?",
+  "settingsSignOutBody": "Your local data stays on this device. Sign back in anytime.",
+  "settingsData": "Data",
+  "settingsClearAllData": "Clear all data",
+  "settingsClearTitle": "Clear all data?",
+  "settingsClearBody": "This will permanently delete all bikes, fuel logs, service records, expenses, and documents. This cannot be undone.",
+  "settingsDataCleared": "All data cleared",
+  "settingsDeleteAccount": "Delete account",
+  "settingsDeleteAccountSubtitle": "Permanently removes your account (GDPR)",
+  "settingsDeleteAccountTitle": "Delete account?",
+  "settingsDeleteAccountBody": "This permanently deletes your Firebase account. Your local data stays on this device. This cannot be undone.",
+  "settingsDeleteAccountError": "Could not delete account. Please sign in again and retry.",
+  "appTitle": "Bike Companion",
+  "commonContinue": "Continue",
+  "commonNext": "Next",
+  "authSignInFailed": "Sign-in failed: {error}",
+  "@authSignInFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "authOfflineTitle": "Continue without account?",
+  "authOfflineBody": "Your data will be saved on this device only. It won't be backed up or synced to other devices.\n\nYou can sign in anytime from Settings.",
+  "authOfflineError": "Could not start offline session. Please try again.",
+  "authTagline": "Track fuel, service & expenses\nfor your motorcycle",
+  "authContinueWithGoogle": "Continue with Google",
+  "authContinueWithoutAccount": "Continue without account",
+  "authTerms": "By continuing you agree to our Terms & Privacy Policy.",
+  "onboardingWelcomeTitle": "Your bike,\nalways healthy",
+  "onboardingWelcomeBody": "Track fuel, service, expenses and documents — all in one place. Know exactly when your bike needs attention.",
+  "onboardingGetStarted": "Get started",
+  "onboardingAboutBikeTitle": "Tell us about\nyour bike",
+  "onboardingImportantDates": "Important dates",
+  "onboardingRemindBody": "We'll remind you before anything expires.",
+  "onboardingAddMyBike": "Add my bike",
+  "fieldBrand": "Brand",
+  "fieldModel": "Model",
+  "fieldModelHint": "e.g. Classic 350, Activa",
+  "fieldNickname": "Nickname",
+  "fieldNicknameHint": "What do you call it?",
+  "fieldColour": "Colour",
+  "fieldRegNumber": "Registration number",
+  "fieldPurchaseDateOptional": "Purchase date (optional)",
+  "fieldSelectDate": "Select date",
+  "fieldCurrentOdometer": "Current odometer (km)",
+  "fieldInsuranceExpiry": "Insurance expiry",
+  "fieldPucExpiry": "PUC expiry",
+  "validationRequired": "Required",
+  "validationEnterNumber": "Enter a number",
+  "addBikeInvalidFormat": "Invalid format. Use format like MH12DE1234 or DL01AA1234.",
+  "addBikeNotFound": "Vehicle not found in registry.",
+  "addBikeApiLimit": "API limit reached. Please try again later.",
+  "addBikeNoInternet": "No internet connection. Please check your network.",
+  "addBikeFetchFailed": "Could not fetch vehicle details.",
+  "addBikeTitle": "Add Your Bike",
+  "addBikeSubtitle": "Enter your registration number and we'll pull your vehicle details automatically.",
+  "addBikeExamples": "e.g. UK07AB1234 · DL01AA1234 · MH12DE1234",
+  "addBikeContinue": "Continue →",
+  "addBikeFetching": "Fetching vehicle details…",
+  "vehicleBrandRequired": "Brand is required",
+  "vehicleModelRequired": "Model is required",
+  "vehicleSaveFailed": "Failed to save bike. Please try again.",
+  "vehicleDetailsTitle": "Vehicle Details",
+  "vehicleSectionRegistration": "REGISTRATION",
+  "vehicleRcNumber": "RC Number",
+  "vehicleSectionInfo": "VEHICLE INFO",
+  "vehicleManufacturer": "Manufacturer",
+  "vehicleVariant": "Variant",
+  "vehicleFuelType": "Fuel Type",
+  "vehicleClass": "Vehicle Class",
+  "vehicleSectionRegistrationDetails": "REGISTRATION DETAILS",
+  "vehicleRegistrationDate": "Registration Date",
+  "vehicleSectionIdentifiers": "IDENTIFIERS",
+  "vehicleEngineNumber": "Engine Number",
+  "vehicleChassisNumber": "Chassis Number",
+  "vehicleSaveBike": "Save Bike",
+  "vehicleFetchSuccess": "Vehicle details fetched. Review and confirm.",
+  "vehicleFetchFailure": "Couldn't fetch vehicle details. Please enter them manually below.",
+  "commonError": "Error: {error}",
+  "@commonError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "commonThisMonth": "this month",
+  "garageTitle": "My Garage",
+  "garageEmptyTitle": "No bikes yet",
+  "garageEmptyBody": "Add your first bike to start tracking fuel, service and expenses.",
+  "garageYourBikes": "Your bikes",
+  "garageAddAnother": "Add another bike",
+  "garageStatBikes": "bikes",
+  "garageStatAlerts": "alerts",
+  "garageDeleteBike": "Delete {name}",
+  "@garageDeleteBike": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "garageDeleteBikeTitle": "Delete {name}?",
+  "@garageDeleteBikeTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "garageDeleteBikeBody": "All fuel logs, service records, and expenses will be deleted.",
+  "commonToday": "Today",
+  "commonYesterday": "Yesterday",
+  "commonDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@commonDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonNotSet": "Not set",
+  "fieldOdometer": "Odometer",
+  "dashboardTitle": "Dashboard",
+  "dashboardLogFuel": "Log fuel stop",
+  "dashboardRecentActivity": "Recent activity",
+  "dashboardSeeAll": "See all",
+  "dashboardThisMonth": "This month",
+  "dashboardLastFuel": "Last fuel",
+  "dashboardNotLogged": "Not logged",
+  "dashboardAvgMileage": "{mileage} km/L avg",
+  "@dashboardAvgMileage": {
+    "placeholders": {
+      "mileage": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardNextService": "Next service",
+  "dashboardUpToDate": "Up to date",
+  "dashboardDaysLeft": "{count, plural, =1{1 day left} other{{count} days left}}",
+  "@dashboardDaysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardFuelStop": "Fuel stop",
+  "fuelOdometerTooLow": "Odometer must be greater than last entry ({km} km)",
+  "@fuelOdometerTooLow": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "fuelLogged": "Fuel stop logged!",
+  "fuelCurrentOdometer": "Current odometer",
+  "fuelLastEntry": "Last entry: {km} km",
+  "@fuelLastEntry": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "fuelKmSinceLastEstimate": "{km} km since last fill · ~{litres} L estimated",
+  "@fuelKmSinceLastEstimate": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      },
+      "litres": {
+        "type": "String"
+      }
+    }
+  },
+  "fuelKmSinceLast": "{km} km since last fill",
+  "@fuelKmSinceLast": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "fuelAddMoreDetails": "Add more details",
+  "fuelLitresFilled": "Litres filled",
+  "fuelAmountPaid": "Amount paid",
+  "fuelStationOptional": "Fuel station (optional)",
+  "fuelStationHint": "HP, Indian Oil, Bharat...",
+  "fuelReceiptSoon": "Receipt scan coming soon!",
+  "fuelScanReceipt": "Scan receipt",
+  "fuelSave": "Save fuel stop",
+  "fuelHistoryTitle": "Fuel history",
+  "fuelHistoryEmptyTitle": "No fuel logs yet",
+  "fuelHistoryEmptyBody": "Log your first fuel stop from the dashboard.",
+  "fuelAvgMileageAllTime": "Average mileage (all time)",
+  "fieldNotesOptional": "Notes (optional)",
+  "serviceStatusGood": "Good",
+  "serviceDueSoon": "Due soon",
+  "serviceStatusOverdue": "Overdue",
+  "serviceHistory": "History",
+  "serviceLast": "Last: {date}",
+  "@serviceLast": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceEmptyTitle": "No services logged",
+  "serviceEmptyBody": "Tap any item in \"Due soon\" to log a service.",
+  "serviceLogTitle": "Log service",
+  "serviceType": "Service type",
+  "serviceOdometerKm": "Odometer (km)",
+  "serviceCost": "Cost (₹)",
+  "serviceNotesHint": "Shop name, parts replaced...",
+  "serviceSave": "Save service",
+  "serviceOilChange": "Oil Change",
+  "serviceOilFilter": "Oil Filter",
+  "serviceAirFilter": "Air Filter",
+  "serviceChainClean": "Chain Clean",
+  "serviceChainLube": "Chain Lube",
+  "serviceBrakePads": "Brake Pads",
+  "serviceTyres": "Tyres",
+  "serviceBattery": "Battery",
+  "serviceCoolant": "Coolant",
+  "expenseFuel": "Fuel",
+  "expenseService": "Service",
+  "expenseParts": "Parts",
+  "expenseInsurance": "Insurance",
+  "expenseParking": "Parking",
+  "expenseAccessories": "Accessories",
+  "expenseFine": "Fine",
+  "docRc": "RC Book",
+  "docInsurance": "Insurance",
+  "docDrivingLicence": "Driving Licence",
+  "docPuc": "PUC Certificate",
+  "docInvoice": "Purchase Invoice",
+  "docWarranty": "Warranty Card",
+  "gradeExcellent": "Excellent condition",
+  "gradeGood": "Good condition",
+  "gradeFair": "Fair condition",
+  "gradePoor": "Needs attention",
+  "gradeCritical": "Critical — service now",
+  "expensesTitle": "Expenses",
+  "expensesExportCsv": "Export CSV",
+  "expensesByCategory": "By category",
+  "expensesTransactions": "Transactions",
+  "expensesEmptyTitle": "No expenses",
+  "expensesEmptyBody": "Tap + to add your first expense this month.",
+  "expensesCsvHeader": "Date,Category,Amount (₹),Note",
+  "expensesCsvSubject": "Expenses — {month}",
+  "@expensesCsvSubject": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "expensesTotalSpent": "Total spent",
+  "expensesVsLastMonth": "{percent}% vs last month",
+  "@expensesVsLastMonth": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "expensesAddTitle": "Add expense",
+  "expensesCategory": "Category",
+  "expensesAmount": "Amount (₹)",
+  "expensesNoteOptional": "Note (optional)",
+  "expensesNoteHint": "Merchant, description...",
+  "expensesSave": "Save expense",
+  "documentsTitle": "Documents",
+  "documentsEmptyTitle": "No documents",
+  "documentsEmptyBody": "Store your RC, insurance, PUC and more in one place.",
+  "documentsExpiringSoon": "Expiring soon",
+  "documentsValid": "Valid",
+  "documentsExpired": "Expired",
+  "documentsNoExpiry": "No expiry",
+  "documentsExpiresInDays": "{count, plural, =1{Expires in 1 day} other{Expires in {count} days}}",
+  "@documentsExpiresInDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "documentsDelete": "Delete document",
+  "documentsExpiry": "Expiry",
+  "documentsAddTitle": "Add document",
+  "documentsType": "Document type",
+  "documentsTitleField": "Title",
+  "documentsTitleHint": "e.g. RC Book, Policy #...",
+  "documentsExpiryOptional": "Expiry date (optional)",
+  "documentsPhotoSelected": "Photo selected",
+  "documentsAttachPhoto": "Attach photo",
+  "documentsSave": "Save document",
+  "navHome": "Home",
+  "navRides": "Rides",
+  "navDocs": "Docs",
+  "ridesComingSoon": "GPS ride tracking\ncoming soon",
+  "noBikeSelected": "Select a bike from the Home tab first.",
+  "offlineBanner": "No internet — working offline",
+  "notifDocBody": "{title} expires in {days} days",
+  "@notifDocBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "notifDocTitle": "Document expiring in {days} days",
+  "@notifDocTitle": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "notifDocTomorrowTitle": "Document expires tomorrow!",
+  "notifServiceOverdueTitle": "Service overdue — {bike}",
+  "@notifServiceOverdueTitle": {
+    "placeholders": {
+      "bike": {
+        "type": "String"
+      }
+    }
+  },
+  "notifServiceOverdueBody": "{service} needs attention",
+  "@notifServiceOverdueBody": {
+    "placeholders": {
+      "service": {
+        "type": "String"
+      }
+    }
+  },
+  "healthOilNone": "No oil change recorded — log your first service",
+  "healthOilGood": "Oil changed {km} km ago — all good",
+  "@healthOilGood": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "healthOilOverdue": "Oil change overdue!",
+  "healthOilDue": "Oil change due in ~{km} km",
+  "@healthOilDue": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "healthChainNone": "No chain service recorded",
+  "healthChainGood": "Chain serviced {km} km ago",
+  "@healthChainGood": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "healthChainDue": "Chain service due in ~{km} km",
+  "@healthChainDue": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "healthAirNone": "No air filter service recorded",
+  "healthAirGood": "Air filter changed {km}k km ago",
+  "@healthAirGood": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "healthAirDue": "Air filter change due soon",
+  "healthBrakesNone": "No brake service recorded",
+  "healthBrakesGood": "Brakes checked {km}k km ago",
+  "@healthBrakesGood": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "healthBrakesDue": "Brake inspection recommended",
+  "healthTyresNone": "No tyre service recorded",
+  "healthTyresGood": "{months, plural, =1{Tyres replaced 1 month ago} other{Tyres replaced {months} months ago}}",
+  "@healthTyresGood": {
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "healthTyresDue": "Tyre inspection recommended",
+  "healthBatteryNone": "No battery service recorded",
+  "healthBatteryGood": "{months, plural, =1{Battery replaced 1 month ago} other{Battery replaced {months} months ago}}",
+  "@healthBatteryGood": {
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "healthBatteryDue": "Battery check recommended",
+  "healthInsuranceNotSet": "Insurance expiry date not set",
+  "healthInsuranceExpired": "Insurance EXPIRED — renew immediately",
+  "healthInsuranceExpiring": "{days, plural, =1{Insurance expires in 1 day — renew now} other{Insurance expires in {days} days — renew now}}",
+  "@healthInsuranceExpiring": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "healthInsuranceValid": "Insurance valid for {days} more days",
+  "@healthInsuranceValid": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "healthEconomyNeedMore": "Log more fill-ups to track fuel economy",
+  "healthEconomyAverage": "Average: {mileage} km/L",
+  "@healthEconomyAverage": {
+    "placeholders": {
+      "mileage": {
+        "type": "String"
+      }
+    }
+  },
+  "healthEconomyStable": "Fuel economy stable at {mileage} km/L",
+  "@healthEconomyStable": {
+    "placeholders": {
+      "mileage": {
+        "type": "String"
+      }
+    }
+  },
+  "healthEconomyDropping": "Fuel economy dropping — service may be needed",
+  "healthEconomyDeclining": "Fuel economy slightly declining — monitor it"
+}

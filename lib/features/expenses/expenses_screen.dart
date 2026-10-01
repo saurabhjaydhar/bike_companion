@@ -8,6 +8,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/expense.dart';
+import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import 'expenses_provider.dart';
 
@@ -38,16 +39,17 @@ class ExpensesScreen extends ConsumerWidget {
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final rupee = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expenses'),
+        title: Text(l.expensesTitle),
         actions: [
           if (stateAsync.valueOrNull?.expenses.isNotEmpty ?? false)
             IconButton(
               icon: const Icon(Icons.ios_share_rounded),
-              tooltip: 'Export CSV',
-              onPressed: () => _exportCsv(stateAsync.value!),
+              tooltip: l.expensesExportCsv,
+              onPressed: () => _exportCsv(l, stateAsync.value!),
             ),
         ],
       ),
@@ -103,7 +105,7 @@ class ExpensesScreen extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg),
-                  child: Text('By category',
+                  child: Text(l.expensesByCategory,
                       style: AppTextStyles.heading3
                           .copyWith(color: textPrimary)),
                 ),
@@ -123,17 +125,17 @@ class ExpensesScreen extends ConsumerWidget {
               // Transactions
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Text('Transactions',
+                child: Text(l.expensesTransactions,
                     style: AppTextStyles.heading3
                         .copyWith(color: textPrimary)),
               ),
               const SizedBox(height: AppSpacing.sm),
 
               if (s.expenses.isEmpty)
-                const EmptyState(
+                EmptyState(
                   icon: Icons.receipt_long_rounded,
-                  heading: 'No expenses',
-                  body: 'Tap + to add your first expense this month.',
+                  heading: l.expensesEmptyTitle,
+                  body: l.expensesEmptyBody,
                 )
               else
                 ..._groupByDate(s.expenses).entries
@@ -145,7 +147,7 @@ class ExpensesScreen extends ConsumerWidget {
                                 AppSpacing.lg, AppSpacing.md,
                                 AppSpacing.lg, AppSpacing.sm),
                             child: Text(
-                              DateFormat('d MMMM').format(entry.key),
+                              DateFormat('d MMMM', l.localeName).format(entry.key),
                               style: AppTextStyles.captionMedium
                                   .copyWith(color: textSecondary),
                             ),
@@ -185,12 +187,12 @@ class ExpensesScreen extends ConsumerWidget {
                                   title: Text(
                                     exp.note?.isNotEmpty == true
                                         ? exp.note!
-                                        : ExpenseCategories.label(exp.category),
+                                        : l.expenseCategoryLabel(exp.category),
                                     style: AppTextStyles.bodyMedium
                                         .copyWith(color: textPrimary),
                                   ),
                                   subtitle: Text(
-                                    ExpenseCategories.label(exp.category),
+                                    l.expenseCategoryLabel(exp.category),
                                     style: AppTextStyles.caption
                                         .copyWith(color: textSecondary),
                                   ),
@@ -231,18 +233,20 @@ class ExpensesScreen extends ConsumerWidget {
     }
   }
 
-  void _exportCsv(ExpensesState s) {
-    final monthName = DateFormat('MMMM yyyy').format(DateTime(s.year, s.month));
+  void _exportCsv(AppLocalizations l, ExpensesState s) {
+    final monthName = DateFormat('MMMM yyyy', l.localeName)
+        .format(DateTime(s.year, s.month));
     final buf = StringBuffer();
-    buf.writeln('Date,Category,Amount (₹),Note');
+    buf.writeln(l.expensesCsvHeader);
     for (final e in s.expenses) {
-      final date = DateFormat('d MMM y').format(e.date);
+      final date = DateFormat('d MMM y', l.localeName).format(e.date);
       final note = (e.note ?? '').replaceAll(',', ' ');
-      buf.writeln('$date,${e.category},${e.amount.toStringAsFixed(0)},$note');
+      final category = l.expenseCategoryLabel(e.category).replaceAll(',', ' ');
+      buf.writeln('$date,$category,${e.amount.toStringAsFixed(0)},$note');
     }
     Share.share(
       buf.toString(),
-      subject: 'Expenses — $monthName',
+      subject: l.expensesCsvSubject(monthName),
     );
   }
 }
@@ -281,7 +285,8 @@ class _MonthSelector extends StatelessWidget {
           onPressed: onPrev,
         ),
         Text(
-          DateFormat('MMMM y').format(DateTime(year, month)),
+          DateFormat('MMMM y', context.l10n.localeName)
+              .format(DateTime(year, month)),
           style: AppTextStyles.heading3.copyWith(
               color: isDark
                   ? AppColors.textPrimaryDark
@@ -325,6 +330,7 @@ class _SummaryCard extends StatelessWidget {
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final rupee = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final l = context.l10n;
 
     final diff = prevTotal != null && prevTotal! > 0
         ? (total - prevTotal!) / prevTotal! * 100
@@ -344,7 +350,7 @@ class _SummaryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Total spent',
+                Text(l.expensesTotalSpent,
                     style:
                         AppTextStyles.caption.copyWith(color: textSecondary)),
                 const SizedBox(height: AppSpacing.xs),
@@ -369,7 +375,7 @@ class _SummaryCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${diff.abs().toStringAsFixed(0)}% vs last month',
+                      l.expensesVsLastMonth(diff.abs().toStringAsFixed(0)),
                       style: AppTextStyles.captionMedium.copyWith(
                         color: isLess
                             ? (isDark
@@ -448,7 +454,7 @@ class _BarChart extends StatelessWidget {
                   final i = val.toInt();
                   if (i < 0 || i >= trend.length) return const SizedBox();
                   return Text(
-                    DateFormat('MMM').format(
+                    DateFormat('MMM', context.l10n.localeName).format(
                         DateTime(trend[i].year, trend[i].month)),
                     style: AppTextStyles.label.copyWith(
                         color: textSecondary, fontSize: 10),
@@ -529,7 +535,7 @@ class _CategoryRow extends StatelessWidget {
                       BoxDecoration(color: color, shape: BoxShape.circle)),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: Text(ExpenseCategories.label(category),
+                child: Text(context.l10n.expenseCategoryLabel(category),
                     style:
                         AppTextStyles.bodyMedium.copyWith(color: textPrimary)),
               ),
@@ -633,6 +639,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final l = context.l10n;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -655,11 +662,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text('Add expense', style: AppTextStyles.heading2),
+          Text(l.expensesAddTitle, style: AppTextStyles.heading2),
           const SizedBox(height: AppSpacing.lg),
 
           // Category grid
-          Text('Category',
+          Text(l.expensesCategory,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
@@ -689,7 +696,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                     borderRadius: BorderRadius.circular(AppRadius.small),
                   ),
                   child: Text(
-                    ExpenseCategories.label(cat),
+                    l.expenseCategoryLabel(cat),
                     style: AppTextStyles.captionMedium.copyWith(
                       color: isSelected ? color : textSecondary,
                     ),
@@ -700,7 +707,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Amount (₹)',
+          Text(l.expensesAmount,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
@@ -713,13 +720,12 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Note (optional)',
+          Text(l.expensesNoteOptional,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _noteCtrl,
-            decoration: const InputDecoration(
-                hintText: 'Merchant, description...'),
+            decoration: InputDecoration(hintText: l.expensesNoteHint),
           ),
           const SizedBox(height: AppSpacing.xl),
 
@@ -734,7 +740,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white))
-                  : const Text('Save expense'),
+                  : Text(l.expensesSave),
             ),
           ),
         ],

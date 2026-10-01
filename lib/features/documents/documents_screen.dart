@@ -10,6 +10,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/storage_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../l10n/l10n.dart';
 import '../../data/models/document.dart';
 import '../../main.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -25,9 +26,10 @@ class DocumentsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final docsAsync = ref.watch(documentsProvider(bikeId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Documents')),
+      appBar: AppBar(title: Text(l.documentsTitle)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddDocument(context, ref, bikeId),
         backgroundColor: AppColors.primary,
@@ -38,10 +40,10 @@ class DocumentsScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (docs) {
           if (docs.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.folder_rounded,
-              heading: 'No documents',
-              body: 'Store your RC, insurance, PUC and more in one place.',
+              heading: l.documentsEmptyTitle,
+              body: l.documentsEmptyBody,
             );
           }
 
@@ -65,7 +67,7 @@ class DocumentsScreen extends ConsumerWidget {
                   AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 100),
               children: [
                 if (expiring.isNotEmpty) ...[
-                  _SectionHeader('Expiring soon', isDark: isDark),
+                  _SectionHeader(l.documentsExpiringSoon, isDark: isDark),
                   _DocGrid(
                       docs: expiring,
                       bikeId: bikeId,
@@ -74,13 +76,13 @@ class DocumentsScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.lg),
                 ],
                 if (valid.isNotEmpty) ...[
-                  _SectionHeader('Valid', isDark: isDark),
+                  _SectionHeader(l.documentsValid, isDark: isDark),
                   _DocGrid(
                       docs: valid, bikeId: bikeId, isDark: isDark, ref: ref),
                   const SizedBox(height: AppSpacing.lg),
                 ],
                 if (expired.isNotEmpty) ...[
-                  _SectionHeader('Expired', isDark: isDark),
+                  _SectionHeader(l.documentsExpired, isDark: isDark),
                   _DocGrid(
                       docs: expired,
                       bikeId: bikeId,
@@ -173,13 +175,13 @@ class _DocCard extends StatelessWidget {
     return AppColors.success;
   }
 
-  String _statusLabel() {
-    if (doc.isExpired) return 'Expired';
+  String _statusLabel(AppLocalizations l) {
+    if (doc.isExpired) return l.documentsExpired;
     final days = doc.daysUntilExpiry;
-    if (days == null) return 'No expiry';
-    if (days <= 0) return 'Expired';
-    if (days <= 30) return 'Expires in $days days';
-    return DateFormat('d MMM y').format(doc.expiryDate!);
+    if (days == null) return l.documentsNoExpiry;
+    if (days <= 0) return l.documentsExpired;
+    if (days <= 30) return l.documentsExpiresInDays(days);
+    return DateFormat('d MMM y', l.localeName).format(doc.expiryDate!);
   }
 
   IconData _icon() {
@@ -221,7 +223,7 @@ class _DocCard extends StatelessWidget {
             child: ListTile(
               leading: const Icon(Icons.delete_outline_rounded,
                   color: AppColors.danger),
-              title: const Text('Delete document'),
+              title: Text(context.l10n.documentsDelete),
               onTap: () {
                 Navigator.pop(context);
                 onDelete();
@@ -265,7 +267,7 @@ class _DocCard extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              _statusLabel(),
+              _statusLabel(context.l10n),
               style: AppTextStyles.label.copyWith(color: statusColor),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -333,13 +335,14 @@ class _DocDetailSheet extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Text(doc.title, style: AppTextStyles.heading2),
           const SizedBox(height: AppSpacing.xs),
-          Text(DocumentTypes.label(doc.type),
+          Text(context.l10n.documentTypeLabel(doc.type),
               style: AppTextStyles.body.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.lg),
           if (doc.expiryDate != null)
             _DetailRow(
-              label: 'Expiry',
-              value: DateFormat('d MMM y').format(doc.expiryDate!),
+              label: context.l10n.documentsExpiry,
+              value: DateFormat('d MMM y', context.l10n.localeName)
+                  .format(doc.expiryDate!),
               textSecondary: textSecondary,
               highlight: expiryHighlight,
             ),
@@ -374,8 +377,8 @@ class _DocDetailSheet extends StatelessWidget {
               },
               icon: const Icon(Icons.delete_outline_rounded,
                   color: AppColors.danger),
-              label: const Text('Delete',
-                  style: TextStyle(color: AppColors.danger)),
+              label: Text(context.l10n.commonDelete,
+                  style: const TextStyle(color: AppColors.danger)),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppColors.danger),
               ),
@@ -525,11 +528,16 @@ class _AddDocSheetState extends State<_AddDocSheet> {
   String? _imagePath;
   final _titleCtrl = TextEditingController();
   bool _saving = false;
+  bool _titleInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    _titleCtrl.text = DocumentTypes.label(_type);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Localizations aren't available in initState.
+    if (!_titleInitialized) {
+      _titleCtrl.text = context.l10n.documentTypeLabel(_type);
+      _titleInitialized = true;
+    }
   }
 
   @override
@@ -602,6 +610,7 @@ class _AddDocSheetState extends State<_AddDocSheet> {
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final border = isDark ? AppColors.borderDark : AppColors.border;
+    final l = context.l10n;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -624,10 +633,10 @@ class _AddDocSheetState extends State<_AddDocSheet> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text('Add document', style: AppTextStyles.heading2),
+          Text(l.documentsAddTitle, style: AppTextStyles.heading2),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Document type',
+          Text(l.documentsType,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           DropdownButtonFormField<String>(
@@ -635,30 +644,30 @@ class _AddDocSheetState extends State<_AddDocSheet> {
             decoration: const InputDecoration(),
             items: DocumentTypes.all
                 .map((t) => DropdownMenuItem(
-                    value: t, child: Text(DocumentTypes.label(t))))
+                    value: t, child: Text(l.documentTypeLabel(t))))
                 .toList(),
             onChanged: (v) {
               if (v != null) {
                 setState(() {
                   _type = v;
-                  _titleCtrl.text = DocumentTypes.label(v);
+                  _titleCtrl.text = l.documentTypeLabel(v);
                 });
               }
             },
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Title',
+          Text(l.documentsTitleField,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _titleCtrl,
             decoration:
-                const InputDecoration(hintText: 'e.g. RC Book, Policy #...'),
+                InputDecoration(hintText: l.documentsTitleHint),
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          Text('Expiry date (optional)',
+          Text(l.documentsExpiryOptional,
               style: AppTextStyles.label.copyWith(color: textSecondary)),
           const SizedBox(height: AppSpacing.sm),
           GestureDetector(
@@ -677,8 +686,9 @@ class _AddDocSheetState extends State<_AddDocSheet> {
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     _expiryDate != null
-                        ? DateFormat('d MMM y').format(_expiryDate!)
-                        : 'Select date',
+                        ? DateFormat('d MMM y', l.localeName)
+                            .format(_expiryDate!)
+                        : l.fieldSelectDate,
                     style: AppTextStyles.body.copyWith(
                         color: _expiryDate != null ? null : textSecondary),
                   ),
@@ -695,8 +705,8 @@ class _AddDocSheetState extends State<_AddDocSheet> {
                   onPressed: _pickImage,
                   icon: const Icon(Icons.photo_library_outlined),
                   label: Text(_imagePath != null
-                      ? 'Photo selected'
-                      : 'Attach photo'),
+                      ? l.documentsPhotoSelected
+                      : l.documentsAttachPhoto),
                 ),
               ),
             ],
@@ -714,7 +724,7 @@ class _AddDocSheetState extends State<_AddDocSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white))
-                  : const Text('Save document'),
+                  : Text(l.documentsSave),
             ),
           ),
         ],

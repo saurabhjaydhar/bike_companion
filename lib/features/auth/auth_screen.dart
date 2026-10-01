@@ -7,6 +7,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/services/restore_service.dart';
+import '../../l10n/l10n.dart';
 import '../../main.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
@@ -49,7 +50,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = 'Sign-in failed: $e';
+        _error = context.l10n.authSignInFailed('$e');
         _loading = false;
       });
     }
@@ -59,17 +60,16 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Continue without account?'),
-        content: const Text(
-            'Your data will be saved on this device only. It won\'t be backed up or synced to other devices.\n\nYou can sign in anytime from Settings.'),
+        title: Text(context.l10n.authOfflineTitle),
+        content: Text(context.l10n.authOfflineBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Continue'),
+            child: Text(context.l10n.commonContinue),
           ),
         ],
       ),
@@ -85,7 +85,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = 'Could not start offline session. Please try again.';
+        _error = context.l10n.authOfflineError;
         _loading = false;
       });
     }
@@ -100,6 +100,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -111,13 +112,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               Icon(Icons.two_wheeler_rounded, size: 80, color: cs.primary),
               const SizedBox(height: 16),
               Text(
-                'Bike Companion',
+                l.appTitle,
                 style: tt.headlineMedium
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
-                'Track fuel, service & expenses\nfor your motorcycle',
+                l.authTagline,
                 style: tt.bodyMedium?.copyWith(color: cs.outline),
                 textAlign: TextAlign.center,
               ),
@@ -138,7 +139,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 height: 48,
                 child: OutlinedButton(
                   onPressed: _loading ? null : _continueOffline,
-                  child: const Text('Continue without account'),
+                  child: Text(l.authContinueWithoutAccount),
                 ),
               ),
 
@@ -153,7 +154,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
               const Spacer(),
               Text(
-                'By continuing you agree to our Terms & Privacy Policy.',
+                l.authTerms,
                 style: tt.bodySmall?.copyWith(color: cs.outline),
                 textAlign: TextAlign.center,
               ),
@@ -210,7 +211,7 @@ class _GoogleSignInButton extends StatelessWidget {
                   _GoogleLogo(size: 20),
                   const SizedBox(width: 12),
                   Text(
-                    'Continue with Google',
+                    context.l10n.authContinueWithGoogle,
                     style: TextStyle(
                       color: textColor,
                       fontSize: 15,

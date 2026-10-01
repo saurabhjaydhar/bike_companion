@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/connectivity_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../l10n/l10n.dart';
 
 class OfflineBanner extends ConsumerWidget {
   const OfflineBanner({super.key});
@@ -28,7 +29,7 @@ class OfflineBanner extends ConsumerWidget {
               const Icon(Icons.wifi_off_rounded, size: 14, color: Colors.white),
               const SizedBox(width: 6),
               Text(
-                'No internet — working offline',
+                context.l10n.offlineBanner,
                 style: AppTextStyles.captionMedium
                     .copyWith(color: Colors.white),
               ),

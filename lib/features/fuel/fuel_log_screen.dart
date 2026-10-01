@@ -12,6 +12,7 @@ import '../../data/repositories/bike_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../features/dashboard/dashboard_provider.dart';
 import '../../features/garage/garage_provider.dart';
+import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
 import 'fuel_provider.dart';
@@ -72,8 +73,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
     final odometer = _currentOdometer!;
     if (_lastLog != null && odometer <= _lastLog!.odometer) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            'Odometer must be greater than last entry (${_lastLog!.odometer} km)'),
+        content: Text(context.l10n.fuelOdometerTooLow(_lastLog!.odometer)),
         backgroundColor: AppColors.danger,
       ));
       return;
@@ -112,10 +112,10 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
       HapticFeedback.mediumImpact();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Fuel stop logged!'),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(context.l10n.fuelLogged),
           backgroundColor: AppColors.success,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ));
         context.pop();
       }
@@ -142,10 +142,11 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final border = isDark ? AppColors.borderDark : AppColors.border;
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fuel stop'),
+        title: Text(l.dashboardFuelStop),
         actions: [
           TextButton(
             onPressed: () async {
@@ -158,7 +159,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
               if (picked != null) setState(() => _date = picked);
             },
             child: Text(
-              DateFormat('d MMM').format(_date),
+              DateFormat('d MMM', l.localeName).format(_date),
               style: AppTextStyles.bodyMedium
                   .copyWith(color: AppColors.primary),
             ),
@@ -171,7 +172,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
           padding: const EdgeInsets.all(AppSpacing.xl),
           children: [
             // Large odometer input
-            Text('Current odometer',
+            Text(l.fuelCurrentOdometer,
                 style: AppTextStyles.label
                     .copyWith(color: textSecondary)),
             const SizedBox(height: AppSpacing.sm),
@@ -193,8 +194,8 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                     .copyWith(color: textSecondary),
               ),
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Required';
-                if (int.tryParse(v) == null) return 'Enter a number';
+                if (v == null || v.trim().isEmpty) return l.validationRequired;
+                if (int.tryParse(v) == null) return l.validationEnterNumber;
                 return null;
               },
             ),
@@ -203,7 +204,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                 padding:
                     const EdgeInsets.only(top: AppSpacing.xs),
                 child: Text(
-                  'Last entry: ${_lastLog!.odometer} km',
+                  l.fuelLastEntry(_lastLog!.odometer),
                   style: AppTextStyles.caption
                       .copyWith(color: textSecondary),
                   textAlign: TextAlign.center,
@@ -232,8 +233,9 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                     Expanded(
                       child: Text(
                         _estimatedLitres != null
-                            ? '$_kmSinceLast km since last fill · ~${_estimatedLitres!.toStringAsFixed(1)} L estimated'
-                            : '$_kmSinceLast km since last fill',
+                            ? l.fuelKmSinceLastEstimate(_kmSinceLast!,
+                                _estimatedLitres!.toStringAsFixed(1))
+                            : l.fuelKmSinceLast(_kmSinceLast!),
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: AppColors.primary),
                       ),
@@ -250,7 +252,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                   setState(() => _showOptional = !_showOptional),
               child: Row(
                 children: [
-                  Text('Add more details',
+                  Text(l.fuelAddMoreDetails,
                       style: AppTextStyles.bodyMedium
                           .copyWith(color: textSecondary)),
                   const Spacer(),
@@ -266,7 +268,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
             if (_showOptional) ...[
               const SizedBox(height: AppSpacing.lg),
-              _FieldLabel('Litres filled', textSecondary),
+              _FieldLabel(l.fuelLitresFilled, textSecondary),
               TextFormField(
                 controller: _litresCtrl,
                 keyboardType:
@@ -275,7 +277,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                     const InputDecoration(hintText: '0.0', suffixText: 'L'),
               ),
               const SizedBox(height: AppSpacing.lg),
-              _FieldLabel('Amount paid', textSecondary),
+              _FieldLabel(l.fuelAmountPaid, textSecondary),
               TextFormField(
                 controller: _amountCtrl,
                 keyboardType:
@@ -284,11 +286,10 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                     hintText: '0', prefixText: '₹ '),
               ),
               const SizedBox(height: AppSpacing.lg),
-              _FieldLabel('Fuel station (optional)', textSecondary),
+              _FieldLabel(l.fuelStationOptional, textSecondary),
               TextFormField(
                 controller: _stationCtrl,
-                decoration: const InputDecoration(
-                    hintText: 'HP, Indian Oil, Bharat...'),
+                decoration: InputDecoration(hintText: l.fuelStationHint),
               ),
             ],
 
@@ -298,12 +299,11 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
             OutlinedButton.icon(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Receipt scan coming soon!')),
+                  SnackBar(content: Text(l.fuelReceiptSoon)),
                 );
               },
               icon: const Icon(Icons.camera_alt_outlined, size: 18),
-              label: const Text('Scan receipt'),
+              label: Text(l.fuelScanReceipt),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 44),
                 side: BorderSide(color: border),
@@ -313,7 +313,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
             const SizedBox(height: AppSpacing.xl),
             PrimaryButton(
-              label: 'Save fuel stop',
+              label: l.fuelSave,
               onPressed: _save,
               isLoading: _saving,
             ),

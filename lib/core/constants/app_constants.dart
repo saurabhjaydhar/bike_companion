@@ -39,21 +39,6 @@ class ServiceTypes {
     oilChange, oilFilter, airFilter, chainClean, chainLube,
     brakePads, tyres, battery, coolant, other,
   ];
-
-  static String label(String type) {
-    switch (type) {
-      case oilChange: return 'Oil Change';
-      case oilFilter: return 'Oil Filter';
-      case airFilter: return 'Air Filter';
-      case chainClean: return 'Chain Clean';
-      case chainLube: return 'Chain Lube';
-      case brakePads: return 'Brake Pads';
-      case tyres: return 'Tyres';
-      case battery: return 'Battery';
-      case coolant: return 'Coolant';
-      default: return 'Other';
-    }
-  }
 }
 
 class ExpenseCategories {
@@ -69,19 +54,6 @@ class ExpenseCategories {
   static const List<String> all = [
     fuel, service, parts, insurance, parking, accessories, fine, other,
   ];
-
-  static String label(String category) {
-    switch (category) {
-      case fuel: return 'Fuel';
-      case service: return 'Service';
-      case parts: return 'Parts';
-      case insurance: return 'Insurance';
-      case parking: return 'Parking';
-      case accessories: return 'Accessories';
-      case fine: return 'Fine';
-      default: return 'Other';
-    }
-  }
 }
 
 class DocumentTypes {
@@ -96,24 +68,13 @@ class DocumentTypes {
   static const List<String> all = [
     rc, insurance, drivingLicence, puc, invoice, warranty, other,
   ];
-
-  static String label(String type) {
-    switch (type) {
-      case rc: return 'RC Book';
-      case insurance: return 'Insurance';
-      case drivingLicence: return 'Driving Licence';
-      case puc: return 'PUC Certificate';
-      case invoice: return 'Purchase Invoice';
-      case warranty: return 'Warranty Card';
-      default: return 'Other';
-    }
-  }
 }
 
 class SharedPrefKeys {
   static const String activeBikeId = 'active_bike_id';
   static const String isOnboardingDone = 'is_onboarding_done';
   static const String themeMode = 'theme_mode';
+  static const String locale = 'locale';
 }
 
 const List<String> kIndianBrands = [

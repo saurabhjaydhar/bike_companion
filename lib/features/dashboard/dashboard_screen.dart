@@ -7,6 +7,7 @@ import '../../core/providers/active_bike_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/health_score.dart';
+import '../../l10n/l10n.dart';
 import '../../shared/widgets/alert_banner.dart';
 import '../../shared/widgets/health_ring.dart';
 import '../../shared/widgets/primary_button.dart';
@@ -38,13 +39,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   Widget build(BuildContext context) {
     final dashAsync = ref.watch(dashboardProvider(widget.bikeId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go('/garage')),
         title: dashAsync.maybeWhen(
           data: (d) => Text(d.bike.name),
-          orElse: () => const Text('Dashboard'),
+          orElse: () => Text(l.dashboardTitle),
         ),
         actions: [
           IconButton(
@@ -79,7 +81,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               // Alert strip
               if (dash.healthScore.alerts.isNotEmpty)
                 AlertBanner(
-                  message: dash.healthScore.alerts.first.message,
+                  message: dash.healthScore.alerts.first.localizedMessage(l),
                   type: dash.healthScore.alerts.first.status ==
                           HealthStatus.danger
                       ? AlertType.danger
@@ -99,7 +101,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                 padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg),
                 child: PrimaryButton(
-                  label: 'Log fuel stop',
+                  label: l.dashboardLogFuel,
                   icon: Icons.local_gas_station_rounded,
                   onPressed: () =>
                       context.push('/garage/dashboard/${widget.bikeId}/fuel/log'),
@@ -111,8 +113,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               // Recent activity
               if (dash.recentActivity.isNotEmpty) ...[
                 SectionHeader(
-                  title: 'Recent activity',
-                  actionLabel: 'See all',
+                  title: l.dashboardRecentActivity,
+                  actionLabel: l.dashboardSeeAll,
                   onAction: () {},
                 ),
                 ...dash.recentActivity.map(
@@ -223,6 +225,7 @@ class _HealthHero extends StatelessWidget {
     final border = isDark ? AppColors.borderDark : AppColors.border;
     final rupeeFormat = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final l = context.l10n;
 
     return Padding(
       padding:
@@ -246,11 +249,11 @@ class _HealthHero extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(dash.healthScore.gradeLabel,
+                  Text(l.healthGradeLabel(dash.healthScore.grade),
                       style: AppTextStyles.bodySemiBold
                           .copyWith(color: textPrimary)),
                   const SizedBox(height: AppSpacing.xs),
-                  Text('This month',
+                  Text(l.dashboardThisMonth,
                       style: AppTextStyles.caption
                           .copyWith(color: textSecondary)),
                   Text(
@@ -284,6 +287,7 @@ class _QuickStats extends StatelessWidget {
     final lastFuelDays = dash.lastFuelLog != null
         ? now.difference(dash.lastFuelLog!.date).inDays
         : null;
+    final l = context.l10n;
 
     return Padding(
       padding:
@@ -294,12 +298,13 @@ class _QuickStats extends StatelessWidget {
             children: [
               Expanded(
                 child: StatCard(
-                  label: 'Last fuel',
+                  label: l.dashboardLastFuel,
                   value: lastFuelDays != null
-                      ? '$lastFuelDays days ago'
-                      : 'Not logged',
+                      ? l.commonDaysAgo(lastFuelDays)
+                      : l.dashboardNotLogged,
                   trend: dash.avgMileage != null
-                      ? '${dash.avgMileage!.toStringAsFixed(1)} km/L avg'
+                      ? l.dashboardAvgMileage(
+                          dash.avgMileage!.toStringAsFixed(1))
                       : null,
                   trendPositive: true,
                   icon: Icons.local_gas_station_outlined,
@@ -308,10 +313,10 @@ class _QuickStats extends StatelessWidget {
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: StatCard(
-                  label: 'Next service',
+                  label: l.dashboardNextService,
                   value: dash.nextService?.nextDueKm != null
                       ? '${dash.bike.odometerCurrent < dash.nextService!.nextDueKm! ? dash.nextService!.nextDueKm! - dash.bike.odometerCurrent : 0} km'
-                      : 'Up to date',
+                      : l.dashboardUpToDate,
                   icon: Icons.build_outlined,
                 ),
               ),
@@ -322,10 +327,10 @@ class _QuickStats extends StatelessWidget {
             children: [
               Expanded(
                 child: StatCard(
-                  label: 'Insurance',
+                  label: l.expenseInsurance,
                   value: insuranceDays != null
-                      ? '$insuranceDays days left'
-                      : 'Not set',
+                      ? l.dashboardDaysLeft(insuranceDays)
+                      : l.commonNotSet,
                   trendPositive: insuranceDays == null ||
                       insuranceDays > 30,
                   icon: Icons.verified_outlined,
@@ -334,7 +339,7 @@ class _QuickStats extends StatelessWidget {
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: StatCard(
-                  label: 'Odometer',
+                  label: l.fieldOdometer,
                   value: NumberFormat('#,##,###')
                       .format(dash.bike.odometerCurrent),
                   trend: 'km',
@@ -365,11 +370,12 @@ class _ActivityTile extends StatelessWidget {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final l = context.l10n;
 
     final (icon, title, subtitle, color) = switch (item) {
       FuelActivity(:final log) => (
           Icons.local_gas_station_rounded,
-          'Fuel stop',
+          l.dashboardFuelStop,
           log.mileageCalculated != null
               ? '${log.mileageCalculated!.toStringAsFixed(1)} km/L  ·  ${log.amount != null ? '₹${log.amount!.round()}' : ''}'
               : '${NumberFormat('#,##,###').format(log.odometer)} km',
@@ -377,7 +383,7 @@ class _ActivityTile extends StatelessWidget {
         ),
       ServiceActivity(:final record) => (
           Icons.build_rounded,
-          ServiceTypes.label(record.serviceType),
+          l.serviceTypeLabel(record.serviceType),
           '${NumberFormat('#,##,###').format(record.odometer)} km',
           isDark ? AppColors.successDark : AppColors.success,
         ),
@@ -398,18 +404,18 @@ class _ActivityTile extends StatelessWidget {
       subtitle: Text(subtitle,
           style: AppTextStyles.caption.copyWith(color: textSecondary)),
       trailing: Text(
-        _relativeDate(item.date),
+        _relativeDate(l, item.date),
         style: AppTextStyles.caption.copyWith(color: textSecondary),
       ),
     );
   }
 
-  String _relativeDate(DateTime date) {
+  String _relativeDate(AppLocalizations l, DateTime date) {
     final days = DateTime.now().difference(date).inDays;
-    if (days == 0) return 'Today';
-    if (days == 1) return 'Yesterday';
-    if (days < 7) return '$days days ago';
-    return DateFormat('d MMM').format(date);
+    if (days == 0) return l.commonToday;
+    if (days == 1) return l.commonYesterday;
+    if (days < 7) return l.commonDaysAgo(days);
+    return DateFormat('d MMM', l.localeName).format(date);
   }
 }
 

@@ -7,6 +7,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/providers/active_bike_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import 'garage_provider.dart';
@@ -22,10 +23,11 @@ class GarageScreen extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Garage'),
+        title: Text(l.garageTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -35,14 +37,14 @@ class GarageScreen extends ConsumerWidget {
       ),
       body: garageAsync.when(
         loading: () => const _GarageSkeleton(),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => Center(child: Text(l.commonError('$e'))),
         data: (items) {
           if (items.isEmpty) {
             return EmptyState(
               icon: Icons.two_wheeler_rounded,
-              heading: 'No bikes yet',
-              body: 'Add your first bike to start tracking fuel, service and expenses.',
-              ctaLabel: 'Add my bike',
+              heading: l.garageEmptyTitle,
+              body: l.garageEmptyBody,
+              ctaLabel: l.onboardingAddMyBike,
               onCta: () => context.go('/onboarding'),
             );
           }
@@ -62,7 +64,7 @@ class GarageScreen extends ConsumerWidget {
                   alertCount: totalAlerts,
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                Text('Your bikes',
+                Text(l.garageYourBikes,
                     style: AppTextStyles.heading3.copyWith(
                         color: isDark
                             ? AppColors.textPrimaryDark
@@ -113,7 +115,7 @@ class GarageScreen extends ConsumerWidget {
                       children: [
                         Icon(Icons.add_rounded, size: 18, color: textSecondary),
                         const SizedBox(width: AppSpacing.sm),
-                        Text('Add another bike',
+                        Text(l.garageAddAnother,
                             style: AppTextStyles.bodyMedium
                                 .copyWith(color: textSecondary)),
                       ],
@@ -272,6 +274,7 @@ class _SummaryStrip extends StatelessWidget {
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final rupeeFormat = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final l = context.l10n;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -283,21 +286,21 @@ class _SummaryStrip extends StatelessWidget {
       child: Row(
         children: [
           _Stat(
-            label: 'bikes',
+            label: l.garageStatBikes,
             value: '$bikeCount',
             textPrimary: textPrimary,
             textSecondary: textSecondary,
           ),
           _Divider(color: border),
           _Stat(
-            label: 'this month',
+            label: l.commonThisMonth,
             value: rupeeFormat.format(monthTotal),
             textPrimary: textPrimary,
             textSecondary: textSecondary,
           ),
           _Divider(color: border),
           _Stat(
-            label: 'alerts',
+            label: l.garageStatAlerts,
             value: '$alertCount',
             valueColor: alertCount > 0
                 ? (isDark ? AppColors.warningDark : AppColors.warning)

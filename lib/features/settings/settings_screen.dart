@@ -5,6 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../l10n/l10n.dart';
 import '../../main.dart';
 
 // ---------------------------------------------------------------------------
@@ -50,6 +51,35 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
 }
 
 // ---------------------------------------------------------------------------
+// App language — null follows the device locale. Persisted to SharedPreferences
+// ---------------------------------------------------------------------------
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>((ref) {
+  return LocaleNotifier();
+});
+
+class LocaleNotifier extends StateNotifier<Locale?> {
+  LocaleNotifier() : super(null) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString(SharedPrefKeys.locale);
+    state = saved == null ? null : Locale(saved);
+  }
+
+  Future<void> setLocale(Locale? locale) async {
+    state = locale;
+    final prefs = await SharedPreferences.getInstance();
+    if (locale == null) {
+      await prefs.remove(SharedPrefKeys.locale);
+    } else {
+      await prefs.setString(SharedPrefKeys.locale, locale.languageCode);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Screen
 // ---------------------------------------------------------------------------
 class SettingsScreen extends ConsumerWidget {
@@ -64,14 +94,16 @@ class SettingsScreen extends ConsumerWidget {
     final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
     final border = isDark ? AppColors.borderDark : AppColors.border;
     final currentMode = ref.watch(themeModeProvider);
+    final currentLocale = ref.watch(localeProvider);
+    final l = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(l.settingsTitle)),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           // Appearance section
-          _SectionLabel('Appearance', textSecondary),
+          _SectionLabel(l.settingsAppearance, textSecondary),
           Container(
             decoration: BoxDecoration(
               color: surface,
@@ -82,7 +114,7 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 _ThemeOption(
                   icon: Icons.brightness_auto_rounded,
-                  label: 'System default',
+                  label: l.settingsSystemDefault,
                   selected: currentMode == ThemeMode.system,
                   onTap: () => ref
                       .read(themeModeProvider.notifier)
@@ -92,7 +124,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 _ThemeOption(
                   icon: Icons.light_mode_rounded,
-                  label: 'Light',
+                  label: l.settingsLight,
                   selected: currentMode == ThemeMode.light,
                   onTap: () => ref
                       .read(themeModeProvider.notifier)
@@ -102,7 +134,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 _ThemeOption(
                   icon: Icons.dark_mode_rounded,
-                  label: 'Dark',
+                  label: l.settingsDark,
                   selected: currentMode == ThemeMode.dark,
                   onTap: () => ref
                       .read(themeModeProvider.notifier)
@@ -116,8 +148,54 @@ class SettingsScreen extends ConsumerWidget {
 
           const SizedBox(height: AppSpacing.xl),
 
+          // Language section
+          _SectionLabel(l.settingsLanguage, textSecondary),
+          Container(
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(AppRadius.medium),
+              border: Border.all(color: border),
+            ),
+            child: Column(
+              children: [
+                _ThemeOption(
+                  icon: Icons.language_rounded,
+                  label: l.settingsSystemDefault,
+                  selected: currentLocale == null,
+                  onTap: () =>
+                      ref.read(localeProvider.notifier).setLocale(null),
+                  textPrimary: textPrimary,
+                  divider: true,
+                ),
+                // Language names are shown in their own script on purpose.
+                _ThemeOption(
+                  icon: Icons.translate_rounded,
+                  label: 'English',
+                  selected: currentLocale?.languageCode == 'en',
+                  onTap: () => ref
+                      .read(localeProvider.notifier)
+                      .setLocale(const Locale('en')),
+                  textPrimary: textPrimary,
+                  divider: true,
+                ),
+                _ThemeOption(
+                  icon: Icons.translate_rounded,
+                  label: 'हिन्दी',
+                  selected: currentLocale?.languageCode == 'hi',
+                  onTap: () => ref
+                      .read(localeProvider.notifier)
+                      .setLocale(const Locale('hi')),
+                  textPrimary: textPrimary,
+                  divider: false,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.xl),
+
           // About section
-          _SectionLabel('About', textSecondary),
+          _SectionLabel(l.settingsAbout, textSecondary),
           Container(
             decoration: BoxDecoration(
               color: surface,
@@ -127,7 +205,7 @@ class SettingsScreen extends ConsumerWidget {
             child: Column(
               children: [
                 ListTile(
-                  title: Text('Version',
+                  title: Text(l.settingsVersion,
                       style: AppTextStyles.body.copyWith(color: textPrimary)),
                   trailing: Text('1.0.0',
                       style:
@@ -135,7 +213,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 Divider(height: 1, color: border),
                 ListTile(
-                  title: Text('Built with Flutter',
+                  title: Text(l.settingsBuiltWithFlutter,
                       style: AppTextStyles.body.copyWith(color: textPrimary)),
                   trailing: const Icon(Icons.favorite_rounded,
                       color: AppColors.danger, size: 18),
@@ -147,7 +225,7 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xl),
 
           // Account section
-          _SectionLabel('Account', textSecondary),
+          _SectionLabel(l.settingsAccount, textSecondary),
           Container(
             decoration: BoxDecoration(
               color: surface,
@@ -161,7 +239,7 @@ class SettingsScreen extends ConsumerWidget {
                 ListTile(
                   leading: const Icon(Icons.logout_rounded, color: AppColors.danger),
                   title: Text(
-                    'Sign out',
+                    l.settingsSignOut,
                     style: AppTextStyles.body.copyWith(color: AppColors.danger),
                   ),
                   onTap: () => _confirmSignOut(context),
@@ -173,7 +251,7 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xl),
 
           // Danger zone
-          _SectionLabel('Data', textSecondary),
+          _SectionLabel(l.settingsData, textSecondary),
           Container(
             decoration: BoxDecoration(
               color: surface,
@@ -185,7 +263,7 @@ class SettingsScreen extends ConsumerWidget {
                 ListTile(
                   leading: const Icon(Icons.delete_forever_rounded,
                       color: AppColors.danger),
-                  title: Text('Clear all data',
+                  title: Text(l.settingsClearAllData,
                       style: AppTextStyles.body.copyWith(color: AppColors.danger)),
                   onTap: () => _confirmClear(context),
                 ),
@@ -193,9 +271,9 @@ class SettingsScreen extends ConsumerWidget {
                 ListTile(
                   leading: const Icon(Icons.no_accounts_rounded,
                       color: AppColors.danger),
-                  title: Text('Delete account',
+                  title: Text(l.settingsDeleteAccount,
                       style: AppTextStyles.body.copyWith(color: AppColors.danger)),
-                  subtitle: Text('Permanently removes your account (GDPR)',
+                  subtitle: Text(l.settingsDeleteAccountSubtitle,
                       style: AppTextStyles.label.copyWith(color: textSecondary)),
                   onTap: () => _confirmDeleteAccount(context),
                 ),
@@ -208,15 +286,16 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _confirmSignOut(BuildContext context) {
+    final l = context.l10n;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Sign out?'),
-        content: const Text('Your local data stays on this device. Sign back in anytime.'),
+        title: Text(l.settingsSignOutTitle),
+        content: Text(l.settingsSignOutBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l.commonCancel),
           ),
           TextButton(
             onPressed: () async {
@@ -224,7 +303,8 @@ class SettingsScreen extends ConsumerWidget {
               await getIt<AuthService>().signOut();
               // Router auth stream fires → redirects to /auth automatically.
             },
-            child: const Text('Sign out', style: TextStyle(color: AppColors.danger)),
+            child: Text(l.settingsSignOut,
+                style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),
@@ -232,16 +312,16 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _confirmDeleteAccount(BuildContext context) {
+    final l = context.l10n;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Delete account?'),
-        content: const Text(
-            'This permanently deletes your Firebase account. Your local data stays on this device. This cannot be undone.'),
+        title: Text(l.settingsDeleteAccountTitle),
+        content: Text(l.settingsDeleteAccountBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l.commonCancel),
           ),
           TextButton(
             onPressed: () async {
@@ -252,16 +332,15 @@ class SettingsScreen extends ConsumerWidget {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                          'Could not delete account. Please sign in again and retry.'),
+                      content: Text(l.settingsDeleteAccountError),
                       backgroundColor: AppColors.danger,
                     ),
                   );
                 }
               }
             },
-            child: const Text('Delete account',
-                style: TextStyle(color: AppColors.danger)),
+            child: Text(l.settingsDeleteAccount,
+                style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),
@@ -269,28 +348,28 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _confirmClear(BuildContext context) {
+    final l = context.l10n;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Clear all data?'),
-        content: const Text(
-            'This will permanently delete all bikes, fuel logs, service records, expenses, and documents. This cannot be undone.'),
+        title: Text(l.settingsClearTitle),
+        content: Text(l.settingsClearBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l.commonCancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('All data cleared'),
+                SnackBar(
+                    content: Text(l.settingsDataCleared),
                     backgroundColor: AppColors.danger),
               );
             },
-            child: const Text('Delete',
-                style: TextStyle(color: AppColors.danger)),
+            child: Text(l.commonDelete,
+                style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),
@@ -306,7 +385,7 @@ class _AccountTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = getIt<AuthService>().currentUser;
-    final name = user?.displayName ?? 'Signed in';
+    final name = user?.displayName ?? context.l10n.settingsSignedIn;
     final email = user?.email ?? '';
     final photoUrl = user?.photoURL;
 

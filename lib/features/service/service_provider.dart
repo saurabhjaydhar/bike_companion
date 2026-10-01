@@ -6,6 +6,7 @@ import '../../data/models/service_record.dart';
 import '../../data/repositories/bike_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
+import '../../l10n/l10n.dart';
 import '../../main.dart';
 
 class ServiceItem {
@@ -20,11 +21,12 @@ class ServiceItem {
   });
 
   HealthStatus get status => factor?.status ?? HealthStatus.danger;
-  String get statusLabel {
+  String statusLabel(AppLocalizations l) {
     switch (status) {
-      case HealthStatus.good: return 'Good';
-      case HealthStatus.warning: return 'Due soon';
-      case HealthStatus.danger: return lastRecord == null ? 'Not logged' : 'Overdue';
+      case HealthStatus.good: return l.serviceStatusGood;
+      case HealthStatus.warning: return l.serviceDueSoon;
+      case HealthStatus.danger:
+        return lastRecord == null ? l.dashboardNotLogged : l.serviceStatusOverdue;
     }
   }
 }

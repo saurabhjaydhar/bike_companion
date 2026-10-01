@@ -9,6 +9,7 @@ import '../../core/services/rc_lookup_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/vehicle.dart';
+import '../../l10n/l10n.dart';
 import '../../shared/widgets/primary_button.dart';
 
 final _rcRegex = RegExp(r'^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{1,4}$');
@@ -38,8 +39,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
     final normalized = _normalize(_rcCtrl.text);
 
     if (!_rcRegex.hasMatch(normalized)) {
-      setState(() => _error =
-          'Invalid format. Use format like MH12DE1234 or DL01AA1234.');
+      setState(() => _error = context.l10n.addBikeInvalidFormat);
       return;
     }
 
@@ -64,13 +64,12 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
     } else {
       vehicle = Vehicle(rcNumber: normalized);
       prefillSuccess = false;
+      final l = context.l10n;
       failureReason = switch (result.status) {
-        RcLookupStatus.notFound => 'Vehicle not found in registry.',
-        RcLookupStatus.apiLimitExceeded =>
-          'API limit reached. Please try again later.',
-        RcLookupStatus.networkError =>
-          'No internet connection. Please check your network.',
-        _ => 'Could not fetch vehicle details.',
+        RcLookupStatus.notFound => l.addBikeNotFound,
+        RcLookupStatus.apiLimitExceeded => l.addBikeApiLimit,
+        RcLookupStatus.networkError => l.addBikeNoInternet,
+        _ => l.addBikeFetchFailed,
       };
     }
 
@@ -91,6 +90,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final textTertiary =
         isDark ? AppColors.textTertiaryDark : AppColors.textTertiary;
+    final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
@@ -127,19 +127,19 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               Text(
-                'Add Your Bike',
+                l.addBikeTitle,
                 style: AppTextStyles.heading1.copyWith(color: textPrimary),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                "Enter your registration number and we'll pull your vehicle details automatically.",
+                l.addBikeSubtitle,
                 style: AppTextStyles.body.copyWith(color: textSecondary),
               ),
               const SizedBox(height: AppSpacing.xxl),
 
               // Section label
               Text(
-                'REGISTRATION NUMBER',
+                l.fieldRegNumber.toUpperCase(),
                 style: AppTextStyles.label.copyWith(
                   color: AppColors.primary,
                   letterSpacing: 1.2,
@@ -202,7 +202,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
               const SizedBox(height: AppSpacing.sm),
 
               Text(
-                'e.g. UK07AB1234 · DL01AA1234 · MH12DE1234',
+                l.addBikeExamples,
                 style: AppTextStyles.caption.copyWith(color: textTertiary),
               ),
 
@@ -215,7 +215,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
                     ? _LoadingPill(key: const ValueKey('pill'), isDark: isDark)
                     : PrimaryButton(
                         key: const ValueKey('btn'),
-                        label: 'Continue →',
+                        label: l.addBikeContinue,
                         onPressed: _continue,
                       ),
               ),
@@ -260,7 +260,7 @@ class _LoadingPill extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.md),
           Text(
-            'Fetching vehicle details…',
+            context.l10n.addBikeFetching,
             style: AppTextStyles.bodyMedium.copyWith(
               color: isDark
                   ? AppColors.textSecondaryDark

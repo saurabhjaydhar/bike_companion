@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.8
 
   # Local database
@@ -35,7 +37,7 @@ dependencies:
   google_fonts: ^6.2.1
 
   # Utilities
-  intl: ^0.19.0
+  intl: ^0.20.2
   uuid: ^4.5.0
   shared_preferences: ^2.3.2
   connectivity_plus: ^6.1.0
@@ -89,6 +91,7 @@ flutter_native_splash:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/icon/

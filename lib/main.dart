@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'core/providers/connectivity_provider.dart';
@@ -21,6 +22,7 @@ import 'data/repositories/expense_repository.dart';
 import 'data/repositories/fuel_repository.dart';
 import 'data/repositories/service_repository.dart';
 import 'features/settings/settings_screen.dart';
+import 'l10n/l10n.dart';
 import 'router/app_router.dart';
 
 final getIt = GetIt.instance;
@@ -69,8 +71,17 @@ class BikeCompanionApp extends ConsumerWidget {
     ref.watch(syncOnReconnectProvider); // triggers Firestore sync on reconnect
     final router = ref.watch(appRouterProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
     return MaterialApp.router(
-      title: 'Bike Companion',
+      onGenerateTitle: (context) => context.l10n.appTitle,
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

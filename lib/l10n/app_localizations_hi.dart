@@ -877,4 +877,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get vehicleSectionYourBike => 'आपकी बाइक';
+
+  @override
+  String get vahanSmsButton => 'VAHAN पर SMS से जांचें';
+
+  @override
+  String get vahanSmsHint =>
+      'आपका नंबर आधिकारिक VAHAN SMS सेवा को भेजता है। जवाब आपके SMS इनबॉक्स में आएगा — जानकारी इस फ़ॉर्म में भर दें।';
+
+  @override
+  String get vahanSmsError => 'आपका SMS ऐप नहीं खुल सका।';
 }

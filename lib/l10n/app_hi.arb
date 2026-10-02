@@ -256,5 +256,8 @@
   "scanReading": "आपका RC पढ़ा जा रहा है…",
   "vehicleScanSuccess": "आपके RC से जानकारी पढ़ ली गई। सेव करने से पहले सब कुछ जांच लें।",
   "vehicleScanFailure": "आपका RC साफ़ नहीं पढ़ा जा सका। कृपया नीचे जानकारी भरें।",
-  "vehicleSectionYourBike": "आपकी बाइक"
+  "vehicleSectionYourBike": "आपकी बाइक",
+  "vahanSmsButton": "VAHAN पर SMS से जांचें",
+  "vahanSmsHint": "आपका नंबर आधिकारिक VAHAN SMS सेवा को भेजता है। जवाब आपके SMS इनबॉक्स में आएगा — जानकारी इस फ़ॉर्म में भर दें।",
+  "vahanSmsError": "आपका SMS ऐप नहीं खुल सका।"
 }

@@ -60,6 +60,7 @@ dependencies:
 
   # Sharing / CSV export
   share_plus: ^10.1.2
+  url_launcher: ^6.3.2 # opens the SMS app for the VAHAN lookup
 
 dev_dependencies:
   flutter_test:

@@ -1651,6 +1651,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'YOUR BIKE'**
   String get vehicleSectionYourBike;
+
+  /// No description provided for @vahanSmsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Check on VAHAN by SMS'**
+  String get vahanSmsButton;
+
+  /// No description provided for @vahanSmsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sends your number to the official VAHAN SMS service. The reply arrives in your SMS inbox — copy the details into this form.'**
+  String get vahanSmsHint;
+
+  /// No description provided for @vahanSmsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open your SMS app.'**
+  String get vahanSmsError;
 }
 
 class _AppLocalizationsDelegate

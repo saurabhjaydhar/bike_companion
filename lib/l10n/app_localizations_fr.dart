@@ -919,4 +919,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get vehicleSectionYourBike => 'VOTRE MOTO';
+
+  @override
+  String get vahanSmsButton => 'Vérifier sur VAHAN par SMS';
+
+  @override
+  String get vahanSmsHint =>
+      'Envoie votre numéro au service SMS officiel VAHAN. La réponse arrive dans vos SMS : recopiez les informations dans ce formulaire.';
+
+  @override
+  String get vahanSmsError => 'Impossible d’ouvrir l’application SMS.';
 }

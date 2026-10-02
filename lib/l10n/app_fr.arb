@@ -256,5 +256,8 @@
   "scanReading": "Lecture de votre RC…",
   "vehicleScanSuccess": "Informations lues depuis votre RC. Vérifiez tout avant d’enregistrer.",
   "vehicleScanFailure": "Impossible de lire clairement votre RC. Remplissez les informations ci-dessous.",
-  "vehicleSectionYourBike": "VOTRE MOTO"
+  "vehicleSectionYourBike": "VOTRE MOTO",
+  "vahanSmsButton": "Vérifier sur VAHAN par SMS",
+  "vahanSmsHint": "Envoie votre numéro au service SMS officiel VAHAN. La réponse arrive dans vos SMS : recopiez les informations dans ce formulaire.",
+  "vahanSmsError": "Impossible d’ouvrir l’application SMS."
 }

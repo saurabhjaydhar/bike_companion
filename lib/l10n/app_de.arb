@@ -256,5 +256,8 @@
   "scanReading": "RC wird gelesen…",
   "vehicleScanSuccess": "Daten aus deiner RC gelesen. Prüfe alles vor dem Speichern.",
   "vehicleScanFailure": "Deine RC konnte nicht klar gelesen werden. Bitte trag die Daten unten ein.",
-  "vehicleSectionYourBike": "DEIN BIKE"
+  "vehicleSectionYourBike": "DEIN BIKE",
+  "vahanSmsButton": "Per SMS bei VAHAN prüfen",
+  "vahanSmsHint": "Sendet dein Kennzeichen an den offiziellen VAHAN-SMS-Dienst. Die Antwort kommt per SMS – übertrag die Daten in dieses Formular.",
+  "vahanSmsError": "SMS-App konnte nicht geöffnet werden."
 }

@@ -256,5 +256,8 @@
   "scanReading": "Lettura della RC…",
   "vehicleScanSuccess": "Dati letti dalla tua RC. Controlla tutto prima di salvare.",
   "vehicleScanFailure": "Non è stato possibile leggere bene la RC. Compila i dati qui sotto.",
-  "vehicleSectionYourBike": "LA TUA MOTO"
+  "vehicleSectionYourBike": "LA TUA MOTO",
+  "vahanSmsButton": "Verifica su VAHAN via SMS",
+  "vahanSmsHint": "Invia la targa al servizio SMS ufficiale VAHAN. La risposta arriva nei tuoi SMS: copia i dati in questo modulo.",
+  "vahanSmsError": "Impossibile aprire l’app dei messaggi."
 }

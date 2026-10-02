@@ -916,4 +916,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get vehicleSectionYourBike => 'TU MOTO';
+
+  @override
+  String get vahanSmsButton => 'Consultar en VAHAN por SMS';
+
+  @override
+  String get vahanSmsHint =>
+      'Envía tu matrícula al servicio oficial de SMS de VAHAN. La respuesta llega a tus SMS: copia los datos en este formulario.';
+
+  @override
+  String get vahanSmsError => 'No se pudo abrir la app de mensajes.';
 }

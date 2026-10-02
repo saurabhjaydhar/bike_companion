@@ -908,4 +908,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vehicleSectionYourBike => 'YOUR BIKE';
+
+  @override
+  String get vahanSmsButton => 'Check on VAHAN by SMS';
+
+  @override
+  String get vahanSmsHint =>
+      'Sends your number to the official VAHAN SMS service. The reply arrives in your SMS inbox — copy the details into this form.';
+
+  @override
+  String get vahanSmsError => 'Couldn\'t open your SMS app.';
 }

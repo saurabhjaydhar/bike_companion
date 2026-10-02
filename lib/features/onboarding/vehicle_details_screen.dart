@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -114,6 +115,31 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
       firstDate: firstDate,
       lastDate: lastDate,
     );
+  }
+
+  /// Official MoRTH SMS service: "VAHAN MH12DE1234" sent to this number replies
+  /// with the vehicle's registration details.
+  static const _vahanSmsNumber = '7738299899';
+
+  Future<void> _checkOnVahan() async {
+    final l = context.l10n;
+    final rc = normalizeRegNumber(_rcCtrl.text);
+    if (!isValidRegNumber(rc)) {
+      setState(() => _rcError = l.addBikeInvalidFormat);
+      return;
+    }
+    // Encode the body by hand: Uri.queryParameters would turn the space
+    // into '+', which some SMS apps show literally.
+    final uri = Uri.parse(
+        'sms:$_vahanSmsNumber?body=${Uri.encodeComponent('VAHAN $rc')}');
+    var opened = false;
+    try {
+      opened = await launchUrl(uri);
+    } catch (_) {}
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l.vahanSmsError)));
+    }
   }
 
   String? _text(TextEditingController c) {
@@ -251,6 +277,20 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                         if (_rcError != null) setState(() => _rcError = null);
                       },
                     ),
+                    const SizedBox(height: AppSpacing.sm),
+                    OutlinedButton.icon(
+                      onPressed: _checkOnVahan,
+                      icon: const Icon(Icons.sms_rounded, size: 18),
+                      label: Text(l.vahanSmsButton),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 44),
+                        foregroundColor: AppColors.accent,
+                        side: BorderSide(
+                            color: AppColors.accent.withValues(alpha: 0.6)),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _FieldLabel(l.vahanSmsHint, isDark: isDark),
                     const SizedBox(height: AppSpacing.xl),
 
                     // ── YOUR BIKE ─────────────────────────────────────────

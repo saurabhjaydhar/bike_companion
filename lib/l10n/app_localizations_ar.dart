@@ -930,4 +930,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get vehicleSectionYourBike => 'دراجتك';
+
+  @override
+  String get vahanSmsButton => 'التحقق عبر VAHAN برسالة SMS';
+
+  @override
+  String get vahanSmsHint =>
+      'يرسل رقم اللوحة إلى خدمة VAHAN الرسمية عبر SMS. يصل الرد إلى رسائلك — انسخ البيانات إلى هذا النموذج.';
+
+  @override
+  String get vahanSmsError => 'تعذّر فتح تطبيق الرسائل.';
 }

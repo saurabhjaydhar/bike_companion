@@ -262,32 +262,32 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           // Expenses tab
           StatefulShellBranch(routes: [
             GoRoute(
+              path: '/expenses',
+              pageBuilder: (context, state) =>
+                  _fade(state, const _NoBikePlaceholder()),
+            ),
+            GoRoute(
               path: '/expenses/:bikeId',
               pageBuilder: (context, state) => _fade(
                 state,
                 ExpensesScreen(bikeId: state.pathParameters['bikeId']!),
               ),
             ),
-            GoRoute(
-              path: '/expenses',
-              pageBuilder: (context, state) =>
-                  _fade(state, const _NoBikePlaceholder()),
-            ),
           ]),
 
           // Service tab
           StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/service',
+              pageBuilder: (context, state) =>
+                  _fade(state, const _NoBikePlaceholder()),
+            ),
             GoRoute(
               path: '/service/:bikeId',
               pageBuilder: (context, state) => _fade(
                 state,
                 ServiceScreen(bikeId: state.pathParameters['bikeId']!),
               ),
-            ),
-            GoRoute(
-              path: '/service',
-              pageBuilder: (context, state) =>
-                  _fade(state, const _NoBikePlaceholder()),
             ),
           ]),
 
@@ -303,17 +303,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           // Documents tab
           StatefulShellBranch(routes: [
             GoRoute(
+              path: '/documents',
+              pageBuilder: (context, state) =>
+                  _fade(state, const _NoBikePlaceholder()),
+            ),
+            GoRoute(
               path: '/documents/:bikeId',
               pageBuilder: (context, state) => _fade(
                 state,
                 DocumentsScreen(
                     bikeId: state.pathParameters['bikeId']!),
               ),
-            ),
-            GoRoute(
-              path: '/documents',
-              pageBuilder: (context, state) =>
-                  _fade(state, const _NoBikePlaceholder()),
             ),
           ]),
         ],

@@ -733,7 +733,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notifDocBody(String title, int days) {
-    return '$title: الأيام المتبقية حتى انتهاء الصلاحية: $days';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'تنتهي صلاحية $title بعد $days يوم',
+      many: 'تنتهي صلاحية $title بعد $days يومًا',
+      few: 'تنتهي صلاحية $title بعد $days أيام',
+      two: 'تنتهي صلاحية $title بعد يومين',
+      one: 'تنتهي صلاحية $title غدًا',
+    );
+    return '$_temp0';
   }
 
   @override

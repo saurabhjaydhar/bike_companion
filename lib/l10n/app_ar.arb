@@ -216,7 +216,7 @@
   "ridesComingSoon": "تتبّع الرحلات عبر GPS\nقريبًا",
   "noBikeSelected": "اختر دراجة من تبويب الرئيسية أولًا.",
   "offlineBanner": "لا يوجد إنترنت — العمل بدون اتصال",
-  "notifDocBody": "{title}: الأيام المتبقية حتى انتهاء الصلاحية: {days}",
+  "notifDocBody": "{days, plural, =1{تنتهي صلاحية {title} غدًا} =2{تنتهي صلاحية {title} بعد يومين} few{تنتهي صلاحية {title} بعد {days} أيام} many{تنتهي صلاحية {title} بعد {days} يومًا} other{تنتهي صلاحية {title} بعد {days} يوم}}",
   "notifDocTitle": "مستند تنتهي صلاحيته قريبًا (الأيام المتبقية: {days})",
   "notifDocTomorrowTitle": "تنتهي صلاحية مستند غدًا!",
   "notifServiceOverdueTitle": "صيانة متأخرة — {bike}",

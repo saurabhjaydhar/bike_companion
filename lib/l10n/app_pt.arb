@@ -216,7 +216,7 @@
   "ridesComingSoon": "Monitorização de passeios por GPS\nem breve",
   "noBikeSelected": "Selecione primeiro uma moto em Início.",
   "offlineBanner": "Sem internet — modo offline",
-  "notifDocBody": "{title} expira em {days} dias",
+  "notifDocBody": "{days, plural, =1{{title} expira amanhã} other{{title} expira em {days} dias}}",
   "notifDocTitle": "Documento expira em {days} dias",
   "notifDocTomorrowTitle": "Documento expira amanhã!",
   "notifServiceOverdueTitle": "Revisão atrasada — {bike}",

@@ -216,7 +216,7 @@
   "ridesComingSoon": "GPS-Fahrtaufzeichnung\nkommt bald",
   "noBikeSelected": "Wähle zuerst ein Bike im Tab „Start“.",
   "offlineBanner": "Kein Internet – Offline-Modus",
-  "notifDocBody": "{title} läuft in {days} Tagen ab",
+  "notifDocBody": "{days, plural, =1{{title} läuft morgen ab} other{{title} läuft in {days} Tagen ab}}",
   "notifDocTitle": "Dokument läuft in {days} Tagen ab",
   "notifDocTomorrowTitle": "Dokument läuft morgen ab!",
   "notifServiceOverdueTitle": "Wartung überfällig – {bike}",

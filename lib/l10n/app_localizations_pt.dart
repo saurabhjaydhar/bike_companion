@@ -12,7 +12,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get commonCancel => 'Cancelar';
 
   @override
-  String get commonDelete => 'Excluir';
+  String get commonDelete => 'Apagar';
 
   @override
   String get commonOther => 'Outro';
@@ -58,7 +58,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'Os seus dados locais permanecem neste dispositivo. Pode entrar novamente a qualquer momento.';
+      'Os seus dados locais permanecem neste dispositivo. Pode entrar novamente quando quiser.';
 
   @override
   String get settingsData => 'Dados';
@@ -71,28 +71,28 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Isto vai excluir permanentemente todas as motos, registos de combustível, revisões, despesas e documentos. Esta ação não pode ser desfeita.';
+      'Isto vai apagar permanentemente todas as motos, abastecimentos, revisões, despesas e documentos. Esta ação não pode ser desfeita.';
 
   @override
   String get settingsDataCleared => 'Todos os dados foram apagados';
 
   @override
-  String get settingsDeleteAccount => 'Excluir conta';
+  String get settingsDeleteAccount => 'Apagar conta';
 
   @override
   String get settingsDeleteAccountSubtitle =>
       'Remove a sua conta permanentemente (GDPR)';
 
   @override
-  String get settingsDeleteAccountTitle => 'Excluir conta?';
+  String get settingsDeleteAccountTitle => 'Apagar conta?';
 
   @override
   String get settingsDeleteAccountBody =>
-      'Isto exclui permanentemente a sua conta Firebase. Os seus dados locais permanecem neste dispositivo. Esta ação não pode ser desfeita.';
+      'Isto apaga permanentemente a sua conta Firebase. Os seus dados locais permanecem neste dispositivo. Esta ação não pode ser desfeita.';
 
   @override
   String get settingsDeleteAccountError =>
-      'Não foi possível excluir a conta. Entre novamente e tente de novo.';
+      'Não foi possível apagar a conta. Entre novamente e tente outra vez.';
 
   @override
   String get appTitle => 'Bike Companion';
@@ -101,7 +101,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get commonContinue => 'Continuar';
 
   @override
-  String get commonNext => 'Seguinte';
+  String get commonNext => 'Avançar';
 
   @override
   String authSignInFailed(String error) {
@@ -113,7 +113,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get authOfflineBody =>
-      'Os seus dados serão guardados apenas neste dispositivo. Não terão cópia de segurança nem serão sincronizados com outros dispositivos.\n\nPode entrar a qualquer momento nas Configurações.';
+      'Os seus dados serão guardados apenas neste dispositivo. Não terão backup nem serão sincronizados com outros dispositivos.\n\nPode entrar quando quiser nas Configurações.';
 
   @override
   String get authOfflineError =>
@@ -150,7 +150,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingImportantDates => 'Datas importantes';
 
   @override
-  String get onboardingRemindBody => 'Vamos lembrá-lo antes que algo expire.';
+  String get onboardingRemindBody => 'Avisaremos antes de algo expirar.';
 
   @override
   String get onboardingAddMyBike => 'Adicionar a minha moto';
@@ -165,10 +165,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get fieldModelHint => 'ex.: Classic 350, Activa';
 
   @override
-  String get fieldNickname => 'Apelido';
+  String get fieldNickname => 'Nome da moto';
 
   @override
-  String get fieldNicknameHint => 'Como lhe chama?';
+  String get fieldNicknameHint => 'Como prefere chamá-la?';
 
   @override
   String get fieldColour => 'Cor';
@@ -195,14 +195,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get validationRequired => 'Obrigatório';
 
   @override
-  String get validationEnterNumber => 'Introduza um número';
+  String get validationEnterNumber => 'Insira um número';
 
   @override
   String get addBikeInvalidFormat =>
       'Formato inválido. Use um formato como MH12DE1234 ou DL01AA1234.';
 
   @override
-  String get addBikeNotFound => 'Veículo não encontrado no registo.';
+  String get addBikeNotFound => 'Veículo não encontrado na base de dados.';
 
   @override
   String get addBikeApiLimit =>
@@ -210,7 +210,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get addBikeNoInternet =>
-      'Sem ligação à internet. Verifique a sua rede.';
+      'Sem acesso à internet. Verifique a sua rede.';
 
   @override
   String get addBikeFetchFailed =>
@@ -221,7 +221,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get addBikeSubtitle =>
-      'Introduza o número de registo e obteremos os dados do veículo automaticamente.';
+      'Insira a matrícula/placa e obteremos os dados do veículo automaticamente.';
 
   @override
   String get addBikeExamples => 'ex.: UK07AB1234 · DL01AA1234 · MH12DE1234';
@@ -230,7 +230,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get addBikeContinue => 'Continuar →';
 
   @override
-  String get addBikeFetching => 'A obter dados do veículo…';
+  String get addBikeFetching => 'Consultando dados do veículo…';
 
   @override
   String get vehicleBrandRequired => 'A marca é obrigatória';
@@ -245,7 +245,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get vehicleDetailsTitle => 'Dados do veículo';
 
   @override
-  String get vehicleSectionRegistration => 'REGISTO';
+  String get vehicleSectionRegistration => 'DOCUMENTAÇÃO';
 
   @override
   String get vehicleRcNumber => 'Número do RC';
@@ -266,10 +266,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get vehicleClass => 'Categoria do veículo';
 
   @override
-  String get vehicleSectionRegistrationDetails => 'DADOS DO REGISTO';
+  String get vehicleSectionRegistrationDetails => 'DADOS DA DOCUMENTAÇÃO';
 
   @override
-  String get vehicleRegistrationDate => 'Data de registo';
+  String get vehicleRegistrationDate => 'Data de matrícula';
 
   @override
   String get vehicleSectionIdentifiers => 'IDENTIFICADORES';
@@ -278,7 +278,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get vehicleEngineNumber => 'Número do motor';
 
   @override
-  String get vehicleChassisNumber => 'Número do chassi';
+  String get vehicleChassisNumber => 'Número do chassis';
 
   @override
   String get vehicleSaveBike => 'Guardar moto';
@@ -289,7 +289,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get vehicleFetchFailure =>
-      'Não foi possível obter os dados do veículo. Introduza-os manualmente abaixo.';
+      'Não foi possível obter os dados do veículo. Insira-os manualmente abaixo.';
 
   @override
   String commonError(String error) {
@@ -323,17 +323,17 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String garageDeleteBike(String name) {
-    return 'Excluir $name';
+    return 'Apagar $name';
   }
 
   @override
   String garageDeleteBikeTitle(String name) {
-    return 'Excluir $name?';
+    return 'Apagar $name?';
   }
 
   @override
   String get garageDeleteBikeBody =>
-      'Todos os registos de combustível, revisões e despesas serão excluídos.';
+      'Todos os abastecimentos, revisões e despesas serão apagados.';
 
   @override
   String get commonToday => 'Hoje';
@@ -362,7 +362,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashboardTitle => 'Painel';
 
   @override
-  String get dashboardLogFuel => 'Registar abastecimento';
+  String get dashboardLogFuel => 'Adicionar abastecimento';
 
   @override
   String get dashboardRecentActivity => 'Atividade recente';
@@ -377,7 +377,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashboardLastFuel => 'Último abastecimento';
 
   @override
-  String get dashboardNotLogged => 'Sem registo';
+  String get dashboardNotLogged => 'Sem dados';
 
   @override
   String dashboardAvgMileage(String mileage) {
@@ -406,18 +406,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String fuelOdometerTooLow(int km) {
-    return 'A quilometragem deve ser maior que a do último registo ($km km)';
+    return 'A quilometragem deve ser maior que a da última entrada ($km km)';
   }
 
   @override
-  String get fuelLogged => 'Abastecimento registado!';
+  String get fuelLogged => 'Abastecimento guardado!';
 
   @override
   String get fuelCurrentOdometer => 'Quilometragem atual';
 
   @override
   String fuelLastEntry(int km) {
-    return 'Último registo: $km km';
+    return 'Última entrada: $km km';
   }
 
   @override
@@ -440,7 +440,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get fuelAmountPaid => 'Valor pago';
 
   @override
-  String get fuelStationOptional => 'Posto de combustível (opcional)';
+  String get fuelStationOptional => 'Posto de abastecimento (opcional)';
 
   @override
   String get fuelStationHint => 'HP, Indian Oil, Bharat...';
@@ -462,7 +462,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get fuelHistoryEmptyBody =>
-      'Registe o seu primeiro abastecimento a partir do painel.';
+      'Adicione o seu primeiro abastecimento a partir do painel.';
 
   @override
   String get fuelAvgMileageAllTime => 'Consumo médio (desde sempre)';
@@ -488,14 +488,14 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get serviceEmptyTitle => 'Sem revisões registadas';
+  String get serviceEmptyTitle => 'Nenhuma revisão';
 
   @override
   String get serviceEmptyBody =>
-      'Toque num item em \"Em breve\" para registar uma revisão.';
+      'Toque em qualquer item em \"Em breve\" para adicionar uma revisão.';
 
   @override
-  String get serviceLogTitle => 'Registar revisão';
+  String get serviceLogTitle => 'Adicionar revisão';
 
   @override
   String get serviceType => 'Tipo de revisão';
@@ -528,7 +528,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get serviceChainLube => 'Lubrificação da corrente';
 
   @override
-  String get serviceBrakePads => 'Pastilhas de travão';
+  String get serviceBrakePads => 'Pastilhas de freio';
 
   @override
   String get serviceTyres => 'Pneus';
@@ -657,7 +657,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Guarde o RC, o seguro, o PUC e mais, tudo num só lugar.';
 
   @override
-  String get documentsExpiringSoon => 'A expirar em breve';
+  String get documentsExpiringSoon => 'Expira em breve';
 
   @override
   String get documentsValid => 'Válido';
@@ -680,7 +680,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get documentsDelete => 'Excluir documento';
+  String get documentsDelete => 'Apagar documento';
 
   @override
   String get documentsExpiry => 'Validade';
@@ -719,18 +719,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get navDocs => 'Docs';
 
   @override
-  String get ridesComingSoon => 'Registo de passeios por GPS\nem breve';
+  String get ridesComingSoon => 'Monitorização de passeios por GPS\nem breve';
 
   @override
-  String get noBikeSelected =>
-      'Selecione primeiro uma moto no separador Início.';
+  String get noBikeSelected => 'Selecione primeiro uma moto em Início.';
 
   @override
-  String get offlineBanner => 'Sem internet — a trabalhar offline';
+  String get offlineBanner => 'Sem internet — modo offline';
 
   @override
   String notifDocBody(String title, int days) {
-    return '$title expira em $days dias';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$title expira em $days dias',
+      one: '$title expira amanhã',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -753,7 +758,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get healthOilNone =>
-      'Nenhuma troca de óleo registada — registe a primeira revisão';
+      'Nenhuma troca de óleo — adicione a primeira revisão';
 
   @override
   String healthOilGood(int km) {
@@ -769,7 +774,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get healthChainNone => 'Nenhuma manutenção da corrente registada';
+  String get healthChainNone => 'Nenhuma manutenção da corrente';
 
   @override
   String healthChainGood(int km) {
@@ -782,7 +787,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get healthAirNone => 'Nenhuma manutenção do filtro de ar registada';
+  String get healthAirNone => 'Nenhuma manutenção do filtro de ar';
 
   @override
   String healthAirGood(String km) {
@@ -793,18 +798,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get healthAirDue => 'Troca do filtro de ar em breve';
 
   @override
-  String get healthBrakesNone => 'Nenhuma revisão dos travões registada';
+  String get healthBrakesNone => 'Nenhuma revisão dos freios';
 
   @override
   String healthBrakesGood(String km) {
-    return 'Travões verificados há $km mil km';
+    return 'Freios verificados há $km mil km';
   }
 
   @override
-  String get healthBrakesDue => 'Inspeção dos travões recomendada';
+  String get healthBrakesDue => 'Inspeção dos freios recomendada';
 
   @override
-  String get healthTyresNone => 'Nenhuma manutenção dos pneus registada';
+  String get healthTyresNone => 'Nenhuma manutenção dos pneus';
 
   @override
   String healthTyresGood(int months) {
@@ -821,7 +826,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get healthTyresDue => 'Inspeção dos pneus recomendada';
 
   @override
-  String get healthBatteryNone => 'Nenhuma manutenção da bateria registada';
+  String get healthBatteryNone => 'Nenhuma manutenção da bateria';
 
   @override
   String healthBatteryGood(int months) {
@@ -861,7 +866,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get healthEconomyNeedMore =>
-      'Registe mais abastecimentos para acompanhar o consumo';
+      'Adicione mais abastecimentos para acompanhar o rendimento';
 
   @override
   String healthEconomyAverage(String mileage) {
@@ -870,14 +875,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String healthEconomyStable(String mileage) {
-    return 'Consumo estável em $mileage km/L';
+    return 'Rendimento estável em $mileage km/L';
   }
 
   @override
   String get healthEconomyDropping =>
-      'Rendimento a baixar — pode ser necessária uma revisão';
+      'Rendimento em queda — pode ser necessária uma revisão';
 
   @override
   String get healthEconomyDeclining =>
-      'Rendimento a baixar ligeiramente — fique atento';
+      'Rendimento em ligeira queda — acompanhe';
 }

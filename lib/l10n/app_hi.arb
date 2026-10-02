@@ -216,7 +216,7 @@
   "ridesComingSoon": "GPS राइड ट्रैकिंग\nजल्द आ रही है",
   "noBikeSelected": "पहले होम टैब से कोई बाइक चुनें।",
   "offlineBanner": "इंटरनेट नहीं है — ऑफ़लाइन काम कर रहे हैं",
-  "notifDocBody": "{title} {days} दिन में समाप्त हो रहा है",
+  "notifDocBody": "{days, plural, =1{{title} कल समाप्त हो रहा है} other{{title} {days} दिन में समाप्त हो रहा है}}",
   "notifDocTitle": "दस्तावेज़ {days} दिन में समाप्त हो रहा है",
   "notifDocTomorrowTitle": "दस्तावेज़ कल समाप्त हो रहा है!",
   "notifServiceOverdueTitle": "सर्विस का समय निकल गया — {bike}",

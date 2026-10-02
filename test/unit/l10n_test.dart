@@ -70,6 +70,8 @@ void main() {
       expect(en.commonDaysAgo(5), '5 days ago');
       expect(hi.commonDaysAgo(5), '5 दिन पहले');
       expect(hi.garageDeleteBike('Bullet'), 'Bullet हटाएं');
+      expect(en.notifDocBody('RC Book', 1), 'RC Book expires tomorrow');
+      expect(en.notifDocBody('RC Book', 7), 'RC Book expires in 7 days');
     });
   });
 

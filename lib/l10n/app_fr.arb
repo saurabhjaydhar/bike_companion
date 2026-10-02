@@ -216,7 +216,7 @@
   "ridesComingSoon": "Suivi des trajets GPS\nbientôt disponible",
   "noBikeSelected": "Sélectionnez d’abord une moto dans l’onglet Accueil.",
   "offlineBanner": "Pas d’Internet — mode hors ligne",
-  "notifDocBody": "{title} expire dans {days} jours",
+  "notifDocBody": "{days, plural, =1{{title} expire demain} other{{title} expire dans {days} jours}}",
   "notifDocTitle": "Document expirant dans {days} jours",
   "notifDocTomorrowTitle": "Un document expire demain !",
   "notifServiceOverdueTitle": "Entretien en retard — {bike}",

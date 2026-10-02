@@ -216,7 +216,7 @@
   "ridesComingSoon": "Seguimiento de rutas por GPS\nmuy pronto",
   "noBikeSelected": "Primero selecciona una moto en la pestaña Inicio.",
   "offlineBanner": "Sin internet: trabajando sin conexión",
-  "notifDocBody": "{title} vence en {days} días",
+  "notifDocBody": "{days, plural, =1{{title} vence mañana} other{{title} vence en {days} días}}",
   "notifDocTitle": "Documento que vence en {days} días",
   "notifDocTomorrowTitle": "¡Un documento vence mañana!",
   "notifServiceOverdueTitle": "Servicio atrasado — {bike}",

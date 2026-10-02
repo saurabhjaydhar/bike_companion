@@ -1409,7 +1409,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifDocBody.
   ///
   /// In en, this message translates to:
-  /// **'{title} expires in {days} days'**
+  /// **'{days, plural, =1{{title} expires tomorrow} other{{title} expires in {days} days}}'**
   String notifDocBody(String title, int days);
 
   /// No description provided for @notifDocTitle.

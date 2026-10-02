@@ -730,7 +730,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String notifDocBody(String title, int days) {
-    return '$title vence en $days días';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$title vence en $days días',
+      one: '$title vence mañana',
+    );
+    return '$_temp0';
   }
 
   @override

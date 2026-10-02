@@ -712,7 +712,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String notifDocBody(String title, int days) {
-    return '$title $days दिन में समाप्त हो रहा है';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$title $days दिन में समाप्त हो रहा है',
+      one: '$title कल समाप्त हो रहा है',
+    );
+    return '$_temp0';
   }
 
   @override

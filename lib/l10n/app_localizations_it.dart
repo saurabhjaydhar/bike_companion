@@ -727,7 +727,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String notifDocBody(String title, int days) {
-    return '$title scade tra $days giorni';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$title scade tra $days giorni',
+      one: '$title scade domani',
+    );
+    return '$_temp0';
   }
 
   @override

@@ -324,7 +324,7 @@
   "ridesComingSoon": "GPS ride tracking\ncoming soon",
   "noBikeSelected": "Select a bike from the Home tab first.",
   "offlineBanner": "No internet — working offline",
-  "notifDocBody": "{title} expires in {days} days",
+  "notifDocBody": "{days, plural, =1{{title} expires tomorrow} other{{title} expires in {days} days}}",
   "@notifDocBody": {
     "placeholders": {
       "title": {

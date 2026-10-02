@@ -216,7 +216,7 @@
   "ridesComingSoon": "Tracciamento GPS dei giri\nin arrivo",
   "noBikeSelected": "Seleziona prima una moto dalla scheda Home.",
   "offlineBanner": "Nessuna connessione — modalità offline",
-  "notifDocBody": "{title} scade tra {days} giorni",
+  "notifDocBody": "{days, plural, =1{{title} scade domani} other{{title} scade tra {days} giorni}}",
   "notifDocTitle": "Documento in scadenza tra {days} giorni",
   "notifDocTomorrowTitle": "Un documento scade domani!",
   "notifServiceOverdueTitle": "Tagliando scaduto — {bike}",

@@ -55,12 +55,12 @@ class BikeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: surface,
           borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border(
-            left: BorderSide(
+          border: BorderDirectional(
+            start: BorderSide(
               color: isActive ? AppColors.primary : Colors.transparent,
               width: 3,
             ),
-            right: BorderSide(color: border),
+            end: BorderSide(color: border),
             top: BorderSide(color: border),
             bottom: BorderSide(color: border),
           ),

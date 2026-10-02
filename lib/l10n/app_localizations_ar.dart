@@ -1,0 +1,896 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Arabic (`ar`).
+class AppLocalizationsAr extends AppLocalizations {
+  AppLocalizationsAr([String locale = 'ar']) : super(locale);
+
+  @override
+  String get commonCancel => 'إلغاء';
+
+  @override
+  String get commonDelete => 'حذف';
+
+  @override
+  String get commonOther => 'أخرى';
+
+  @override
+  String get settingsTitle => 'الإعدادات';
+
+  @override
+  String get settingsAppearance => 'المظهر';
+
+  @override
+  String get settingsSystemDefault => 'إعداد النظام';
+
+  @override
+  String get settingsLight => 'فاتح';
+
+  @override
+  String get settingsDark => 'داكن';
+
+  @override
+  String get settingsLanguage => 'اللغة';
+
+  @override
+  String get settingsAbout => 'حول التطبيق';
+
+  @override
+  String get settingsVersion => 'الإصدار';
+
+  @override
+  String get settingsBuiltWithFlutter => 'مبني باستخدام Flutter';
+
+  @override
+  String get settingsAccount => 'الحساب';
+
+  @override
+  String get settingsSignedIn => 'تم تسجيل الدخول';
+
+  @override
+  String get settingsSignOut => 'تسجيل الخروج';
+
+  @override
+  String get settingsSignOutTitle => 'تسجيل الخروج؟';
+
+  @override
+  String get settingsSignOutBody =>
+      'تبقى بياناتك المحلية على هذا الجهاز. يمكنك تسجيل الدخول مجددًا في أي وقت.';
+
+  @override
+  String get settingsData => 'البيانات';
+
+  @override
+  String get settingsClearAllData => 'مسح كل البيانات';
+
+  @override
+  String get settingsClearTitle => 'مسح كل البيانات؟';
+
+  @override
+  String get settingsClearBody =>
+      'سيؤدي هذا إلى حذف جميع الدراجات وسجلات الوقود وسجلات الصيانة والمصروفات والمستندات نهائيًا. لا يمكن التراجع عن ذلك.';
+
+  @override
+  String get settingsDataCleared => 'تم مسح كل البيانات';
+
+  @override
+  String get settingsDeleteAccount => 'حذف الحساب';
+
+  @override
+  String get settingsDeleteAccountSubtitle => 'يحذف حسابك نهائيًا (GDPR)';
+
+  @override
+  String get settingsDeleteAccountTitle => 'حذف الحساب؟';
+
+  @override
+  String get settingsDeleteAccountBody =>
+      'سيؤدي هذا إلى حذف حسابك على Firebase نهائيًا. تبقى بياناتك المحلية على هذا الجهاز. لا يمكن التراجع عن ذلك.';
+
+  @override
+  String get settingsDeleteAccountError =>
+      'تعذّر حذف الحساب. يُرجى تسجيل الدخول مجددًا والمحاولة مرة أخرى.';
+
+  @override
+  String get appTitle => 'Bike Companion';
+
+  @override
+  String get commonContinue => 'متابعة';
+
+  @override
+  String get commonNext => 'التالي';
+
+  @override
+  String authSignInFailed(String error) {
+    return 'فشل تسجيل الدخول: $error';
+  }
+
+  @override
+  String get authOfflineTitle => 'المتابعة بدون حساب؟';
+
+  @override
+  String get authOfflineBody =>
+      'سيتم حفظ بياناتك على هذا الجهاز فقط، ولن يتم نسخها احتياطيًا أو مزامنتها مع أجهزة أخرى.\n\nيمكنك تسجيل الدخول في أي وقت من الإعدادات.';
+
+  @override
+  String get authOfflineError =>
+      'تعذّر بدء جلسة بدون اتصال. يُرجى المحاولة مرة أخرى.';
+
+  @override
+  String get authTagline => 'تتبّع الوقود والصيانة والمصروفات\nلدراجتك النارية';
+
+  @override
+  String get authContinueWithGoogle => 'المتابعة باستخدام Google';
+
+  @override
+  String get authContinueWithoutAccount => 'المتابعة بدون حساب';
+
+  @override
+  String get authTerms => 'بالمتابعة، فإنك توافق على الشروط وسياسة الخصوصية.';
+
+  @override
+  String get onboardingWelcomeTitle => 'دراجتك،\nبحالة ممتازة دائمًا';
+
+  @override
+  String get onboardingWelcomeBody =>
+      'تتبّع الوقود والصيانة والمصروفات والمستندات — كلها في مكان واحد. واعرف بالضبط متى تحتاج دراجتك إلى عناية.';
+
+  @override
+  String get onboardingGetStarted => 'ابدأ الآن';
+
+  @override
+  String get onboardingAboutBikeTitle => 'أخبرنا عن\nدراجتك';
+
+  @override
+  String get onboardingImportantDates => 'تواريخ مهمة';
+
+  @override
+  String get onboardingRemindBody => 'سنذكّرك قبل انتهاء صلاحية أي شيء.';
+
+  @override
+  String get onboardingAddMyBike => 'أضف دراجتي';
+
+  @override
+  String get fieldBrand => 'العلامة التجارية';
+
+  @override
+  String get fieldModel => 'الطراز';
+
+  @override
+  String get fieldModelHint => 'مثل Classic 350، Activa';
+
+  @override
+  String get fieldNickname => 'الاسم المستعار';
+
+  @override
+  String get fieldNicknameHint => 'ماذا تسمّيها؟';
+
+  @override
+  String get fieldColour => 'اللون';
+
+  @override
+  String get fieldRegNumber => 'رقم التسجيل';
+
+  @override
+  String get fieldPurchaseDateOptional => 'تاريخ الشراء (اختياري)';
+
+  @override
+  String get fieldSelectDate => 'اختر التاريخ';
+
+  @override
+  String get fieldCurrentOdometer => 'قراءة العدّاد الحالية (كم)';
+
+  @override
+  String get fieldInsuranceExpiry => 'انتهاء التأمين';
+
+  @override
+  String get fieldPucExpiry => 'انتهاء شهادة PUC';
+
+  @override
+  String get validationRequired => 'مطلوب';
+
+  @override
+  String get validationEnterNumber => 'أدخل رقمًا';
+
+  @override
+  String get addBikeInvalidFormat =>
+      'تنسيق غير صالح. استخدم تنسيقًا مثل MH12DE1234 أو DL01AA1234.';
+
+  @override
+  String get addBikeNotFound => 'لم يتم العثور على المركبة في السجل.';
+
+  @override
+  String get addBikeApiLimit =>
+      'تم بلوغ حد استخدام API. يُرجى المحاولة لاحقًا.';
+
+  @override
+  String get addBikeNoInternet =>
+      'لا يوجد اتصال بالإنترنت. يُرجى التحقق من الشبكة.';
+
+  @override
+  String get addBikeFetchFailed => 'تعذّر جلب تفاصيل المركبة.';
+
+  @override
+  String get addBikeTitle => 'أضف دراجتك';
+
+  @override
+  String get addBikeSubtitle =>
+      'أدخل رقم التسجيل وسنجلب تفاصيل مركبتك تلقائيًا.';
+
+  @override
+  String get addBikeExamples => 'مثل UK07AB1234 · DL01AA1234 · MH12DE1234';
+
+  @override
+  String get addBikeContinue => 'متابعة ←';
+
+  @override
+  String get addBikeFetching => 'جارٍ جلب تفاصيل المركبة…';
+
+  @override
+  String get vehicleBrandRequired => 'العلامة التجارية مطلوبة';
+
+  @override
+  String get vehicleModelRequired => 'الطراز مطلوب';
+
+  @override
+  String get vehicleSaveFailed => 'تعذّر حفظ الدراجة. يُرجى المحاولة مرة أخرى.';
+
+  @override
+  String get vehicleDetailsTitle => 'تفاصيل المركبة';
+
+  @override
+  String get vehicleSectionRegistration => 'التسجيل';
+
+  @override
+  String get vehicleRcNumber => 'رقم RC';
+
+  @override
+  String get vehicleSectionInfo => 'معلومات المركبة';
+
+  @override
+  String get vehicleManufacturer => 'الشركة المصنّعة';
+
+  @override
+  String get vehicleVariant => 'الفئة';
+
+  @override
+  String get vehicleFuelType => 'نوع الوقود';
+
+  @override
+  String get vehicleClass => 'صنف المركبة';
+
+  @override
+  String get vehicleSectionRegistrationDetails => 'تفاصيل التسجيل';
+
+  @override
+  String get vehicleRegistrationDate => 'تاريخ التسجيل';
+
+  @override
+  String get vehicleSectionIdentifiers => 'أرقام التعريف';
+
+  @override
+  String get vehicleEngineNumber => 'رقم المحرك';
+
+  @override
+  String get vehicleChassisNumber => 'رقم الهيكل';
+
+  @override
+  String get vehicleSaveBike => 'حفظ الدراجة';
+
+  @override
+  String get vehicleFetchSuccess => 'تم جلب تفاصيل المركبة. راجعها وأكّدها.';
+
+  @override
+  String get vehicleFetchFailure =>
+      'تعذّر جلب تفاصيل المركبة. يُرجى إدخالها يدويًا أدناه.';
+
+  @override
+  String commonError(String error) {
+    return 'خطأ: $error';
+  }
+
+  @override
+  String get commonThisMonth => 'هذا الشهر';
+
+  @override
+  String get garageTitle => 'مرآبي';
+
+  @override
+  String get garageEmptyTitle => 'لا توجد دراجات بعد';
+
+  @override
+  String get garageEmptyBody =>
+      'أضف دراجتك الأولى لبدء تتبّع الوقود والصيانة والمصروفات.';
+
+  @override
+  String get garageYourBikes => 'دراجاتك';
+
+  @override
+  String get garageAddAnother => 'إضافة دراجة أخرى';
+
+  @override
+  String get garageStatBikes => 'دراجات';
+
+  @override
+  String get garageStatAlerts => 'تنبيهات';
+
+  @override
+  String garageDeleteBike(String name) {
+    return 'حذف $name';
+  }
+
+  @override
+  String garageDeleteBikeTitle(String name) {
+    return 'حذف $name؟';
+  }
+
+  @override
+  String get garageDeleteBikeBody =>
+      'سيتم حذف جميع سجلات الوقود وسجلات الصيانة والمصروفات.';
+
+  @override
+  String get commonToday => 'اليوم';
+
+  @override
+  String get commonYesterday => 'أمس';
+
+  @override
+  String commonDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count يوم',
+      many: 'منذ $count يومًا',
+      few: 'منذ $count أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم واحد',
+      zero: 'اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get commonNotSet => 'غير محدد';
+
+  @override
+  String get fieldOdometer => 'العدّاد';
+
+  @override
+  String get dashboardTitle => 'لوحة المعلومات';
+
+  @override
+  String get dashboardLogFuel => 'تسجيل تعبئة وقود';
+
+  @override
+  String get dashboardRecentActivity => 'النشاط الأخير';
+
+  @override
+  String get dashboardSeeAll => 'عرض الكل';
+
+  @override
+  String get dashboardThisMonth => 'هذا الشهر';
+
+  @override
+  String get dashboardLastFuel => 'آخر تعبئة';
+
+  @override
+  String get dashboardNotLogged => 'غير مسجّل';
+
+  @override
+  String dashboardAvgMileage(String mileage) {
+    return 'متوسط $mileage كم/لتر';
+  }
+
+  @override
+  String get dashboardNextService => 'الصيانة التالية';
+
+  @override
+  String get dashboardUpToDate => 'محدّثة';
+
+  @override
+  String dashboardDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'متبقٍ $count يوم',
+      many: 'متبقٍ $count يومًا',
+      few: 'متبقٍ $count أيام',
+      two: 'متبقٍ يومان',
+      one: 'متبقٍ يوم واحد',
+      zero: 'لم يتبقَّ أي يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dashboardFuelStop => 'تعبئة وقود';
+
+  @override
+  String fuelOdometerTooLow(int km) {
+    return 'يجب أن تكون قراءة العدّاد أكبر من آخر إدخال ($km كم)';
+  }
+
+  @override
+  String get fuelLogged => 'تم تسجيل تعبئة الوقود!';
+
+  @override
+  String get fuelCurrentOdometer => 'قراءة العدّاد الحالية';
+
+  @override
+  String fuelLastEntry(int km) {
+    return 'آخر إدخال: $km كم';
+  }
+
+  @override
+  String fuelKmSinceLastEstimate(int km, String litres) {
+    return 'المسافة منذ آخر تعبئة: $km كم · التقدير ~$litres لتر';
+  }
+
+  @override
+  String fuelKmSinceLast(int km) {
+    return 'المسافة منذ آخر تعبئة: $km كم';
+  }
+
+  @override
+  String get fuelAddMoreDetails => 'إضافة تفاصيل أخرى';
+
+  @override
+  String get fuelLitresFilled => 'اللترات المعبّأة';
+
+  @override
+  String get fuelAmountPaid => 'المبلغ المدفوع';
+
+  @override
+  String get fuelStationOptional => 'محطة الوقود (اختياري)';
+
+  @override
+  String get fuelStationHint => 'HP، Indian Oil، Bharat...';
+
+  @override
+  String get fuelReceiptSoon => 'مسح الإيصالات قريبًا!';
+
+  @override
+  String get fuelScanReceipt => 'مسح الإيصال';
+
+  @override
+  String get fuelSave => 'حفظ التعبئة';
+
+  @override
+  String get fuelHistoryTitle => 'سجل الوقود';
+
+  @override
+  String get fuelHistoryEmptyTitle => 'لا توجد سجلات وقود بعد';
+
+  @override
+  String get fuelHistoryEmptyBody => 'سجّل أول تعبئة وقود من لوحة المعلومات.';
+
+  @override
+  String get fuelAvgMileageAllTime => 'متوسط استهلاك الوقود (طوال الوقت)';
+
+  @override
+  String get fieldNotesOptional => 'ملاحظات (اختياري)';
+
+  @override
+  String get serviceStatusGood => 'جيدة';
+
+  @override
+  String get serviceDueSoon => 'مستحقة قريبًا';
+
+  @override
+  String get serviceStatusOverdue => 'متأخرة';
+
+  @override
+  String get serviceHistory => 'السجل';
+
+  @override
+  String serviceLast(String date) {
+    return 'آخر مرة: $date';
+  }
+
+  @override
+  String get serviceEmptyTitle => 'لا توجد صيانات مسجّلة';
+
+  @override
+  String get serviceEmptyBody =>
+      'انقر على أي عنصر في \"مستحقة قريبًا\" لتسجيل صيانة.';
+
+  @override
+  String get serviceLogTitle => 'تسجيل صيانة';
+
+  @override
+  String get serviceType => 'نوع الصيانة';
+
+  @override
+  String get serviceOdometerKm => 'العدّاد (كم)';
+
+  @override
+  String get serviceCost => 'التكلفة (₹)';
+
+  @override
+  String get serviceNotesHint => 'اسم الورشة، القطع المستبدلة...';
+
+  @override
+  String get serviceSave => 'حفظ الصيانة';
+
+  @override
+  String get serviceOilChange => 'تغيير الزيت';
+
+  @override
+  String get serviceOilFilter => 'فلتر الزيت';
+
+  @override
+  String get serviceAirFilter => 'فلتر الهواء';
+
+  @override
+  String get serviceChainClean => 'تنظيف الجنزير';
+
+  @override
+  String get serviceChainLube => 'تشحيم الجنزير';
+
+  @override
+  String get serviceBrakePads => 'تيل الفرامل';
+
+  @override
+  String get serviceTyres => 'الإطارات';
+
+  @override
+  String get serviceBattery => 'البطارية';
+
+  @override
+  String get serviceCoolant => 'سائل التبريد';
+
+  @override
+  String get expenseFuel => 'الوقود';
+
+  @override
+  String get expenseService => 'الصيانة';
+
+  @override
+  String get expenseParts => 'قطع الغيار';
+
+  @override
+  String get expenseInsurance => 'التأمين';
+
+  @override
+  String get expenseParking => 'المواقف';
+
+  @override
+  String get expenseAccessories => 'الإكسسوارات';
+
+  @override
+  String get expenseFine => 'المخالفات';
+
+  @override
+  String get docRc => 'دفتر RC';
+
+  @override
+  String get docInsurance => 'التأمين';
+
+  @override
+  String get docDrivingLicence => 'رخصة القيادة';
+
+  @override
+  String get docPuc => 'شهادة PUC';
+
+  @override
+  String get docInvoice => 'فاتورة الشراء';
+
+  @override
+  String get docWarranty => 'بطاقة الضمان';
+
+  @override
+  String get gradeExcellent => 'حالة ممتازة';
+
+  @override
+  String get gradeGood => 'حالة جيدة';
+
+  @override
+  String get gradeFair => 'حالة مقبولة';
+
+  @override
+  String get gradePoor => 'تحتاج إلى عناية';
+
+  @override
+  String get gradeCritical => 'حرجة — أجرِ الصيانة الآن';
+
+  @override
+  String get expensesTitle => 'المصروفات';
+
+  @override
+  String get expensesExportCsv => 'تصدير CSV';
+
+  @override
+  String get expensesByCategory => 'حسب الفئة';
+
+  @override
+  String get expensesTransactions => 'المعاملات';
+
+  @override
+  String get expensesEmptyTitle => 'لا توجد مصروفات';
+
+  @override
+  String get expensesEmptyBody => 'انقر على + لإضافة أول مصروف لهذا الشهر.';
+
+  @override
+  String get expensesCsvHeader => 'التاريخ,الفئة,المبلغ (₹),ملاحظة';
+
+  @override
+  String expensesCsvSubject(String month) {
+    return 'المصروفات — $month';
+  }
+
+  @override
+  String get expensesTotalSpent => 'إجمالي الإنفاق';
+
+  @override
+  String expensesVsLastMonth(String percent) {
+    return '$percent% مقارنةً بالشهر الماضي';
+  }
+
+  @override
+  String get expensesAddTitle => 'إضافة مصروف';
+
+  @override
+  String get expensesCategory => 'الفئة';
+
+  @override
+  String get expensesAmount => 'المبلغ (₹)';
+
+  @override
+  String get expensesNoteOptional => 'ملاحظة (اختياري)';
+
+  @override
+  String get expensesNoteHint => 'التاجر، الوصف...';
+
+  @override
+  String get expensesSave => 'حفظ المصروف';
+
+  @override
+  String get documentsTitle => 'المستندات';
+
+  @override
+  String get documentsEmptyTitle => 'لا توجد مستندات';
+
+  @override
+  String get documentsEmptyBody => 'احفظ RC والتأمين وPUC وغيرها في مكان واحد.';
+
+  @override
+  String get documentsExpiringSoon => 'تنتهي قريبًا';
+
+  @override
+  String get documentsValid => 'سارية';
+
+  @override
+  String get documentsExpired => 'منتهية';
+
+  @override
+  String get documentsNoExpiry => 'بلا تاريخ انتهاء';
+
+  @override
+  String documentsExpiresInDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تنتهي خلال $count يوم',
+      many: 'تنتهي خلال $count يومًا',
+      few: 'تنتهي خلال $count أيام',
+      two: 'تنتهي خلال يومين',
+      one: 'تنتهي خلال يوم واحد',
+      zero: 'تنتهي اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get documentsDelete => 'حذف المستند';
+
+  @override
+  String get documentsExpiry => 'الانتهاء';
+
+  @override
+  String get documentsAddTitle => 'إضافة مستند';
+
+  @override
+  String get documentsType => 'نوع المستند';
+
+  @override
+  String get documentsTitleField => 'العنوان';
+
+  @override
+  String get documentsTitleHint => 'مثل دفتر RC، رقم الوثيقة...';
+
+  @override
+  String get documentsExpiryOptional => 'تاريخ الانتهاء (اختياري)';
+
+  @override
+  String get documentsPhotoSelected => 'تم اختيار صورة';
+
+  @override
+  String get documentsAttachPhoto => 'إرفاق صورة';
+
+  @override
+  String get documentsSave => 'حفظ المستند';
+
+  @override
+  String get navHome => 'الرئيسية';
+
+  @override
+  String get navRides => 'الرحلات';
+
+  @override
+  String get navDocs => 'المستندات';
+
+  @override
+  String get ridesComingSoon => 'تتبّع الرحلات عبر GPS\nقريبًا';
+
+  @override
+  String get noBikeSelected => 'اختر دراجة من تبويب الرئيسية أولًا.';
+
+  @override
+  String get offlineBanner => 'لا يوجد إنترنت — العمل بدون اتصال';
+
+  @override
+  String notifDocBody(String title, int days) {
+    return '$title: الأيام المتبقية حتى انتهاء الصلاحية: $days';
+  }
+
+  @override
+  String notifDocTitle(int days) {
+    return 'مستند تنتهي صلاحيته قريبًا (الأيام المتبقية: $days)';
+  }
+
+  @override
+  String get notifDocTomorrowTitle => 'تنتهي صلاحية مستند غدًا!';
+
+  @override
+  String notifServiceOverdueTitle(String bike) {
+    return 'صيانة متأخرة — $bike';
+  }
+
+  @override
+  String notifServiceOverdueBody(String service) {
+    return '$service يحتاج إلى عناية';
+  }
+
+  @override
+  String get healthOilNone => 'لا يوجد تغيير زيت مسجّل — سجّل أول صيانة';
+
+  @override
+  String healthOilGood(int km) {
+    return 'تم تغيير الزيت قبل $km كم — كل شيء على ما يرام';
+  }
+
+  @override
+  String get healthOilOverdue => 'تغيير الزيت متأخر!';
+
+  @override
+  String healthOilDue(int km) {
+    return 'تغيير الزيت مستحق بعد ~$km كم';
+  }
+
+  @override
+  String get healthChainNone => 'لا توجد صيانة جنزير مسجّلة';
+
+  @override
+  String healthChainGood(int km) {
+    return 'تمت صيانة الجنزير قبل $km كم';
+  }
+
+  @override
+  String healthChainDue(int km) {
+    return 'صيانة الجنزير مستحقة بعد ~$km كم';
+  }
+
+  @override
+  String get healthAirNone => 'لا توجد صيانة فلتر هواء مسجّلة';
+
+  @override
+  String healthAirGood(String km) {
+    return 'تم تغيير فلتر الهواء قبل $km ألف كم';
+  }
+
+  @override
+  String get healthAirDue => 'تغيير فلتر الهواء مستحق قريبًا';
+
+  @override
+  String get healthBrakesNone => 'لا توجد صيانة فرامل مسجّلة';
+
+  @override
+  String healthBrakesGood(String km) {
+    return 'تم فحص الفرامل قبل $km ألف كم';
+  }
+
+  @override
+  String get healthBrakesDue => 'يُنصح بفحص الفرامل';
+
+  @override
+  String get healthTyresNone => 'لا توجد صيانة إطارات مسجّلة';
+
+  @override
+  String healthTyresGood(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: 'تم استبدال الإطارات قبل $months شهر',
+      many: 'تم استبدال الإطارات قبل $months شهرًا',
+      few: 'تم استبدال الإطارات قبل $months أشهر',
+      two: 'تم استبدال الإطارات قبل شهرين',
+      one: 'تم استبدال الإطارات قبل شهر واحد',
+      zero: 'تم استبدال الإطارات هذا الشهر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get healthTyresDue => 'يُنصح بفحص الإطارات';
+
+  @override
+  String get healthBatteryNone => 'لا توجد صيانة بطارية مسجّلة';
+
+  @override
+  String healthBatteryGood(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: 'تم استبدال البطارية قبل $months شهر',
+      many: 'تم استبدال البطارية قبل $months شهرًا',
+      few: 'تم استبدال البطارية قبل $months أشهر',
+      two: 'تم استبدال البطارية قبل شهرين',
+      one: 'تم استبدال البطارية قبل شهر واحد',
+      zero: 'تم استبدال البطارية هذا الشهر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get healthBatteryDue => 'يُنصح بفحص البطارية';
+
+  @override
+  String get healthInsuranceNotSet => 'لم يتم تحديد تاريخ انتهاء التأمين';
+
+  @override
+  String get healthInsuranceExpired => 'انتهى التأمين — جدّده فورًا';
+
+  @override
+  String healthInsuranceExpiring(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'ينتهي التأمين خلال $days يوم — جدّده الآن',
+      many: 'ينتهي التأمين خلال $days يومًا — جدّده الآن',
+      few: 'ينتهي التأمين خلال $days أيام — جدّده الآن',
+      two: 'ينتهي التأمين خلال يومين — جدّده الآن',
+      one: 'ينتهي التأمين خلال يوم واحد — جدّده الآن',
+      zero: 'ينتهي التأمين اليوم — جدّده الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String healthInsuranceValid(int days) {
+    return 'التأمين ساري — الأيام المتبقية: $days';
+  }
+
+  @override
+  String get healthEconomyNeedMore =>
+      'سجّل المزيد من التعبئات لتتبّع استهلاك الوقود';
+
+  @override
+  String healthEconomyAverage(String mileage) {
+    return 'المتوسط: $mileage كم/لتر';
+  }
+
+  @override
+  String healthEconomyStable(String mileage) {
+    return 'استهلاك الوقود مستقر عند $mileage كم/لتر';
+  }
+
+  @override
+  String get healthEconomyDropping =>
+      'كفاءة الوقود في انخفاض — قد تحتاج إلى صيانة';
+
+  @override
+  String get healthEconomyDeclining => 'كفاءة الوقود تنخفض قليلًا — راقبها';
+}

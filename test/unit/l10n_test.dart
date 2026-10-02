@@ -15,6 +15,8 @@ Map<String, dynamic> _arb(String locale) =>
     jsonDecode(File('lib/l10n/app_$locale.arb').readAsStringSync())
         as Map<String, dynamic>;
 
+const _translations = ['hi', 'es', 'fr', 'de', 'it', 'pt', 'ar'];
+
 Set<String> _messageKeys(Map<String, dynamic> arb) =>
     arb.keys.where((k) => !k.startsWith('@')).toSet();
 
@@ -23,18 +25,27 @@ void main() {
   final hi = lookupAppLocalizations(const Locale('hi'));
 
   group('ARB files', () {
-    test('Hindi has a translation for every English string', () {
-      final enKeys = _messageKeys(_arb('en'));
-      final hiKeys = _messageKeys(_arb('hi'));
-      expect(enKeys.difference(hiKeys), isEmpty, reason: 'missing in hi');
-      expect(hiKeys.difference(enKeys), isEmpty, reason: 'unknown in hi');
-    });
+    for (final locale in _translations) {
+      test('$locale has a translation for every English string', () {
+        final enKeys = _messageKeys(_arb('en'));
+        final keys = _messageKeys(_arb(locale));
+        expect(enKeys.difference(keys), isEmpty, reason: 'missing in $locale');
+        expect(keys.difference(enKeys), isEmpty, reason: 'unknown in $locale');
+      });
+    }
 
-    test('supported locales are English and Hindi', () {
+    test('every translation is a supported locale', () {
       expect(
         AppLocalizations.supportedLocales.map((l) => l.languageCode),
-        containsAll(['en', 'hi']),
+        containsAll(['en', ..._translations]),
       );
+    });
+
+    test('CSV header keeps four columns in every language', () {
+      for (final locale in ['en', ..._translations]) {
+        final l = lookupAppLocalizations(Locale(locale));
+        expect(l.expensesCsvHeader.split(','), hasLength(4), reason: locale);
+      }
     });
   });
 
@@ -120,5 +131,25 @@ void main() {
     expect(find.text('मेरा गैराज'), findsOneWidget);
     expect(l.localeName, 'hi');
     expect(material.cancelButtonLabel, isNot('Cancel'));
+  });
+
+  testWidgets('Arabic lays out right-to-left', (tester) async {
+    late TextDirection direction;
+    await tester.pumpWidget(MaterialApp(
+      locale: const Locale('ar'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: Builder(builder: (context) {
+        direction = Directionality.of(context);
+        return Text(context.l10n.garageTitle);
+      }),
+    ));
+
+    expect(direction, TextDirection.rtl);
   });
 }

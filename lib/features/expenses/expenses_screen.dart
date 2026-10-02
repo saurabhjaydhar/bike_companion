@@ -156,9 +156,9 @@ class ExpensesScreen extends ConsumerWidget {
                                 key: Key(exp.id),
                                 direction: DismissDirection.endToStart,
                                 background: Container(
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.only(
-                                      right: AppSpacing.xl),
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  padding: const EdgeInsetsDirectional.only(
+                                      end: AppSpacing.xl),
                                   color: AppColors.danger,
                                   child: const Icon(
                                       Icons.delete_outline_rounded,

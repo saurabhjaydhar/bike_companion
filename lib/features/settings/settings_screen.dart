@@ -85,6 +85,18 @@ class LocaleNotifier extends StateNotifier<Locale?> {
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  // Language names are shown in their own script on purpose.
+  static const _languages = [
+    ('en', 'English'),
+    ('hi', 'हिन्दी'),
+    ('es', 'Español'),
+    ('fr', 'Français'),
+    ('de', 'Deutsch'),
+    ('it', 'Italiano'),
+    ('pt', 'Português'),
+    ('ar', 'العربية'),
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -167,27 +179,17 @@ class SettingsScreen extends ConsumerWidget {
                   textPrimary: textPrimary,
                   divider: true,
                 ),
-                // Language names are shown in their own script on purpose.
-                _ThemeOption(
-                  icon: Icons.translate_rounded,
-                  label: 'English',
-                  selected: currentLocale?.languageCode == 'en',
-                  onTap: () => ref
-                      .read(localeProvider.notifier)
-                      .setLocale(const Locale('en')),
-                  textPrimary: textPrimary,
-                  divider: true,
-                ),
-                _ThemeOption(
-                  icon: Icons.translate_rounded,
-                  label: 'हिन्दी',
-                  selected: currentLocale?.languageCode == 'hi',
-                  onTap: () => ref
-                      .read(localeProvider.notifier)
-                      .setLocale(const Locale('hi')),
-                  textPrimary: textPrimary,
-                  divider: false,
-                ),
+                for (final (i, (code, name)) in _languages.indexed)
+                  _ThemeOption(
+                    icon: Icons.translate_rounded,
+                    label: name,
+                    selected: currentLocale?.languageCode == code,
+                    onTap: () => ref
+                        .read(localeProvider.notifier)
+                        .setLocale(Locale(code)),
+                    textPrimary: textPrimary,
+                    divider: i < _languages.length - 1,
+                  ),
               ],
             ),
           ),
@@ -416,7 +418,7 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm, left: 4),
+      padding: const EdgeInsetsDirectional.only(bottom: AppSpacing.sm, start: 4),
       child: Text(text.toUpperCase(),
           style: AppTextStyles.label.copyWith(color: color, fontSize: 11)),
     );

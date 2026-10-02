@@ -495,6 +495,7 @@ class _LockedField extends StatelessWidget {
         TextField(
           readOnly: true,
           controller: TextEditingController(text: value),
+          textDirection: TextDirection.ltr,
           style: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,

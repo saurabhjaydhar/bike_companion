@@ -113,7 +113,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: AnimatedContainer(
                       duration: AppDuration.normal,
                       height: 3,
-                      margin: EdgeInsets.only(right: i < 2 ? AppSpacing.xs : 0),
+                      margin: EdgeInsetsDirectional.only(end: i < 2 ? AppSpacing.xs : 0),
                       decoration: BoxDecoration(
                         color: i <= _currentPage
                             ? AppColors.primary
@@ -459,7 +459,7 @@ class _ColourPicker extends StatelessWidget {
             duration: AppDuration.fast,
             width: 32,
             height: 32,
-            margin: const EdgeInsets.only(right: AppSpacing.sm),
+            margin: const EdgeInsetsDirectional.only(end: AppSpacing.sm),
             decoration: BoxDecoration(
               color: colour,
               shape: BoxShape.circle,

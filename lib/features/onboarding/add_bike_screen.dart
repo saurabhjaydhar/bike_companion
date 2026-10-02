@@ -151,6 +151,8 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
               TextField(
                 controller: _rcCtrl,
                 enabled: !_fetching,
+                // Registration numbers are Latin, even in RTL languages.
+                textDirection: TextDirection.ltr,
                 inputFormatters: [
                   TextInputFormatter.withFunction((oldValue, newValue) {
                     final text = newValue.text

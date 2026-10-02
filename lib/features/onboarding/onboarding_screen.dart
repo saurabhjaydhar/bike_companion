@@ -192,8 +192,20 @@ class _WelcomePage extends StatelessWidget {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
+              gradient: RadialGradient(colors: [
+                AppColors.primary.withValues(alpha: 0.28),
+                AppColors.primary.withValues(alpha: 0.02),
+              ]),
+              border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.6), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.45),
+                  blurRadius: 40,
+                  spreadRadius: -4,
+                ),
+              ],
             ),
             child: const Icon(
               Icons.two_wheeler_rounded,

@@ -17,13 +17,14 @@ final themeModeProvider =
 });
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(ThemeMode.system) {
+  // Dark ("Night Ride") is the default look until the user picks another.
+  ThemeModeNotifier() : super(ThemeMode.dark) {
     _load();
   }
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getString('theme_mode') ?? 'system';
+    final saved = prefs.getString('theme_mode') ?? 'dark';
     state = _fromString(saved);
   }
 

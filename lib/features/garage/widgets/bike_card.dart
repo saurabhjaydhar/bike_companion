@@ -4,8 +4,10 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/l10n.dart';
-import '../../../data/models/health_score.dart';
 import '../../../shared/widgets/bike_avatar.dart';
+import '../../../shared/widgets/health_ring.dart';
+import '../../../shared/widgets/hud_panel.dart';
+import '../../../shared/widgets/plate_badge.dart';
 import '../garage_provider.dart';
 
 class BikeCard extends StatelessWidget {
@@ -22,54 +24,28 @@ class BikeCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  Color _gradeColor(HealthGrade grade, bool isDark) {
-    switch (grade) {
-      case HealthGrade.excellent:
-      case HealthGrade.good:
-        return isDark ? AppColors.successDark : AppColors.success;
-      case HealthGrade.fair:
-        return isDark ? AppColors.warningDark : AppColors.warning;
-      case HealthGrade.poor:
-      case HealthGrade.critical:
-        return isDark ? AppColors.dangerDark : AppColors.danger;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
     final border = isDark ? AppColors.borderDark : AppColors.border;
     final textPrimary = isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final scoreColor = _gradeColor(item.healthScore.grade, isDark);
+    final scoreColor =
+        HealthRing.gradeColor(item.healthScore.grade, isDark: isDark);
     final rupeeFormat = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final score = item.healthScore.score;
 
-    return GestureDetector(
+    return HudPanel(
+      glow: isActive ? AppColors.primary : null,
       onTap: onTap,
       onLongPress: () => _showOptions(context),
-      child: AnimatedContainer(
-        duration: AppDuration.fast,
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: BorderDirectional(
-            start: BorderSide(
-              color: isActive ? AppColors.primary : Colors.transparent,
-              width: 3,
-            ),
-            end: BorderSide(color: border),
-            top: BorderSide(color: border),
-            bottom: BorderSide(color: border),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Row(
+      child: Column(
+        children: [
+          Row(
             children: [
-              BikeAvatar(colour: item.bike.colour, size: 48),
+              BikeAvatar(colour: item.bike.colour, size: 52),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
@@ -77,16 +53,17 @@ class BikeCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Text(
                             item.bike.name,
-                            style: AppTextStyles.bodySemiBold
+                            style: AppTextStyles.heading3
                                 .copyWith(color: textPrimary),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        if (item.hasAlerts)
+                        if (item.hasAlerts) ...[
+                          const SizedBox(width: AppSpacing.sm),
                           Container(
                             width: 8,
                             height: 8,
@@ -95,31 +72,25 @@ class BikeCard extends StatelessWidget {
                                   ? AppColors.warningDark
                                   : AppColors.warning,
                               shape: BoxShape.circle,
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: AppColors.warningDark,
+                                    blurRadius: 6),
+                              ],
                             ),
                           ),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 2),
                     Text(
-                      '${item.bike.brand} ${item.bike.model}  ·  ${item.bike.regNumber}',
+                      '${item.bike.brand} ${item.bike.model}',
                       style:
                           AppTextStyles.caption.copyWith(color: textSecondary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Row(
-                      children: [
-                        Icon(Icons.speed_rounded,
-                            size: 12, color: textSecondary),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${NumberFormat('#,##,###').format(item.bike.odometerCurrent)} km',
-                          style: AppTextStyles.caption
-                              .copyWith(color: textSecondary),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    PlateBadge(item.bike.regNumber, fontSize: 10),
                   ],
                 ),
               ),
@@ -128,16 +99,23 @@ class BikeCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${item.healthScore.score}%',
-                    style: AppTextStyles.heading3.copyWith(color: scoreColor),
+                    '$score%',
+                    style: AppTextStyles.metric.copyWith(
+                      color: scoreColor,
+                      fontSize: 26,
+                      shadows: [
+                        Shadow(
+                            color: scoreColor.withValues(alpha: 0.5),
+                            blurRadius: 12),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     rupeeFormat.format(item.monthTotal),
-                    style:
-                        AppTextStyles.caption.copyWith(color: textSecondary),
+                    style: AppTextStyles.bodySemiBold
+                        .copyWith(color: textPrimary),
                   ),
-                  const SizedBox(height: 2),
                   Text(
                     context.l10n.commonThisMonth,
                     style:
@@ -147,7 +125,45 @@ class BikeCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
+          const SizedBox(height: AppSpacing.md),
+          // Health bar, styled like a segmented fuel gauge
+          Row(
+            children: [
+              Icon(Icons.speed_rounded, size: 14, color: textSecondary),
+              const SizedBox(width: 4),
+              Text(
+                '${NumberFormat('#,##,###').format(item.bike.odometerCurrent)} km',
+                style: AppTextStyles.label.copyWith(color: textSecondary),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Row(
+                  children: [
+                    for (var i = 0; i < 10; i++)
+                      Expanded(
+                        child: Container(
+                          height: 6,
+                          margin: const EdgeInsetsDirectional.only(end: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(1.5),
+                            color: i < (score / 10).round()
+                                ? scoreColor
+                                : border,
+                            boxShadow: [
+                              if (i < (score / 10).round())
+                                BoxShadow(
+                                    color: scoreColor.withValues(alpha: 0.5),
+                                    blurRadius: 4),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -9,6 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import 'garage_provider.dart';
 import 'widgets/bike_card.dart';
@@ -266,7 +267,6 @@ class _SummaryStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
     final border = isDark ? AppColors.borderDark : AppColors.border;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
@@ -276,13 +276,8 @@ class _SummaryStrip extends StatelessWidget {
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l = context.l10n;
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: border),
-      ),
+    return HudPanel(
+      glow: AppColors.accent,
       child: Row(
         children: [
           _Stat(
@@ -334,11 +329,14 @@ class _Stat extends StatelessWidget {
         child: Column(
           children: [
             Text(value,
-                style: AppTextStyles.heading2
-                    .copyWith(color: valueColor ?? textPrimary)),
+                maxLines: 1,
+                style: AppTextStyles.metric.copyWith(
+                    fontSize: 22, color: valueColor ?? textPrimary)),
             const SizedBox(height: 2),
             Text(label,
-                style: AppTextStyles.caption.copyWith(color: textSecondary)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.label.copyWith(color: textSecondary)),
           ],
         ),
       );

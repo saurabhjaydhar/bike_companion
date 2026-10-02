@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import 'hud_panel.dart';
 
-/// A compact card showing a label and a prominent value with optional trend.
+/// A compact instrument readout: label, a prominent value and optional trend.
 class StatCard extends StatelessWidget {
   final String label;
   final String value;
@@ -23,8 +24,6 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
-    final borderColor = isDark ? AppColors.borderDark : AppColors.border;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
@@ -32,14 +31,10 @@ class StatCard extends StatelessWidget {
     final trendColor = trendPositive
         ? (isDark ? AppColors.successDark : AppColors.success)
         : (isDark ? AppColors.dangerDark : AppColors.danger);
+    const accent = AppColors.accent;
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: borderColor),
-      ),
+    return HudPanel(
+      padding: const EdgeInsets.all(AppSpacing.md + 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -47,20 +42,37 @@ class StatCard extends StatelessWidget {
           Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 14, color: textSecondary),
-                const SizedBox(width: AppSpacing.xs),
+                Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: isDark ? 0.12 : 0.14),
+                    borderRadius: BorderRadius.circular(AppRadius.small),
+                    border: Border.all(color: accent.withValues(alpha: 0.35)),
+                  ),
+                  child: Icon(icon,
+                      size: 14,
+                      color: isDark ? accent : const Color(0xFF0891B2)),
+                ),
+                const SizedBox(width: AppSpacing.sm),
               ],
-              Text(
-                label,
-                style: AppTextStyles.caption.copyWith(color: textSecondary),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.label.copyWith(color: textSecondary),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.md),
           Text(
             value,
-            style:
-                AppTextStyles.heading2.copyWith(color: textPrimary),
+            style: AppTextStyles.metric.copyWith(
+              color: textPrimary,
+              fontSize: 22,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -72,14 +84,18 @@ class StatCard extends StatelessWidget {
                   trendPositive
                       ? Icons.trending_up_rounded
                       : Icons.trending_down_rounded,
-                  size: 12,
+                  size: 13,
                   color: trendColor,
                 ),
-                const SizedBox(width: 2),
-                Text(
-                  trend!,
-                  style:
-                      AppTextStyles.captionMedium.copyWith(color: trendColor),
+                const SizedBox(width: 3),
+                Flexible(
+                  child: Text(
+                    trend!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        AppTextStyles.captionMedium.copyWith(color: trendColor),
+                  ),
                 ),
               ],
             ),

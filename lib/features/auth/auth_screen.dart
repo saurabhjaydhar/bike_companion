@@ -7,6 +7,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/services/restore_service.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
 
@@ -109,12 +110,32 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           child: Column(
             children: [
               const Spacer(flex: 2),
-              Icon(Icons.two_wheeler_rounded, size: 80, color: cs.primary),
-              const SizedBox(height: 16),
+              Container(
+                width: 132,
+                height: 132,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [
+                    cs.primary.withValues(alpha: 0.28),
+                    cs.primary.withValues(alpha: 0.02),
+                  ]),
+                  border: Border.all(
+                      color: cs.primary.withValues(alpha: 0.6), width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: cs.primary.withValues(alpha: 0.45),
+                      blurRadius: 44,
+                      spreadRadius: -4,
+                    ),
+                  ],
+                ),
+                child: Icon(Icons.two_wheeler_rounded,
+                    size: 72, color: cs.primary),
+              ),
+              const SizedBox(height: 24),
               Text(
                 l.appTitle,
-                style: tt.headlineMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: AppTextStyles.display.copyWith(color: cs.onSurface),
               ),
               const SizedBox(height: 8),
               Text(

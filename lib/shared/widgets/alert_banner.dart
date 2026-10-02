@@ -100,15 +100,34 @@ class _AlertBannerState extends State<AlertBanner>
         child: Container(
           margin: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+          padding: const EdgeInsetsDirectional.fromSTEB(
+              AppSpacing.md, AppSpacing.md, AppSpacing.lg, AppSpacing.md),
           decoration: BoxDecoration(
             color: style.bg,
             borderRadius: BorderRadius.circular(AppRadius.medium),
-            border: Border.all(color: style.border.withValues(alpha: 0.4)),
+            border: Border.all(color: style.border.withValues(alpha: 0.45)),
+            boxShadow: [
+              BoxShadow(
+                color: style.border.withValues(alpha: isDark ? 0.18 : 0.1),
+                blurRadius: 18,
+                spreadRadius: -6,
+              ),
+            ],
           ),
           child: Row(
             children: [
+              Container(
+                width: 3,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: style.iconColor,
+                  borderRadius: BorderRadius.circular(2),
+                  boxShadow: [
+                    BoxShadow(color: style.iconColor, blurRadius: 8),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
               Icon(style.icon, size: 18, color: style.iconColor),
               const SizedBox(width: AppSpacing.md),
               Expanded(

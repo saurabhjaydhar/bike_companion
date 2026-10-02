@@ -27,6 +27,20 @@ class SectionHeader extends StatelessWidget {
           horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
       child: Row(
         children: [
+          Container(
+            width: 4,
+            height: 16,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(2),
+              boxShadow: [
+                BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.6),
+                    blurRadius: 8),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               title,
@@ -38,8 +52,7 @@ class SectionHeader extends StatelessWidget {
               onTap: onAction,
               child: Text(
                 actionLabel!,
-                style: AppTextStyles.captionMedium
-                    .copyWith(color: AppColors.primary),
+                style: AppTextStyles.label.copyWith(color: AppColors.primary),
               ),
             ),
         ],

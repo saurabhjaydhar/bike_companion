@@ -10,19 +10,20 @@ import '../../core/theme/app_text_styles.dart';
 import '../../data/models/expense.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hud_panel.dart';
 import 'expenses_provider.dart';
 
 const _uuid = Uuid();
 
 const _categoryColors = <String, Color>{
-  'fuel': Color(0xFF1A56DB),
-  'service': Color(0xFF0E9F6E),
-  'parts': Color(0xFF8B5CF6),
-  'insurance': Color(0xFFF59E0B),
-  'parking': Color(0xFF06B6D4),
-  'accessories': Color(0xFFEC4899),
-  'fine': Color(0xFFEF4444),
-  'other': Color(0xFF9CA3AF),
+  'fuel': AppColors.primary,
+  'service': Color(0xFF22D98E),
+  'parts': Color(0xFFA78BFA),
+  'insurance': Color(0xFFFFC233),
+  'parking': AppColors.accent,
+  'accessories': Color(0xFFFF4FD8),
+  'fine': Color(0xFFFF4D6A),
+  'other': Color(0xFF8B93A7),
 };
 
 class ExpensesScreen extends ConsumerWidget {
@@ -322,8 +323,6 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
@@ -337,13 +336,9 @@ class _SummaryCard extends StatelessWidget {
         : null;
     final isLess = diff != null && diff < 0;
 
-    return Container(
+    return HudPanel(
+      glow: AppColors.primary,
       padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: border),
-      ),
       child: Row(
         children: [
           Expanded(
@@ -352,11 +347,11 @@ class _SummaryCard extends StatelessWidget {
               children: [
                 Text(l.expensesTotalSpent,
                     style:
-                        AppTextStyles.caption.copyWith(color: textSecondary)),
+                        AppTextStyles.label.copyWith(color: textSecondary)),
                 const SizedBox(height: AppSpacing.xs),
                 Text(rupee.format(total),
-                    style: AppTextStyles.heading1
-                        .copyWith(color: textPrimary)),
+                    style: AppTextStyles.metric
+                        .copyWith(color: textPrimary, fontSize: 32)),
                 if (diff != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Row(children: [

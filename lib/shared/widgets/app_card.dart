@@ -33,7 +33,7 @@ class AppCard extends StatelessWidget {
         duration: AppDuration.fast,
         decoration: BoxDecoration(
           color: surface,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
+          borderRadius: BorderRadius.circular(AppRadius.large),
           border: Border.all(color: border),
         ),
         clipBehavior: Clip.antiAlias,

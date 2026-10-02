@@ -10,6 +10,8 @@ import '../../data/models/health_score.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/alert_banner.dart';
 import '../../shared/widgets/health_ring.dart';
+import '../../shared/widgets/hud_panel.dart';
+import '../../shared/widgets/plate_badge.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/section_header.dart';
 import '../../shared/widgets/shimmer_box.dart';
@@ -141,6 +143,10 @@ class _BikeSwitcherRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final border = isDark ? AppColors.borderDark : AppColors.border;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     return SizedBox(
       height: 40,
       child: ListView.separated(
@@ -163,17 +169,24 @@ class _BikeSwitcherRow extends ConsumerWidget {
               duration: AppDuration.normal,
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-              decoration: BoxDecoration(
+              decoration: ShapeDecoration(
                 color: isActive
                     ? AppColors.primary
                     : Colors.transparent,
-                borderRadius:
-                    BorderRadius.circular(AppRadius.full),
-                border: Border.all(
-                  color: isActive
-                      ? AppColors.primary
-                      : AppColors.border,
+                shape: BeveledRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                  side: BorderSide(
+                    color: isActive ? AppColors.primary : border,
+                  ),
                 ),
+                shadows: [
+                  if (isActive)
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.45),
+                      blurRadius: 14,
+                      spreadRadius: -4,
+                    ),
+                ],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -191,10 +204,11 @@ class _BikeSwitcherRow extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     bike.name,
-                    style: AppTextStyles.captionMedium.copyWith(
+                    style: AppTextStyles.label.copyWith(
+                      fontSize: 13,
                       color: isActive
                           ? Colors.white
-                          : AppColors.textSecondary,
+                          : textSecondary,
                     ),
                   ),
                 ],
@@ -221,45 +235,66 @@ class _HealthHero extends StatelessWidget {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
+    final gradeColor =
+        HealthRing.gradeColor(dash.healthScore.grade, isDark: isDark);
     final rupeeFormat = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l = context.l10n;
+    final bike = dash.bike;
 
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(color: border),
-        ),
-        child: Row(
+      child: HudPanel(
+        glow: gradeColor,
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xl),
+        child: Column(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${bike.brand} ${bike.model}'.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.label.copyWith(color: textSecondary),
+                  ),
+                ),
+                PlateBadge(bike.regNumber),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
             HealthRing(
               score: dash.healthScore.score,
               grade: dash.healthScore.grade,
-              size: 88,
+              size: 184,
             ),
-            const SizedBox(width: AppSpacing.xl),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Text(
+              l.healthGradeLabel(dash.healthScore.grade),
+              textAlign: TextAlign.center,
+              style: AppTextStyles.heading3.copyWith(color: gradeColor),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: (isDark ? Colors.white : Colors.black)
+                    .withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(l.healthGradeLabel(dash.healthScore.grade),
-                      style: AppTextStyles.bodySemiBold
-                          .copyWith(color: textPrimary)),
-                  const SizedBox(height: AppSpacing.xs),
                   Text(l.dashboardThisMonth,
-                      style: AppTextStyles.caption
+                      style: AppTextStyles.label
                           .copyWith(color: textSecondary)),
+                  const SizedBox(width: AppSpacing.md),
                   Text(
                     rupeeFormat.format(dash.monthTotal),
-                    style: AppTextStyles.heading2
-                        .copyWith(color: textPrimary),
+                    style: AppTextStyles.metric
+                        .copyWith(color: textPrimary, fontSize: 22),
                   ),
                 ],
               ),
@@ -294,7 +329,8 @@ class _QuickStats extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         children: [
-          Row(
+          IntrinsicHeight(child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: StatCard(
@@ -321,9 +357,10 @@ class _QuickStats extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          )),
           const SizedBox(height: AppSpacing.md),
-          Row(
+          IntrinsicHeight(child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: StatCard(
@@ -348,7 +385,7 @@ class _QuickStats extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          )),
         ],
       ),
     );

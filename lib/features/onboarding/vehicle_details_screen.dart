@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/providers/active_bike_provider.dart';
-import '../../core/providers/vehicle_details_provider.dart';
+import '../../core/services/rc_scan_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/bike.dart';
@@ -15,18 +17,23 @@ import '../../data/repositories/bike_repository.dart';
 import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
+import '../../shared/widgets/colour_picker.dart';
 import '../../shared/widgets/primary_button.dart';
 
 const _uuid = Uuid();
 
+/// Review / edit form for a new bike. Used for all three add-bike paths:
+/// pre-filled from an RC scan or lookup, or empty for manual entry.
 class VehicleDetailsScreen extends ConsumerStatefulWidget {
   final Vehicle vehicle;
+  final VehiclePrefill source;
   final bool prefillSuccess;
   final String? failureReason;
 
   const VehicleDetailsScreen({
     super.key,
     required this.vehicle,
+    this.source = VehiclePrefill.lookup,
     required this.prefillSuccess,
     this.failureReason,
   });
@@ -37,8 +44,9 @@ class VehicleDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
-  // Text controllers — initialised once from vehicle, drive UI display.
-  // onChanged keeps the notifier in sync for save.
+  late final TextEditingController _rcCtrl;
+  late final TextEditingController _nameCtrl;
+  late final TextEditingController _odometerCtrl;
   late final TextEditingController _manufacturerCtrl;
   late final TextEditingController _brandCtrl;
   late final TextEditingController _modelCtrl;
@@ -48,12 +56,15 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   late final TextEditingController _engineCtrl;
   late final TextEditingController _chassisCtrl;
 
-  // Date state — held locally and synced to notifier.
+  String _colourHex = '#1A56DB';
   DateTime? _registrationDate;
   DateTime? _insuranceExpiry;
+  DateTime? _pucExpiry;
 
+  String? _rcError;
   String? _brandError;
   String? _modelError;
+  String? _odometerError;
   String? _saveError;
   bool _saving = false;
 
@@ -61,6 +72,9 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   void initState() {
     super.initState();
     final v = widget.vehicle;
+    _rcCtrl = TextEditingController(text: v.rcNumber);
+    _nameCtrl = TextEditingController();
+    _odometerCtrl = TextEditingController();
     _manufacturerCtrl = TextEditingController(text: v.manufacturer ?? '');
     _brandCtrl = TextEditingController(text: v.brand ?? '');
     _modelCtrl = TextEditingController(text: v.model ?? '');
@@ -75,89 +89,94 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
 
   @override
   void dispose() {
-    _manufacturerCtrl.dispose();
-    _brandCtrl.dispose();
-    _modelCtrl.dispose();
-    _variantCtrl.dispose();
-    _fuelTypeCtrl.dispose();
-    _vehicleClassCtrl.dispose();
-    _engineCtrl.dispose();
-    _chassisCtrl.dispose();
+    for (final c in [
+      _rcCtrl, _nameCtrl, _odometerCtrl, _manufacturerCtrl, _brandCtrl,
+      _modelCtrl, _variantCtrl, _fuelTypeCtrl, _vehicleClassCtrl,
+      _engineCtrl, _chassisCtrl,
+    ]) {
+      c.dispose();
+    }
     super.dispose();
   }
 
-  VehicleDetailsNotifier get _notifier =>
-      ref.read(vehicleDetailsProvider(widget.vehicle).notifier);
-
-  Future<void> _pickDate({
-    required bool isRegistration,
+  Future<DateTime?> _pickDate({
+    required DateTime? initial,
     required DateTime firstDate,
     required DateTime lastDate,
-  }) async {
-    final initial = isRegistration
-        ? (_registrationDate ?? DateTime.now())
-        : (_insuranceExpiry ?? DateTime.now());
-
-    final picked = await showDatePicker(
+  }) {
+    final now = DateTime.now();
+    var start = initial ?? now;
+    if (start.isBefore(firstDate)) start = firstDate;
+    if (start.isAfter(lastDate)) start = lastDate;
+    return showDatePicker(
       context: context,
-      initialDate: initial,
+      initialDate: start,
       firstDate: firstDate,
       lastDate: lastDate,
     );
-    if (picked == null) return;
+  }
 
-    setState(() {
-      if (isRegistration) {
-        _registrationDate = picked;
-        _notifier.setRegistrationDate(picked);
-      } else {
-        _insuranceExpiry = picked;
-        _notifier.setInsuranceExpiry(picked);
-      }
-    });
+  String? _text(TextEditingController c) {
+    final t = c.text.trim();
+    return t.isEmpty ? null : t;
   }
 
   Future<void> _save() async {
+    final l = context.l10n;
+    final rc = normalizeRegNumber(_rcCtrl.text);
     final brand = _brandCtrl.text.trim();
     final model = _modelCtrl.text.trim();
-
-    bool hasError = false;
-    if (brand.isEmpty) {
-      setState(() => _brandError = context.l10n.vehicleBrandRequired);
-      hasError = true;
-    }
-    if (model.isEmpty) {
-      setState(() => _modelError = context.l10n.vehicleModelRequired);
-      hasError = true;
-    }
-    if (hasError) return;
+    final odometerText = _odometerCtrl.text.trim();
+    final odometer = odometerText.isEmpty ? 0 : int.tryParse(odometerText);
 
     setState(() {
-      _brandError = null;
-      _modelError = null;
+      _rcError = rc.isEmpty
+          ? l.validationRequired
+          : (isValidRegNumber(rc) ? null : l.addBikeInvalidFormat);
+      _brandError = brand.isEmpty ? l.vehicleBrandRequired : null;
+      _modelError = model.isEmpty ? l.vehicleModelRequired : null;
+      _odometerError = odometer == null ? l.validationEnterNumber : null;
+    });
+    if (_rcError != null ||
+        _brandError != null ||
+        _modelError != null ||
+        _odometerError != null) {
+      return;
+    }
+
+    setState(() {
       _saveError = null;
       _saving = true;
     });
 
     try {
-      final variant = _variantCtrl.text.trim();
       final bike = Bike(
         id: _uuid.v4(),
-        name: '$brand $model',
+        name: _text(_nameCtrl) ?? '$brand $model',
         brand: brand,
         model: model,
-        variant: variant.isEmpty ? null : variant,
-        colourHex: '#1A56DB',
-        regNumber: widget.vehicle.rcNumber,
+        variant: _text(_variantCtrl),
+        colourHex: _colourHex,
+        regNumber: rc,
         purchaseDate: _registrationDate,
-        odometerCurrent: 0,
-        odometerOfficial: 0,
+        odometerCurrent: odometer!,
+        odometerOfficial: odometer,
         insuranceExpiry: _insuranceExpiry,
-        pucExpiry: null,
+        pucExpiry: _pucExpiry,
         createdAt: DateTime.now(),
+        manufacturer: _text(_manufacturerCtrl),
+        fuelType: _text(_fuelTypeCtrl),
+        vehicleClass: _text(_vehicleClassCtrl),
+        engineNumber: _text(_engineCtrl)?.toUpperCase(),
+        chassisNumber: _text(_chassisCtrl)?.toUpperCase(),
       );
 
       await getIt<BikeRepository>().insertBike(bike);
+
+      // First bike completes onboarding; otherwise the router would send
+      // the user back to the welcome screen.
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(SharedPrefKeys.isOnboardingDone, true);
 
       ref.invalidate(garageProvider);
       await setActiveBike(ref, bike.id);
@@ -165,7 +184,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
       if (mounted) context.go('/garage/dashboard/${bike.id}');
     } catch (_) {
       if (mounted) {
-        setState(() => _saveError = context.l10n.vehicleSaveFailed);
+        setState(() => _saveError = l.vehicleSaveFailed);
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -178,6 +197,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final l = context.l10n;
+    final now = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -187,9 +207,6 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
         ),
         title: Text(l.vehicleDetailsTitle,
             style: AppTextStyles.heading3.copyWith(color: textPrimary)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
       ),
       body: SafeArea(
         child: Column(
@@ -201,20 +218,71 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Status banner
-                    _StatusBanner(
-                      success: widget.prefillSuccess,
-                      failureReason: widget.failureReason,
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
+                    if (widget.source != VehiclePrefill.manual) ...[
+                      _StatusBanner(
+                        source: widget.source,
+                        success: widget.prefillSuccess,
+                        failureReason: widget.failureReason,
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                    ],
 
                     // ── REGISTRATION ─────────────────────────────────────
                     _SectionLabel(l.vehicleSectionRegistration),
                     const SizedBox(height: AppSpacing.md),
-                    _LockedField(
-                      label: l.vehicleRcNumber,
-                      value: widget.vehicle.rcNumber,
+                    _FormField(
+                      label: '${l.vehicleRcNumber} *',
+                      controller: _rcCtrl,
                       isDark: isDark,
+                      errorText: _rcError,
+                      hintText: 'MH12DE1234',
+                      latin: true,
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          final text = normalizeRegNumber(newValue.text);
+                          return TextEditingValue(
+                            text: text,
+                            selection:
+                                TextSelection.collapsed(offset: text.length),
+                          );
+                        }),
+                      ],
+                      onChanged: (_) {
+                        if (_rcError != null) setState(() => _rcError = null);
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // ── YOUR BIKE ─────────────────────────────────────────
+                    _SectionLabel(l.vehicleSectionYourBike),
+                    const SizedBox(height: AppSpacing.md),
+                    _FormField(
+                      label: l.fieldNickname,
+                      controller: _nameCtrl,
+                      isDark: isDark,
+                      hintText: l.fieldNicknameHint,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _FieldLabel(l.fieldColour, isDark: isDark),
+                    const SizedBox(height: AppSpacing.sm),
+                    ColourPicker(
+                      selected: _colourHex,
+                      onChanged: (v) => setState(() => _colourHex = v),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _FormField(
+                      label: l.fieldCurrentOdometer,
+                      controller: _odometerCtrl,
+                      isDark: isDark,
+                      hintText: '0',
+                      errorText: _odometerError,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (_) {
+                        if (_odometerError != null) {
+                          setState(() => _odometerError = null);
+                        }
+                      },
                     ),
                     const SizedBox(height: AppSpacing.xl),
 
@@ -222,22 +290,14 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     _SectionLabel(l.vehicleSectionInfo),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
-                      label: l.vehicleManufacturer,
-                      controller: _manufacturerCtrl,
-                      isDark: isDark,
-                      onChanged: _notifier.updateManufacturer,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    _FormField(
                       label: '${l.fieldBrand} *',
                       controller: _brandCtrl,
                       isDark: isDark,
                       errorText: _brandError,
-                      onChanged: (v) {
+                      onChanged: (_) {
                         if (_brandError != null) {
                           setState(() => _brandError = null);
                         }
-                        _notifier.updateBrand(v);
                       },
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -246,11 +306,11 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                       controller: _modelCtrl,
                       isDark: isDark,
                       errorText: _modelError,
-                      onChanged: (v) {
+                      hintText: l.fieldModelHint,
+                      onChanged: (_) {
                         if (_modelError != null) {
                           setState(() => _modelError = null);
                         }
-                        _notifier.updateModel(v);
                       },
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -258,21 +318,24 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                       label: l.vehicleVariant,
                       controller: _variantCtrl,
                       isDark: isDark,
-                      onChanged: _notifier.updateVariant,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _FormField(
+                      label: l.vehicleManufacturer,
+                      controller: _manufacturerCtrl,
+                      isDark: isDark,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
                       label: l.vehicleFuelType,
                       controller: _fuelTypeCtrl,
                       isDark: isDark,
-                      onChanged: _notifier.updateFuelType,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
                       label: l.vehicleClass,
                       controller: _vehicleClassCtrl,
                       isDark: isDark,
-                      onChanged: _notifier.updateVehicleClass,
                     ),
                     const SizedBox(height: AppSpacing.xl),
 
@@ -283,23 +346,39 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                       label: l.vehicleRegistrationDate,
                       value: _registrationDate,
                       isDark: isDark,
-                      onTap: () => _pickDate(
-                        isRegistration: true,
-                        firstDate: DateTime(1980),
-                        lastDate: DateTime.now(),
-                      ),
+                      onTap: () async {
+                        final d = await _pickDate(
+                            initial: _registrationDate,
+                            firstDate: DateTime(1980),
+                            lastDate: now);
+                        if (d != null) setState(() => _registrationDate = d);
+                      },
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _DatePickerField(
                       label: l.fieldInsuranceExpiry,
                       value: _insuranceExpiry,
                       isDark: isDark,
-                      onTap: () => _pickDate(
-                        isRegistration: false,
-                        firstDate: DateTime.now()
-                            .subtract(const Duration(days: 365)),
-                        lastDate: DateTime(2050),
-                      ),
+                      onTap: () async {
+                        final d = await _pickDate(
+                            initial: _insuranceExpiry,
+                            firstDate: now.subtract(const Duration(days: 365)),
+                            lastDate: DateTime(2050));
+                        if (d != null) setState(() => _insuranceExpiry = d);
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _DatePickerField(
+                      label: l.fieldPucExpiry,
+                      value: _pucExpiry,
+                      isDark: isDark,
+                      onTap: () async {
+                        final d = await _pickDate(
+                            initial: _pucExpiry,
+                            firstDate: now.subtract(const Duration(days: 365)),
+                            lastDate: DateTime(2050));
+                        if (d != null) setState(() => _pucExpiry = d);
+                      },
                     ),
                     const SizedBox(height: AppSpacing.xl),
 
@@ -310,14 +389,14 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                       label: l.vehicleEngineNumber,
                       controller: _engineCtrl,
                       isDark: isDark,
-                      onChanged: _notifier.updateEngineNumber,
+                      latin: true,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
                       label: l.vehicleChassisNumber,
                       controller: _chassisCtrl,
                       isDark: isDark,
-                      onChanged: _notifier.updateChassisNumber,
+                      latin: true,
                     ),
 
                     if (_saveError != null) ...[
@@ -363,20 +442,31 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
 // Status banner
 // ---------------------------------------------------------------------------
 class _StatusBanner extends StatelessWidget {
+  final VehiclePrefill source;
   final bool success;
   final String? failureReason;
 
-  const _StatusBanner({required this.success, this.failureReason});
+  const _StatusBanner({
+    required this.source,
+    required this.success,
+    this.failureReason,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = context.l10n;
     final color = success
         ? (isDark ? AppColors.successDark : AppColors.success)
-        : (isDark ? AppColors.dangerDark : AppColors.danger);
-    final message = success
-        ? context.l10n.vehicleFetchSuccess
-        : context.l10n.vehicleFetchFailure;
+        : (isDark ? AppColors.warningDark : AppColors.warning);
+    final message = switch ((source, success)) {
+      (VehiclePrefill.scan, true) => l.vehicleScanSuccess,
+      (VehiclePrefill.scan, false) => l.vehicleScanFailure,
+      (_, true) => l.vehicleFetchSuccess,
+      (_, false) => failureReason != null
+          ? '$failureReason ${l.vehicleFetchFailure}'
+          : l.vehicleFetchFailure,
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -392,7 +482,7 @@ class _StatusBanner extends StatelessWidget {
           Icon(
             success
                 ? Icons.check_circle_outline_rounded
-                : Icons.error_outline_rounded,
+                : Icons.info_outline_rounded,
             color: color,
             size: 18,
           ),
@@ -427,21 +517,46 @@ class _SectionLabel extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Standard editable form field
+// Field label + standard editable form field
 // ---------------------------------------------------------------------------
+class _FieldLabel extends StatelessWidget {
+  final String text;
+  final bool isDark;
+  const _FieldLabel(this.text, {required this.isDark});
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        style: AppTextStyles.caption.copyWith(
+          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+        ),
+      );
+}
+
 class _FormField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final bool isDark;
   final String? errorText;
+  final String? hintText;
   final ValueChanged<String>? onChanged;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// Codes such as registration, engine and chassis numbers: always
+  /// left-to-right, upper case, in the instrument font.
+  final bool latin;
 
   const _FormField({
     required this.label,
     required this.controller,
     required this.isDark,
     this.errorText,
+    this.hintText,
     this.onChanged,
+    this.keyboardType,
+    this.inputFormatters,
+    this.latin = false,
   });
 
   @override
@@ -449,61 +564,22 @@ class _FormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: AppTextStyles.caption.copyWith(
-            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
-          ),
-        ),
+        _FieldLabel(label, isDark: isDark),
         const SizedBox(height: AppSpacing.xs),
         TextField(
           controller: controller,
           onChanged: onChanged,
-          decoration: InputDecoration(errorText: errorText),
-        ),
-      ],
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Read-only locked field (RC number)
-// ---------------------------------------------------------------------------
-class _LockedField extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool isDark;
-
-  const _LockedField({
-    required this.label,
-    required this.value,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.caption.copyWith(color: textSecondary),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        TextField(
-          readOnly: true,
-          controller: TextEditingController(text: value),
-          textDirection: TextDirection.ltr,
-          style: GoogleFonts.inter(
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.5,
-          ),
-          decoration: InputDecoration(
-            suffixIcon: Icon(Icons.lock_outline_rounded,
-                size: 16, color: textSecondary),
-          ),
+          keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
+          textDirection: latin ? TextDirection.ltr : null,
+          textCapitalization: latin
+              ? TextCapitalization.characters
+              : TextCapitalization.sentences,
+          style: latin
+              ? GoogleFonts.chakraPetch(
+                  fontWeight: FontWeight.w600, letterSpacing: 1.2)
+              : null,
+          decoration: InputDecoration(errorText: errorText, hintText: hintText),
         ),
       ],
     );

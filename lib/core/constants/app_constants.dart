@@ -75,6 +75,7 @@ class SharedPrefKeys {
   static const String isOnboardingDone = 'is_onboarding_done';
   static const String themeMode = 'theme_mode';
   static const String locale = 'locale';
+  static const String rcScanUseGemini = 'rc_scan_use_gemini';
 }
 
 const List<String> kIndianBrands = [

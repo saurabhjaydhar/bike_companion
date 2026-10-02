@@ -25,6 +25,31 @@ void main() {
       createdAt: now,
     );
 
+    test('round-trips RC details through toMap/fromMap', () {
+      final withRc = Bike(
+        id: 'b9',
+        name: 'Bullet',
+        brand: 'Royal Enfield',
+        model: 'Classic 350',
+        colourHex: '#1A56DB',
+        regNumber: 'MH12DE1234',
+        odometerCurrent: 100,
+        odometerOfficial: 100,
+        createdAt: DateTime(2024, 1, 1),
+        manufacturer: 'Royal Enfield',
+        fuelType: 'Petrol',
+        vehicleClass: 'M-Cycle',
+        engineNumber: 'U3S5C1AB1234',
+        chassisNumber: 'ME3U3S5C1AB123456',
+      );
+      final copy = Bike.fromMap(withRc.toMap());
+      expect(copy.fuelType, 'Petrol');
+      expect(copy.vehicleClass, 'M-Cycle');
+      expect(copy.engineNumber, 'U3S5C1AB1234');
+      expect(copy.chassisNumber, 'ME3U3S5C1AB123456');
+      expect(copy.manufacturer, 'Royal Enfield');
+    });
+
     test('colour getter parses hex correctly', () {
       final color = bike.colour;
       expect(color.r, closeTo(26 / 255, 0.01));

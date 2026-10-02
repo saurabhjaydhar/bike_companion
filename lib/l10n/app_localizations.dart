@@ -284,12 +284,6 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get commonContinue;
 
-  /// No description provided for @commonNext.
-  ///
-  /// In en, this message translates to:
-  /// **'Next'**
-  String get commonNext;
-
   /// No description provided for @authSignInFailed.
   ///
   /// In en, this message translates to:
@@ -356,24 +350,6 @@ abstract class AppLocalizations {
   /// **'Get started'**
   String get onboardingGetStarted;
 
-  /// No description provided for @onboardingAboutBikeTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tell us about\nyour bike'**
-  String get onboardingAboutBikeTitle;
-
-  /// No description provided for @onboardingImportantDates.
-  ///
-  /// In en, this message translates to:
-  /// **'Important dates'**
-  String get onboardingImportantDates;
-
-  /// No description provided for @onboardingRemindBody.
-  ///
-  /// In en, this message translates to:
-  /// **'We\'ll remind you before anything expires.'**
-  String get onboardingRemindBody;
-
   /// No description provided for @onboardingAddMyBike.
   ///
   /// In en, this message translates to:
@@ -415,18 +391,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Colour'**
   String get fieldColour;
-
-  /// No description provided for @fieldRegNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Registration number'**
-  String get fieldRegNumber;
-
-  /// No description provided for @fieldPurchaseDateOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'Purchase date (optional)'**
-  String get fieldPurchaseDateOptional;
 
   /// No description provided for @fieldSelectDate.
   ///
@@ -1603,6 +1567,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fuel economy slightly declining — monitor it'**
   String get healthEconomyDeclining;
+
+  /// No description provided for @addBikeHubSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan your RC card, or fill in the details yourself.'**
+  String get addBikeHubSubtitle;
+
+  /// No description provided for @addBikeScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan RC card'**
+  String get addBikeScanTitle;
+
+  /// No description provided for @addBikeScanBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap your RC and we\'ll fill in the details.'**
+  String get addBikeScanBody;
+
+  /// No description provided for @addBikeManualTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter manually'**
+  String get addBikeManualTitle;
+
+  /// No description provided for @addBikeManualBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Type in your bike\'s details yourself.'**
+  String get addBikeManualBody;
+
+  /// No description provided for @addBikeLookupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Look up by number'**
+  String get addBikeLookupTitle;
+
+  /// No description provided for @scanTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get scanTakePhoto;
+
+  /// No description provided for @scanChooseGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get scanChooseGallery;
+
+  /// No description provided for @scanUseGemini.
+  ///
+  /// In en, this message translates to:
+  /// **'Read with Gemini AI'**
+  String get scanUseGemini;
+
+  /// No description provided for @scanUseGeminiBody.
+  ///
+  /// In en, this message translates to:
+  /// **'More accurate. Your RC photo is sent to Google to read the vehicle details. When off, the photo is read on your phone only.'**
+  String get scanUseGeminiBody;
+
+  /// No description provided for @scanReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your RC…'**
+  String get scanReading;
+
+  /// No description provided for @vehicleScanSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Details read from your RC. Check everything before saving.'**
+  String get vehicleScanSuccess;
+
+  /// No description provided for @vehicleScanFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read your RC clearly. Please fill in the details below.'**
+  String get vehicleScanFailure;
+
+  /// No description provided for @vehicleSectionYourBike.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR BIKE'**
+  String get vehicleSectionYourBike;
 }
 
 class _AppLocalizationsDelegate

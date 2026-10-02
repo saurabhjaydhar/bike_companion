@@ -46,7 +46,7 @@ class GarageScreen extends ConsumerWidget {
               heading: l.garageEmptyTitle,
               body: l.garageEmptyBody,
               ctaLabel: l.onboardingAddMyBike,
-              onCta: () => context.go('/onboarding'),
+              onCta: () => context.push('/onboarding/add-bike'),
             );
           }
 
@@ -100,7 +100,7 @@ class GarageScreen extends ConsumerWidget {
                 GestureDetector(
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    context.push('/onboarding');
+                    context.push('/onboarding/add-bike');
                   },
                   child: Container(
                     height: 56,

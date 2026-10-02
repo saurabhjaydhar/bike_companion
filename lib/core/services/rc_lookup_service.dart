@@ -15,10 +15,19 @@ class RcLookupResult {
   const RcLookupResult({required this.status, this.vehicle});
 }
 
+/// Looks up RC details by registration number through a VAHAN-connected
+/// data provider. Configure at build time:
+///   `--dart-define=RC_LOOKUP_URL=https://your-proxy.example/rc/lookup`
+///   `--dart-define=RC_LOOKUP_KEY=...` (optional)
+/// Point the URL at your own backend (e.g. a Cloud Function) that holds the
+/// provider's credentials — a key compiled into the app can be extracted.
+/// The lookup option is hidden in the app until a URL is set.
 class RcLookupService {
-  static const _url = 'https://your-rc-api.example.com/v1/rc/lookup';
-  static const _apiKey = 'YOUR_KEY';
+  static const _url = String.fromEnvironment('RC_LOOKUP_URL');
+  static const _apiKey = String.fromEnvironment('RC_LOOKUP_KEY');
   static const _timeout = Duration(seconds: 15);
+
+  static bool get isConfigured => _url.isNotEmpty;
 
   Future<RcLookupResult> lookup(String rcNumber) async {
     try {
@@ -26,9 +35,8 @@ class RcLookupService {
 
       final request =
           await client.postUrl(Uri.parse(_url)).timeout(_timeout);
-      request.headers
-        ..set(HttpHeaders.contentTypeHeader, 'application/json')
-        ..set('x-api-key', _apiKey);
+      request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
+      if (_apiKey.isNotEmpty) request.headers.set('x-api-key', _apiKey);
       request.write(jsonEncode({'reg_no': rcNumber}));
 
       final response = await request.close().timeout(_timeout);

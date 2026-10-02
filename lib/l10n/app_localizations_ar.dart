@@ -100,9 +100,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonContinue => 'متابعة';
 
   @override
-  String get commonNext => 'التالي';
-
-  @override
   String authSignInFailed(String error) {
     return 'فشل تسجيل الدخول: $error';
   }
@@ -141,15 +138,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingGetStarted => 'ابدأ الآن';
 
   @override
-  String get onboardingAboutBikeTitle => 'أخبرنا عن\nدراجتك';
-
-  @override
-  String get onboardingImportantDates => 'تواريخ مهمة';
-
-  @override
-  String get onboardingRemindBody => 'سنذكّرك قبل انتهاء صلاحية أي شيء.';
-
-  @override
   String get onboardingAddMyBike => 'أضف دراجتي';
 
   @override
@@ -169,12 +157,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fieldColour => 'اللون';
-
-  @override
-  String get fieldRegNumber => 'رقم التسجيل';
-
-  @override
-  String get fieldPurchaseDateOptional => 'تاريخ الشراء (اختياري)';
 
   @override
   String get fieldSelectDate => 'اختر التاريخ';
@@ -902,4 +884,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get healthEconomyDeclining => 'كفاءة الوقود تنخفض قليلًا — راقبها';
+
+  @override
+  String get addBikeHubSubtitle =>
+      'امسح بطاقة RC ضوئيًا أو أدخل البيانات بنفسك.';
+
+  @override
+  String get addBikeScanTitle => 'مسح بطاقة RC';
+
+  @override
+  String get addBikeScanBody => 'التقط صورة لبطاقة RC وسنملأ البيانات.';
+
+  @override
+  String get addBikeManualTitle => 'إدخال يدوي';
+
+  @override
+  String get addBikeManualBody => 'اكتب بيانات دراجتك بنفسك.';
+
+  @override
+  String get addBikeLookupTitle => 'البحث برقم اللوحة';
+
+  @override
+  String get scanTakePhoto => 'التقاط صورة';
+
+  @override
+  String get scanChooseGallery => 'اختيار من المعرض';
+
+  @override
+  String get scanUseGemini => 'القراءة باستخدام Gemini AI';
+
+  @override
+  String get scanUseGeminiBody =>
+      'أكثر دقة. تُرسل صورة بطاقة RC إلى Google لقراءة بيانات المركبة. عند الإيقاف، تُقرأ الصورة على هاتفك فقط.';
+
+  @override
+  String get scanReading => 'جارٍ قراءة بطاقة RC…';
+
+  @override
+  String get vehicleScanSuccess =>
+      'تمت قراءة البيانات من بطاقة RC. راجع كل شيء قبل الحفظ.';
+
+  @override
+  String get vehicleScanFailure =>
+      'تعذّرت قراءة بطاقة RC بوضوح. يُرجى إدخال البيانات أدناه.';
+
+  @override
+  String get vehicleSectionYourBike => 'دراجتك';
 }

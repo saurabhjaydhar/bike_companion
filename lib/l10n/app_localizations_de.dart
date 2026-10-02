@@ -101,9 +101,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commonContinue => 'Weiter';
 
   @override
-  String get commonNext => 'Weiter';
-
-  @override
   String authSignInFailed(String error) {
     return 'Anmeldung fehlgeschlagen: $error';
   }
@@ -144,15 +141,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingGetStarted => 'Los geht\'s';
 
   @override
-  String get onboardingAboutBikeTitle => 'Erzähl uns von\ndeinem Bike';
-
-  @override
-  String get onboardingImportantDates => 'Wichtige Termine';
-
-  @override
-  String get onboardingRemindBody => 'Wir erinnern dich, bevor etwas abläuft.';
-
-  @override
   String get onboardingAddMyBike => 'Bike hinzufügen';
 
   @override
@@ -172,12 +160,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get fieldColour => 'Farbe';
-
-  @override
-  String get fieldRegNumber => 'Kennzeichen';
-
-  @override
-  String get fieldPurchaseDateOptional => 'Kaufdatum (optional)';
 
   @override
   String get fieldSelectDate => 'Datum wählen';
@@ -888,4 +870,51 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get healthEconomyDeclining =>
       'Verbrauch verschlechtert sich leicht – im Auge behalten';
+
+  @override
+  String get addBikeHubSubtitle =>
+      'Scanne deine RC-Karte oder trag die Daten selbst ein.';
+
+  @override
+  String get addBikeScanTitle => 'RC-Karte scannen';
+
+  @override
+  String get addBikeScanBody =>
+      'Fotografiere deine RC – wir füllen die Daten aus.';
+
+  @override
+  String get addBikeManualTitle => 'Manuell eingeben';
+
+  @override
+  String get addBikeManualBody => 'Gib die Daten deines Bikes selbst ein.';
+
+  @override
+  String get addBikeLookupTitle => 'Per Kennzeichen suchen';
+
+  @override
+  String get scanTakePhoto => 'Foto aufnehmen';
+
+  @override
+  String get scanChooseGallery => 'Aus Galerie wählen';
+
+  @override
+  String get scanUseGemini => 'Mit Gemini AI lesen';
+
+  @override
+  String get scanUseGeminiBody =>
+      'Genauer. Dein RC-Foto wird an Google gesendet, um die Fahrzeugdaten zu lesen. Wenn aus, wird das Foto nur auf deinem Handy gelesen.';
+
+  @override
+  String get scanReading => 'RC wird gelesen…';
+
+  @override
+  String get vehicleScanSuccess =>
+      'Daten aus deiner RC gelesen. Prüfe alles vor dem Speichern.';
+
+  @override
+  String get vehicleScanFailure =>
+      'Deine RC konnte nicht klar gelesen werden. Bitte trag die Daten unten ein.';
+
+  @override
+  String get vehicleSectionYourBike => 'DEIN BIKE';
 }

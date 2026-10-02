@@ -128,3 +128,15 @@ class Vehicle {
   @override
   int get hashCode => rcNumber.hashCode;
 }
+
+final _regNumberPattern = RegExp(r'^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{1,4}$');
+final _bharatSeriesPattern = RegExp(r'^[0-9]{2}BH[0-9]{4}[A-Z]{1,2}$');
+
+/// Indian registration number, already normalized (no spaces, upper case).
+/// Accepts state series (MH12DE1234) and Bharat series (22BH1234AA).
+bool isValidRegNumber(String normalized) =>
+    _regNumberPattern.hasMatch(normalized) ||
+    _bharatSeriesPattern.hasMatch(normalized);
+
+/// How the vehicle details form was pre-filled.
+enum VehiclePrefill { manual, lookup, scan }

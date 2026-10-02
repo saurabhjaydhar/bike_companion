@@ -29,7 +29,6 @@
   "settingsDeleteAccountError": "Could not delete account. Please sign in again and retry.",
   "appTitle": "Bike Companion",
   "commonContinue": "Continue",
-  "commonNext": "Next",
   "authSignInFailed": "Sign-in failed: {error}",
   "@authSignInFailed": {
     "placeholders": {
@@ -48,9 +47,6 @@
   "onboardingWelcomeTitle": "Your bike,\nalways healthy",
   "onboardingWelcomeBody": "Track fuel, service, expenses and documents — all in one place. Know exactly when your bike needs attention.",
   "onboardingGetStarted": "Get started",
-  "onboardingAboutBikeTitle": "Tell us about\nyour bike",
-  "onboardingImportantDates": "Important dates",
-  "onboardingRemindBody": "We'll remind you before anything expires.",
   "onboardingAddMyBike": "Add my bike",
   "fieldBrand": "Brand",
   "fieldModel": "Model",
@@ -58,8 +54,6 @@
   "fieldNickname": "Nickname",
   "fieldNicknameHint": "What do you call it?",
   "fieldColour": "Colour",
-  "fieldRegNumber": "Registration number",
-  "fieldPurchaseDateOptional": "Purchase date (optional)",
   "fieldSelectDate": "Select date",
   "fieldCurrentOdometer": "Current odometer (km)",
   "fieldInsuranceExpiry": "Insurance expiry",
@@ -471,5 +465,19 @@
     }
   },
   "healthEconomyDropping": "Fuel economy dropping — service may be needed",
-  "healthEconomyDeclining": "Fuel economy slightly declining — monitor it"
+  "healthEconomyDeclining": "Fuel economy slightly declining — monitor it",
+  "addBikeHubSubtitle": "Scan your RC card, or fill in the details yourself.",
+  "addBikeScanTitle": "Scan RC card",
+  "addBikeScanBody": "Snap your RC and we'll fill in the details.",
+  "addBikeManualTitle": "Enter manually",
+  "addBikeManualBody": "Type in your bike's details yourself.",
+  "addBikeLookupTitle": "Look up by number",
+  "scanTakePhoto": "Take photo",
+  "scanChooseGallery": "Choose from gallery",
+  "scanUseGemini": "Read with Gemini AI",
+  "scanUseGeminiBody": "More accurate. Your RC photo is sent to Google to read the vehicle details. When off, the photo is read on your phone only.",
+  "scanReading": "Reading your RC…",
+  "vehicleScanSuccess": "Details read from your RC. Check everything before saving.",
+  "vehicleScanFailure": "Couldn't read your RC clearly. Please fill in the details below.",
+  "vehicleSectionYourBike": "YOUR BIKE"
 }

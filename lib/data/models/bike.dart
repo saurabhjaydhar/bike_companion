@@ -15,6 +15,13 @@ class Bike {
   final DateTime? pucExpiry;
   final DateTime createdAt;
 
+  // Registration (RC) details — all optional.
+  final String? manufacturer;
+  final String? fuelType;
+  final String? vehicleClass;
+  final String? engineNumber;
+  final String? chassisNumber;
+
   const Bike({
     required this.id,
     required this.name,
@@ -29,6 +36,11 @@ class Bike {
     this.insuranceExpiry,
     this.pucExpiry,
     required this.createdAt,
+    this.manufacturer,
+    this.fuelType,
+    this.vehicleClass,
+    this.engineNumber,
+    this.chassisNumber,
   });
 
   Color get colour {
@@ -61,6 +73,11 @@ class Bike {
             : null,
         createdAt:
             DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+        manufacturer: map['manufacturer'] as String?,
+        fuelType: map['fuel_type'] as String?,
+        vehicleClass: map['vehicle_class'] as String?,
+        engineNumber: map['engine_number'] as String?,
+        chassisNumber: map['chassis_number'] as String?,
       );
 
   Map<String, dynamic> toMap() => {
@@ -77,6 +94,11 @@ class Bike {
         'insurance_expiry': insuranceExpiry?.millisecondsSinceEpoch,
         'puc_expiry': pucExpiry?.millisecondsSinceEpoch,
         'created_at': createdAt.millisecondsSinceEpoch,
+        'manufacturer': manufacturer,
+        'fuel_type': fuelType,
+        'vehicle_class': vehicleClass,
+        'engine_number': engineNumber,
+        'chassis_number': chassisNumber,
       };
 
   Bike copyWith({
@@ -93,6 +115,11 @@ class Bike {
     DateTime? insuranceExpiry,
     DateTime? pucExpiry,
     DateTime? createdAt,
+    String? manufacturer,
+    String? fuelType,
+    String? vehicleClass,
+    String? engineNumber,
+    String? chassisNumber,
   }) =>
       Bike(
         id: id ?? this.id,
@@ -108,6 +135,11 @@ class Bike {
         insuranceExpiry: insuranceExpiry ?? this.insuranceExpiry,
         pucExpiry: pucExpiry ?? this.pucExpiry,
         createdAt: createdAt ?? this.createdAt,
+        manufacturer: manufacturer ?? this.manufacturer,
+        fuelType: fuelType ?? this.fuelType,
+        vehicleClass: vehicleClass ?? this.vehicleClass,
+        engineNumber: engineNumber ?? this.engineNumber,
+        chassisNumber: chassisNumber ?? this.chassisNumber,
       );
 
   @override

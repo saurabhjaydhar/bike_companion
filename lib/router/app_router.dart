@@ -195,7 +195,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             _fade(state, const OnboardingScreen()),
       ),
 
-      // RC lookup — add bike flow
+      // Add bike: scan RC, look up by number, or enter manually
       GoRoute(
         path: '/onboarding/add-bike',
         pageBuilder: (context, state) =>
@@ -209,6 +209,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             state,
             VehicleDetailsScreen(
               vehicle: extra['vehicle'] as Vehicle,
+              source: extra['source'] as VehiclePrefill? ??
+                  VehiclePrefill.lookup,
               prefillSuccess: extra['prefillSuccess'] as bool,
               failureReason: extra['failureReason'] as String?,
             ),

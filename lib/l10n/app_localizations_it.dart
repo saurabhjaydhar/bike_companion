@@ -101,9 +101,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get commonContinue => 'Continua';
 
   @override
-  String get commonNext => 'Avanti';
-
-  @override
   String authSignInFailed(String error) {
     return 'Accesso non riuscito: $error';
   }
@@ -144,15 +141,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get onboardingGetStarted => 'Inizia';
 
   @override
-  String get onboardingAboutBikeTitle => 'Parlaci della\ntua moto';
-
-  @override
-  String get onboardingImportantDates => 'Date importanti';
-
-  @override
-  String get onboardingRemindBody => 'Ti avviseremo prima di ogni scadenza.';
-
-  @override
   String get onboardingAddMyBike => 'Aggiungi la mia moto';
 
   @override
@@ -172,12 +160,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get fieldColour => 'Colore';
-
-  @override
-  String get fieldRegNumber => 'Targa';
-
-  @override
-  String get fieldPurchaseDateOptional => 'Data di acquisto (facoltativa)';
 
   @override
   String get fieldSelectDate => 'Seleziona data';
@@ -885,4 +867,50 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get healthEconomyDeclining =>
       'Consumi in leggero peggioramento — tienili d’occhio';
+
+  @override
+  String get addBikeHubSubtitle =>
+      'Scansiona la tua carta RC o inserisci i dati tu stesso.';
+
+  @override
+  String get addBikeScanTitle => 'Scansiona carta RC';
+
+  @override
+  String get addBikeScanBody => 'Fotografa la tua RC e compiliamo noi i dati.';
+
+  @override
+  String get addBikeManualTitle => 'Inserisci manualmente';
+
+  @override
+  String get addBikeManualBody => 'Scrivi tu i dati della tua moto.';
+
+  @override
+  String get addBikeLookupTitle => 'Cerca per targa';
+
+  @override
+  String get scanTakePhoto => 'Scatta foto';
+
+  @override
+  String get scanChooseGallery => 'Scegli dalla galleria';
+
+  @override
+  String get scanUseGemini => 'Leggi con Gemini AI';
+
+  @override
+  String get scanUseGeminiBody =>
+      'Più preciso. La foto della RC viene inviata a Google per leggere i dati del veicolo. Se disattivato, la foto viene letta solo sul tuo telefono.';
+
+  @override
+  String get scanReading => 'Lettura della RC…';
+
+  @override
+  String get vehicleScanSuccess =>
+      'Dati letti dalla tua RC. Controlla tutto prima di salvare.';
+
+  @override
+  String get vehicleScanFailure =>
+      'Non è stato possibile leggere bene la RC. Compila i dati qui sotto.';
+
+  @override
+  String get vehicleSectionYourBike => 'LA TUA MOTO';
 }

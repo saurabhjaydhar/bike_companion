@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class AppDatabase {
-  static const int _version = 1;
+  static const int _version = 2;
   static const String _name = 'bike_companion.db';
 
   AppDatabase._();
@@ -41,7 +41,12 @@ class AppDatabase {
         odometer_official INTEGER NOT NULL DEFAULT 0,
         insurance_expiry INTEGER,
         puc_expiry INTEGER,
-        created_at INTEGER NOT NULL
+        created_at INTEGER NOT NULL,
+        manufacturer TEXT,
+        fuel_type TEXT,
+        vehicle_class TEXT,
+        engine_number TEXT,
+        chassis_number TEXT
       )
     ''');
 
@@ -123,7 +128,18 @@ class AppDatabase {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Future migrations go here
+    if (oldVersion < 2) {
+      // v2: registration (RC) details on bikes.
+      for (final column in const [
+        'manufacturer',
+        'fuel_type',
+        'vehicle_class',
+        'engine_number',
+        'chassis_number',
+      ]) {
+        await db.execute('ALTER TABLE bikes ADD COLUMN $column TEXT');
+      }
+    }
   }
 
   Future<void> wipeAll() async {

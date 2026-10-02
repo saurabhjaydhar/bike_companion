@@ -101,9 +101,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get commonContinue => 'जारी रखें';
 
   @override
-  String get commonNext => 'आगे';
-
-  @override
   String authSignInFailed(String error) {
     return 'साइन इन नहीं हो सका: $error';
   }
@@ -144,16 +141,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get onboardingGetStarted => 'शुरू करें';
 
   @override
-  String get onboardingAboutBikeTitle => 'हमें अपनी बाइक\nके बारे में बताएं';
-
-  @override
-  String get onboardingImportantDates => 'ज़रूरी तारीखें';
-
-  @override
-  String get onboardingRemindBody =>
-      'किसी भी चीज़ की मियाद खत्म होने से पहले हम आपको याद दिलाएंगे।';
-
-  @override
   String get onboardingAddMyBike => 'मेरी बाइक जोड़ें';
 
   @override
@@ -173,12 +160,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get fieldColour => 'रंग';
-
-  @override
-  String get fieldRegNumber => 'रजिस्ट्रेशन नंबर';
-
-  @override
-  String get fieldPurchaseDateOptional => 'खरीद की तारीख (वैकल्पिक)';
 
   @override
   String get fieldSelectDate => 'तारीख चुनें';
@@ -850,4 +831,50 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get healthEconomyDeclining => 'माइलेज थोड़ा कम हो रहा है — ध्यान रखें';
+
+  @override
+  String get addBikeHubSubtitle =>
+      'अपना RC कार्ड स्कैन करें, या जानकारी खुद भरें।';
+
+  @override
+  String get addBikeScanTitle => 'RC कार्ड स्कैन करें';
+
+  @override
+  String get addBikeScanBody => 'अपने RC की फ़ोटो लें, हम जानकारी भर देंगे।';
+
+  @override
+  String get addBikeManualTitle => 'खुद दर्ज करें';
+
+  @override
+  String get addBikeManualBody => 'अपनी बाइक की जानकारी खुद लिखें।';
+
+  @override
+  String get addBikeLookupTitle => 'नंबर से खोजें';
+
+  @override
+  String get scanTakePhoto => 'फ़ोटो लें';
+
+  @override
+  String get scanChooseGallery => 'गैलरी से चुनें';
+
+  @override
+  String get scanUseGemini => 'Gemini AI से पढ़ें';
+
+  @override
+  String get scanUseGeminiBody =>
+      'ज़्यादा सटीक। वाहन की जानकारी पढ़ने के लिए आपके RC की फ़ोटो Google को भेजी जाती है। बंद होने पर फ़ोटो सिर्फ़ आपके फ़ोन पर पढ़ी जाती है।';
+
+  @override
+  String get scanReading => 'आपका RC पढ़ा जा रहा है…';
+
+  @override
+  String get vehicleScanSuccess =>
+      'आपके RC से जानकारी पढ़ ली गई। सेव करने से पहले सब कुछ जांच लें।';
+
+  @override
+  String get vehicleScanFailure =>
+      'आपका RC साफ़ नहीं पढ़ा जा सका। कृपया नीचे जानकारी भरें।';
+
+  @override
+  String get vehicleSectionYourBike => 'आपकी बाइक';
 }

@@ -1,5 +1,6 @@
 import '../database/app_database.dart';
 import '../models/service_record.dart';
+import '../../core/services/sync_service.dart';
 
 class ServiceRepository {
   final AppDatabase _db;
@@ -20,6 +21,7 @@ class ServiceRepository {
   Future<String> insertService(ServiceRecord record) async {
     final db = await _db.db;
     await db.insert('service_records', record.toMap());
+    await SyncService.queueUpsert(db, 'service_records', record.toMap());
     return record.id;
   }
 
@@ -27,10 +29,12 @@ class ServiceRepository {
     final db = await _db.db;
     await db.update('service_records', record.toMap(),
         where: 'id = ?', whereArgs: [record.id]);
+    await SyncService.queueUpsert(db, 'service_records', record.toMap());
   }
 
   Future<void> deleteService(String id) async {
     final db = await _db.db;
+    await SyncService.queueDelete(db, 'service_records', id);
     await db.delete('service_records', where: 'id = ?', whereArgs: [id]);
   }
 

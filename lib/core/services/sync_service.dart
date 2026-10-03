@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/database/app_database.dart';
@@ -12,8 +13,24 @@ class SyncService {
 
   SyncService(this._db, this._firestore);
 
+  /// Called after every enqueue. Set at startup so changes upload right away.
+  static void Function()? onEnqueued;
+
+  /// Per-bike tables, stored in Firestore under the bike's document.
+  static const childTables = [
+    'fuel_logs',
+    'service_records',
+    'expenses',
+    'documents',
+  ];
+
+  static const _backfillKey = 'sync_backfill_done_v1';
+
   /// Enqueue a local write for later Firestore sync.
   /// Call from repositories after any SQLite write.
+  ///
+  /// One queue entry per record: a newer write replaces an older one still
+  /// waiting, so only the latest state is uploaded.
   static Future<void> enqueue(
     Database db, {
     required String tableName,
@@ -21,8 +38,7 @@ class SyncService {
     required String operation, // 'upsert' | 'delete'
     required Map<String, dynamic> payload,
   }) async {
-    final id =
-        '${tableName}_${recordId}_${DateTime.now().millisecondsSinceEpoch}';
+    final id = '${tableName}_$recordId';
     await db.insert(
       'pending_sync',
       {
@@ -35,11 +51,90 @@ class SyncService {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    onEnqueued?.call();
   }
 
+  /// Queues [row] (a model's `toMap()`) to be uploaded.
+  static Future<void> queueUpsert(
+    Database db,
+    String table,
+    Map<String, dynamic> row,
+  ) => enqueue(
+    db,
+    tableName: table,
+    recordId: row['id'] as String,
+    operation: 'upsert',
+    payload: row,
+  );
+
+  /// Queues the cloud delete of record [id]. Call before deleting it
+  /// locally — child records need their bike_id to be found in Firestore.
+  static Future<void> queueDelete(Database db, String table, String id) async {
+    String? bikeId;
+    if (table != 'bikes') {
+      final rows = await db.query(
+        table,
+        columns: ['bike_id'],
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      if (rows.isEmpty) return;
+      bikeId = rows.first['bike_id'] as String?;
+    }
+    await enqueue(
+      db,
+      tableName: table,
+      recordId: id,
+      operation: 'delete',
+      payload: {'id': id, 'bike_id': ?bikeId},
+    );
+  }
+
+  /// Starts syncing: uploads whenever a user is signed in, and once queues
+  /// all existing local data — records written before sync was wired up
+  /// were never uploaded.
+  void start() {
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user != null) pushPending();
+    });
+    _backfillOnce();
+  }
+
+  Future<void> _backfillOnce() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_backfillKey) ?? false) return;
+    final db = await _db.db;
+    for (final table in ['bikes', ...childTables]) {
+      for (final row in await db.query(table)) {
+        await queueUpsert(db, table, Map.of(row));
+      }
+    }
+    await prefs.setBool(_backfillKey, true);
+  }
+
+  bool _pushing = false;
+  bool _pushAgain = false;
+
   /// Push all queued operations to Firestore using user-scoped paths.
-  /// Call when connectivity is restored.
+  /// Safe to call often: overlapping calls run one more pass instead of
+  /// pushing in parallel.
   Future<void> pushPending() async {
+    if (_pushing) {
+      _pushAgain = true;
+      return;
+    }
+    _pushing = true;
+    try {
+      do {
+        _pushAgain = false;
+        await _pushOnce();
+      } while (_pushAgain);
+    } finally {
+      _pushing = false;
+    }
+  }
+
+  Future<void> _pushOnce() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return; // Must be signed in to sync.
 

@@ -8,6 +8,9 @@ class AppDatabase {
   AppDatabase._();
   static final AppDatabase instance = AppDatabase._();
 
+  /// Wraps an already-open database, e.g. one from [openAt] in tests.
+  AppDatabase.wrap(Database db) : _db = db;
+
   Database? _db;
 
   Future<Database> get db async {

@@ -1,6 +1,7 @@
 import '../database/app_database.dart';
 import '../models/fuel_log.dart';
 import '../models/expense.dart';
+import '../../core/services/sync_service.dart';
 
 class FuelRepository {
   final AppDatabase _db;
@@ -27,6 +28,7 @@ class FuelRepository {
   Future<String> insertFuelLog(FuelLog log) async {
     final db = await _db.db;
     await db.insert('fuel_logs', log.toMap());
+    await SyncService.queueUpsert(db, 'fuel_logs', log.toMap());
     return log.id;
   }
 

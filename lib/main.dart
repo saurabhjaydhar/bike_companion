@@ -51,6 +51,11 @@ Future<void> _setupDependencies() async {
   getIt
     ..registerSingleton<SyncService>(SyncService(db, fs))
     ..registerSingleton<RestoreService>(RestoreService(db, fs));
+
+  // Upload every local change as soon as it's written.
+  final sync = getIt<SyncService>();
+  SyncService.onEnqueued = sync.pushPending;
+  sync.start();
 }
 
 void main() async {

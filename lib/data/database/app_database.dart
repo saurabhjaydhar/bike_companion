@@ -17,16 +17,26 @@ class AppDatabase {
 
   Future<Database> _open() async {
     final path = join(await getDatabasesPath(), _name);
-    return openDatabase(
-      path,
-      version: _version,
-      onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
-      onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
-    );
+    return openAt(databaseFactory, path);
   }
 
-  Future<void> _onCreate(Database db, int version) async {
+  /// Current schema version; bump it with every migration in [_onUpgrade].
+  static const int schemaVersion = _version;
+
+  /// Opens the app database at [path], creating or upgrading it. Tests pass
+  /// an FFI [factory] to run real SQLite on the desktop.
+  static Future<Database> openAt(DatabaseFactory factory, String path) =>
+      factory.openDatabase(
+        path,
+        options: OpenDatabaseOptions(
+          version: _version,
+          onCreate: _onCreate,
+          onUpgrade: _onUpgrade,
+          onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
+        ),
+      );
+
+  static Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE bikes (
         id TEXT PRIMARY KEY,
@@ -127,7 +137,8 @@ class AppDatabase {
         'CREATE INDEX idx_pending_sync_created ON pending_sync(created_at)');
   }
 
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  static Future<void> _onUpgrade(
+      Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       // v2: registration (RC) details on bikes.
       for (final column in const [

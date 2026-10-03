@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:sqflite/sqflite.dart';
 
 import '../../data/database/app_database.dart';
@@ -21,47 +23,107 @@ class RestoreService {
     final bikes = await _firestore.fetchBikes(uid);
 
     // Fetch all sub-collections before opening the SQLite transaction.
-    final fuelLogs = <Map<String, dynamic>>[];
-    final serviceRecords = <Map<String, dynamic>>[];
-    final expenses = <Map<String, dynamic>>[];
-    final documents = <Map<String, dynamic>>[];
-
+    final children = <String, List<Map<String, dynamic>>>{
+      for (final table in restoreChildTables) table: [],
+    };
     for (final bike in bikes) {
       final bikeId = bike['id'] as String;
-      fuelLogs.addAll(
-          await _firestore.fetchCollection(uid, bikeId, 'fuel_logs'));
-      serviceRecords.addAll(
-          await _firestore.fetchCollection(uid, bikeId, 'service_records'));
-      expenses.addAll(
-          await _firestore.fetchCollection(uid, bikeId, 'expenses'));
-      documents.addAll(
-          await _firestore.fetchCollection(uid, bikeId, 'documents'));
+      for (final table in restoreChildTables) {
+        children[table]!
+            .addAll(await _firestore.fetchCollection(uid, bikeId, table));
+      }
     }
 
-    final database = await _db.db;
-    await database.transaction((txn) async {
-      for (final row in bikes) {
-        await txn.insert('bikes', row,
-            conflictAlgorithm: ConflictAlgorithm.replace);
-      }
-      for (final row in fuelLogs) {
-        await txn.insert('fuel_logs', row,
-            conflictAlgorithm: ConflictAlgorithm.replace);
-      }
-      for (final row in serviceRecords) {
-        await txn.insert('service_records', row,
-            conflictAlgorithm: ConflictAlgorithm.replace);
-      }
-      for (final row in expenses) {
-        await txn.insert('expenses', row,
-            conflictAlgorithm: ConflictAlgorithm.replace);
-      }
-      for (final row in documents) {
-        await txn.insert('documents', row,
-            conflictAlgorithm: ConflictAlgorithm.replace);
-      }
-    });
-
+    await writeRestoredData(await _db.db, {'bikes': bikes, ...children});
     return true;
   }
 }
+
+/// Per-bike Firestore sub-collections, each restored into the local table
+/// of the same name.
+const restoreChildTables = [
+  'fuel_logs',
+  'service_records',
+  'expenses',
+  'documents',
+];
+
+/// A column of a local table, from `PRAGMA table_info`.
+typedef TableColumn = ({String name, bool required});
+
+/// Writes restored cloud documents into local tables in one transaction.
+/// [rowsByTable] maps table name to Firestore documents; bikes are written
+/// first so child rows satisfy their foreign key. Rows that can't be stored
+/// are skipped and logged rather than failing the whole restore.
+Future<void> writeRestoredData(
+  Database db,
+  Map<String, List<Map<String, dynamic>>> rowsByTable,
+) async {
+  final order = ['bikes', ...rowsByTable.keys.where((t) => t != 'bikes')];
+  await db.transaction((txn) async {
+    for (final table in order) {
+      final docs = rowsByTable[table];
+      if (docs == null) continue;
+      final columns = await _columnsOf(txn, table);
+      var skipped = 0;
+      for (final doc in docs) {
+        final row = restoreRow(doc, columns);
+        if (row == null) {
+          skipped++;
+          continue;
+        }
+        await txn.insert(
+          table,
+          row,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      if (skipped > 0) {
+        debugPrint('Restore: skipped $skipped incomplete $table rows');
+      }
+    }
+  });
+}
+
+Future<List<TableColumn>> _columnsOf(Transaction txn, String table) async {
+  final info = await txn.rawQuery('PRAGMA table_info($table)');
+  return [
+    for (final c in info)
+      (
+        name: c['name'] as String,
+        // NOT NULL without a default, or the primary key.
+        required: (c['notnull'] == 1 && c['dflt_value'] == null) ||
+            c['pk'] == 1,
+      ),
+  ];
+}
+
+/// Turns a Firestore document into a row for a local table.
+///
+/// Keeps only the table's columns — cloud documents are merged on every
+/// sync, so they can carry fields this version of the app doesn't have.
+/// Converts values SQLite can't store (booleans, timestamps) and drops
+/// others (maps, lists). Returns null when a required column is missing.
+Map<String, Object?>? restoreRow(
+  Map<String, dynamic> doc,
+  List<TableColumn> columns,
+) {
+  final row = <String, Object?>{};
+  for (final column in columns) {
+    final value = _sqlValue(doc[column.name]);
+    if (value == null) {
+      if (column.required) return null;
+      if (!doc.containsKey(column.name)) continue; // let the default apply
+    }
+    row[column.name] = value;
+  }
+  return row;
+}
+
+Object? _sqlValue(Object? value) => switch (value) {
+  null || String() || num() => value,
+  bool() => value ? 1 : 0,
+  Timestamp() => value.millisecondsSinceEpoch,
+  DateTime() => value.millisecondsSinceEpoch,
+  _ => null,
+};

@@ -4,6 +4,17 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../data/models/document.dart';
 import '../../l10n/l10n.dart';
 
+/// Notification ID for [key] (e.g. `doc:{id}:30`): a 31-bit FNV-1a hash.
+/// Unlike [String.hashCode] it's the same on every platform and app version,
+/// so a reminder can always be found again to cancel or replace it.
+int notificationId(String key) {
+  var hash = 0x811c9dc5;
+  for (final unit in key.codeUnits) {
+    hash = ((hash ^ unit) * 0x01000193) & 0xFFFFFFFF;
+  }
+  return hash & 0x7FFFFFFF;
+}
+
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
 
@@ -11,11 +22,8 @@ class NotificationService {
   static const _channelName = 'Bike Companion Alerts';
   static const _channelDesc = 'Document expiry and service reminders';
 
-  // Notification ID ranges:
-  //   0–9999   : 30-day document warnings
-  // 10000–19999: 7-day document warnings
-  // 20000–29999: 1-day document warnings
-  // 50000+     : service / ad-hoc alerts
+  // Notification IDs: document reminders use notificationId('doc:...');
+  // service / ad-hoc alerts use 50000–50999.
 
   static Future<void> initialize() async {
     tz.initializeTimeZones();
@@ -57,11 +65,6 @@ class NotificationService {
   // Called whenever the documents list changes — reschedules all doc reminders.
   static Future<void> scheduleDocumentReminders(
       List<BikeDocument> docs) async {
-    // Cancel old doc notifications
-    for (int i = 0; i < 30000; i += 10000) {
-      // only cancel the 3 bands; cheap because they're individually keyed
-    }
-    // Instead, cancel per-doc
     for (final doc in docs) {
       await cancelDocumentReminders(doc.id);
     }
@@ -106,9 +109,11 @@ class NotificationService {
   }
 
   static Future<void> cancelDocumentReminders(String docId) async {
-    await _plugin.cancel(_docId(docId, 30));
-    await _plugin.cancel(_docId(docId, 7));
-    await _plugin.cancel(_docId(docId, 1));
+    for (final threshold in const [30, 7, 1]) {
+      await _plugin.cancel(_docId(docId, threshold));
+      // Reminders scheduled by app versions before stable IDs.
+      await _plugin.cancel(_legacyDocId(docId, threshold));
+    }
   }
 
   static Future<void> showServiceAlert({
@@ -128,7 +133,11 @@ class NotificationService {
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
-  static int _docId(String docId, int threshold) {
+  static int _docId(String docId, int threshold) =>
+      notificationId('doc:$docId:$threshold');
+
+  // The old scheme, kept only to cancel reminders it scheduled.
+  static int _legacyDocId(String docId, int threshold) {
     final band = switch (threshold) {
       30 => 0,
       7 => 10000,

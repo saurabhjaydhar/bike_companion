@@ -2,8 +2,12 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class AppDatabase {
-  static const int _version = 2;
-  static const String _name = 'bike_companion.db';
+  static const int _version = 1;
+  static const String _name = 'garajo.db';
+
+  /// Database file of the app before the vehicle rename. Its data isn't
+  /// carried over; the file is deleted on first open.
+  static const String _legacyName = 'bike_companion.db';
 
   AppDatabase._();
   static final AppDatabase instance = AppDatabase._();
@@ -19,8 +23,9 @@ class AppDatabase {
   }
 
   Future<Database> _open() async {
-    final path = join(await getDatabasesPath(), _name);
-    return openAt(databaseFactory, path);
+    final dir = await getDatabasesPath();
+    await deleteDatabase(join(dir, _legacyName));
+    return openAt(databaseFactory, join(dir, _name));
   }
 
   /// Current schema version; bump it with every migration in [_onUpgrade].
@@ -41,7 +46,7 @@ class AppDatabase {
 
   static Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE bikes (
+      CREATE TABLE vehicles (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         brand TEXT NOT NULL,
@@ -66,21 +71,21 @@ class AppDatabase {
     await db.execute('''
       CREATE TABLE fuel_logs (
         id TEXT PRIMARY KEY,
-        bike_id TEXT NOT NULL,
+        vehicle_id TEXT NOT NULL,
         date INTEGER NOT NULL,
         odometer INTEGER NOT NULL,
         litres REAL,
         amount REAL,
         fuel_station TEXT,
         mileage_calculated REAL,
-        FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
       )
     ''');
 
     await db.execute('''
       CREATE TABLE service_records (
         id TEXT PRIMARY KEY,
-        bike_id TEXT NOT NULL,
+        vehicle_id TEXT NOT NULL,
         date INTEGER NOT NULL,
         service_type TEXT NOT NULL,
         odometer INTEGER NOT NULL,
@@ -88,31 +93,31 @@ class AppDatabase {
         notes TEXT,
         next_due_km INTEGER,
         next_due_date INTEGER,
-        FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
       )
     ''');
 
     await db.execute('''
       CREATE TABLE expenses (
         id TEXT PRIMARY KEY,
-        bike_id TEXT NOT NULL,
+        vehicle_id TEXT NOT NULL,
         date INTEGER NOT NULL,
         category TEXT NOT NULL,
         amount REAL NOT NULL,
         note TEXT,
-        FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
       )
     ''');
 
     await db.execute('''
       CREATE TABLE documents (
         id TEXT PRIMARY KEY,
-        bike_id TEXT NOT NULL,
+        vehicle_id TEXT NOT NULL,
         type TEXT NOT NULL,
         title TEXT NOT NULL,
         file_path TEXT,
         expiry_date INTEGER,
-        FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
       )
     ''');
 
@@ -129,31 +134,21 @@ class AppDatabase {
 
     // Indexes for fast queries
     await db.execute(
-        'CREATE INDEX idx_fuel_bike_date ON fuel_logs(bike_id, date)');
+        'CREATE INDEX idx_fuel_vehicle_date ON fuel_logs(vehicle_id, date)');
     await db.execute(
-        'CREATE INDEX idx_service_bike_date ON service_records(bike_id, date)');
+        'CREATE INDEX idx_service_vehicle_date ON service_records(vehicle_id, date)');
     await db.execute(
-        'CREATE INDEX idx_expense_bike_date ON expenses(bike_id, date)');
+        'CREATE INDEX idx_expense_vehicle_date ON expenses(vehicle_id, date)');
     await db.execute(
-        'CREATE INDEX idx_document_bike ON documents(bike_id)');
+        'CREATE INDEX idx_document_vehicle ON documents(vehicle_id)');
     await db.execute(
         'CREATE INDEX idx_pending_sync_created ON pending_sync(created_at)');
   }
 
   static Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      // v2: registration (RC) details on bikes.
-      for (final column in const [
-        'manufacturer',
-        'fuel_type',
-        'vehicle_class',
-        'engine_number',
-        'chassis_number',
-      ]) {
-        await db.execute('ALTER TABLE bikes ADD COLUMN $column TEXT');
-      }
-    }
+    // Add a step per version, e.g. `if (oldVersion < 2) { ... }`, and a
+    // frozen schema snapshot + upgrade test in test/unit/database_test.dart.
   }
 
   Future<void> wipeAll() async {
@@ -161,7 +156,7 @@ class AppDatabase {
     await database.transaction((txn) async {
       for (final table in [
         'pending_sync', 'documents', 'expenses',
-        'service_records', 'fuel_logs', 'bikes',
+        'service_records', 'fuel_logs', 'vehicles',
       ]) {
         await txn.delete(table);
       }

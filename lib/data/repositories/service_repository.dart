@@ -7,12 +7,12 @@ class ServiceRepository {
 
   ServiceRepository(this._db);
 
-  Future<List<ServiceRecord>> getServiceHistory(String bikeId) async {
+  Future<List<ServiceRecord>> getServiceHistory(String vehicleId) async {
     final db = await _db.db;
     final rows = await db.query(
       'service_records',
-      where: 'bike_id = ?',
-      whereArgs: [bikeId],
+      where: 'vehicle_id = ?',
+      whereArgs: [vehicleId],
       orderBy: 'date DESC',
     );
     return rows.map(ServiceRecord.fromMap).toList();
@@ -40,23 +40,23 @@ class ServiceRepository {
 
   /// Returns service items where current odometer has passed nextDueKm.
   Future<List<ServiceRecord>> getOverdueServices(
-      String bikeId, int currentOdometer) async {
+      String vehicleId, int currentOdometer) async {
     final db = await _db.db;
     final rows = await db.query(
       'service_records',
-      where: 'bike_id = ? AND next_due_km IS NOT NULL AND next_due_km <= ?',
-      whereArgs: [bikeId, currentOdometer],
+      where: 'vehicle_id = ? AND next_due_km IS NOT NULL AND next_due_km <= ?',
+      whereArgs: [vehicleId, currentOdometer],
       orderBy: 'next_due_km ASC',
     );
     return rows.map(ServiceRecord.fromMap).toList();
   }
 
-  Future<ServiceRecord?> getNextDueService(String bikeId) async {
+  Future<ServiceRecord?> getNextDueService(String vehicleId) async {
     final db = await _db.db;
     final rows = await db.query(
       'service_records',
-      where: 'bike_id = ? AND next_due_km IS NOT NULL',
-      whereArgs: [bikeId],
+      where: 'vehicle_id = ? AND next_due_km IS NOT NULL',
+      whereArgs: [vehicleId],
       orderBy: 'next_due_km ASC',
       limit: 1,
     );
@@ -64,19 +64,19 @@ class ServiceRepository {
   }
 
   /// Returns the most recent record for each service type.
-  Future<Map<String, ServiceRecord>> getLatestPerType(String bikeId) async {
+  Future<Map<String, ServiceRecord>> getLatestPerType(String vehicleId) async {
     final db = await _db.db;
     final rows = await db.rawQuery(
       '''
       SELECT * FROM service_records
-      WHERE bike_id = ? AND id IN (
+      WHERE vehicle_id = ? AND id IN (
         SELECT id FROM service_records s2
-        WHERE s2.bike_id = service_records.bike_id
+        WHERE s2.vehicle_id = service_records.vehicle_id
           AND s2.service_type = service_records.service_type
         ORDER BY date DESC LIMIT 1
       )
       ''',
-      [bikeId],
+      [vehicleId],
     );
     return {
       for (final row in rows)

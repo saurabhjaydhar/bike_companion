@@ -1,4 +1,4 @@
-import 'package:bike_companion/data/models/bike.dart';
+import 'package:bike_companion/data/models/vehicle.dart';
 import 'package:bike_companion/data/models/document.dart';
 import 'package:bike_companion/data/models/expense.dart';
 import 'package:bike_companion/data/models/fuel_log.dart';
@@ -10,10 +10,10 @@ void main() {
   final nowMs = now.millisecondsSinceEpoch;
 
   // ---------------------------------------------------------------------------
-  // Bike model
+  // Vehicle model
   // ---------------------------------------------------------------------------
-  group('Bike', () {
-    final bike = Bike(
+  group('Vehicle', () {
+    final vehicle = Vehicle(
       id: 'b1',
       name: 'My Shine',
       brand: 'Honda',
@@ -26,7 +26,7 @@ void main() {
     );
 
     test('round-trips RC details through toMap/fromMap', () {
-      final withRc = Bike(
+      final withRc = Vehicle(
         id: 'b9',
         name: 'Bullet',
         brand: 'Royal Enfield',
@@ -42,7 +42,7 @@ void main() {
         engineNumber: 'U3S5C1AB1234',
         chassisNumber: 'ME3U3S5C1AB123456',
       );
-      final copy = Bike.fromMap(withRc.toMap());
+      final copy = Vehicle.fromMap(withRc.toMap());
       expect(copy.fuelType, 'Petrol');
       expect(copy.vehicleClass, 'M-Cycle');
       expect(copy.engineNumber, 'U3S5C1AB1234');
@@ -51,29 +51,29 @@ void main() {
     });
 
     test('colour getter parses hex correctly', () {
-      final color = bike.colour;
+      final color = vehicle.colour;
       expect(color.r, closeTo(26 / 255, 0.01));
       expect(color.g, closeTo(86 / 255, 0.01));
       expect(color.b, closeTo(219 / 255, 0.01));
     });
 
     test('colour getter falls back on invalid hex', () {
-      final bad = bike.copyWith(colourHex: 'NOT_A_HEX');
+      final bad = vehicle.copyWith(colourHex: 'NOT_A_HEX');
       expect(() => bad.colour, returnsNormally);
     });
 
     test('fromMap / toMap round-trip', () {
-      final map = bike.toMap();
-      final restored = Bike.fromMap(map);
-      expect(restored.id, bike.id);
-      expect(restored.name, bike.name);
-      expect(restored.brand, bike.brand);
-      expect(restored.colourHex, bike.colourHex);
-      expect(restored.odometerCurrent, bike.odometerCurrent);
+      final map = vehicle.toMap();
+      final restored = Vehicle.fromMap(map);
+      expect(restored.id, vehicle.id);
+      expect(restored.name, vehicle.name);
+      expect(restored.brand, vehicle.brand);
+      expect(restored.colourHex, vehicle.colourHex);
+      expect(restored.odometerCurrent, vehicle.odometerCurrent);
     });
 
     test('toMap encodes dates as millisecondsSinceEpoch', () {
-      final map = bike.toMap();
+      final map = vehicle.toMap();
       expect(map['created_at'], equals(nowMs));
       expect(map['insurance_expiry'], isNull);
     });
@@ -81,14 +81,14 @@ void main() {
     test('fromMap decodes insurance_expiry', () {
       final futureMs =
           DateTime(2026, 1, 1).millisecondsSinceEpoch;
-      final map = bike.toMap()..['insurance_expiry'] = futureMs;
-      final restored = Bike.fromMap(map);
+      final map = vehicle.toMap()..['insurance_expiry'] = futureMs;
+      final restored = Vehicle.fromMap(map);
       expect(restored.insuranceExpiry?.year, 2026);
     });
 
     test('equality is id-based', () {
-      final copy = bike.copyWith(name: 'Different Name');
-      expect(copy, equals(bike));
+      final copy = vehicle.copyWith(name: 'Different Name');
+      expect(copy, equals(vehicle));
     });
   });
 
@@ -98,7 +98,7 @@ void main() {
   group('FuelLog', () {
     final log = FuelLog(
       id: 'fl1',
-      bikeId: 'b1',
+      vehicleId: 'b1',
       date: now,
       odometer: 12000,
       litres: 4.5,
@@ -118,7 +118,7 @@ void main() {
 
     test('optional fields survive null round-trip', () {
       final minimal = FuelLog(
-          id: 'fl2', bikeId: 'b1', date: now, odometer: 10000);
+          id: 'fl2', vehicleId: 'b1', date: now, odometer: 10000);
       final restored = FuelLog.fromMap(minimal.toMap());
       expect(restored.litres, isNull);
       expect(restored.amount, isNull);
@@ -132,7 +132,7 @@ void main() {
   group('ServiceRecord', () {
     final record = ServiceRecord(
       id: 'sr1',
-      bikeId: 'b1',
+      vehicleId: 'b1',
       date: now,
       serviceType: 'oil_change',
       odometer: 11000,
@@ -162,7 +162,7 @@ void main() {
   group('Expense', () {
     final expense = Expense(
       id: 'e1',
-      bikeId: 'b1',
+      vehicleId: 'b1',
       date: now,
       category: 'fuel',
       amount: 500.0,
@@ -178,13 +178,13 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // BikeDocument model
+  // VehicleDocument model
   // ---------------------------------------------------------------------------
-  group('BikeDocument', () {
+  group('VehicleDocument', () {
     test('isExpired returns true when expiry in the past', () {
-      final expired = BikeDocument(
+      final expired = VehicleDocument(
         id: 'd1',
-        bikeId: 'b1',
+        vehicleId: 'b1',
         type: 'insurance',
         title: 'Insurance',
         expiryDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -193,9 +193,9 @@ void main() {
     });
 
     test('isExpired returns false when expiry in the future', () {
-      final valid = BikeDocument(
+      final valid = VehicleDocument(
         id: 'd2',
-        bikeId: 'b1',
+        vehicleId: 'b1',
         type: 'insurance',
         title: 'Insurance',
         expiryDate: DateTime.now().add(const Duration(days: 90)),
@@ -204,9 +204,9 @@ void main() {
     });
 
     test('isExpired returns false when no expiry date', () {
-      final noExpiry = BikeDocument(
+      final noExpiry = VehicleDocument(
         id: 'd3',
-        bikeId: 'b1',
+        vehicleId: 'b1',
         type: 'rc',
         title: 'RC Book',
       );
@@ -214,15 +214,15 @@ void main() {
     });
 
     test('daysUntilExpiry is null when no expiry', () {
-      final doc = BikeDocument(
-          id: 'd4', bikeId: 'b1', type: 'rc', title: 'RC Book');
+      final doc = VehicleDocument(
+          id: 'd4', vehicleId: 'b1', type: 'rc', title: 'RC Book');
       expect(doc.daysUntilExpiry, isNull);
     });
 
     test('daysUntilExpiry is positive for future expiry', () {
-      final doc = BikeDocument(
+      final doc = VehicleDocument(
         id: 'd5',
-        bikeId: 'b1',
+        vehicleId: 'b1',
         type: 'insurance',
         title: 'Insurance',
         expiryDate: DateTime.now().add(const Duration(days: 30)),
@@ -231,14 +231,14 @@ void main() {
     });
 
     test('fromMap / toMap round-trip', () {
-      final doc = BikeDocument(
+      final doc = VehicleDocument(
         id: 'd6',
-        bikeId: 'b1',
+        vehicleId: 'b1',
         type: 'puc',
         title: 'PUC Certificate',
         expiryDate: DateTime(2026, 3, 15),
       );
-      final restored = BikeDocument.fromMap(doc.toMap());
+      final restored = VehicleDocument.fromMap(doc.toMap());
       expect(restored.type, doc.type);
       expect(restored.expiryDate?.year, 2026);
     });

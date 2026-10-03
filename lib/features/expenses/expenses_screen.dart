@@ -27,12 +27,12 @@ const _categoryColors = <String, Color>{
 };
 
 class ExpensesScreen extends ConsumerWidget {
-  final String bikeId;
-  const ExpensesScreen({super.key, required this.bikeId});
+  final String vehicleId;
+  const ExpensesScreen({super.key, required this.vehicleId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stateAsync = ref.watch(expensesProvider(bikeId));
+    final stateAsync = ref.watch(expensesProvider(vehicleId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
@@ -55,7 +55,7 @@ class ExpensesScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddExpense(context, ref, bikeId),
+        onPressed: () => _showAddExpense(context, ref, vehicleId),
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -64,7 +64,7 @@ class ExpensesScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('$e')),
         data: (s) => RefreshIndicator(
           onRefresh: () async {
-            ref.invalidate(expensesProvider(bikeId));
+            ref.invalidate(expensesProvider(vehicleId));
           },
           child: ListView(
             padding: const EdgeInsets.only(bottom: 100),
@@ -74,9 +74,9 @@ class ExpensesScreen extends ConsumerWidget {
                 year: s.year,
                 month: s.month,
                 onPrev: () =>
-                    ref.read(expensesProvider(bikeId).notifier).prevMonth(),
+                    ref.read(expensesProvider(vehicleId).notifier).prevMonth(),
                 onNext: () =>
-                    ref.read(expensesProvider(bikeId).notifier).nextMonth(),
+                    ref.read(expensesProvider(vehicleId).notifier).nextMonth(),
               ),
 
               // Summary card
@@ -166,7 +166,7 @@ class ExpensesScreen extends ConsumerWidget {
                                       color: Colors.white),
                                 ),
                                 onDismissed: (_) => ref
-                                    .read(expensesProvider(bikeId).notifier)
+                                    .read(expensesProvider(vehicleId).notifier)
                                     .deleteExpense(exp.id),
                                 child: ListTile(
                                   leading: Container(
@@ -569,7 +569,7 @@ class _CategoryRow extends StatelessWidget {
 // Add expense bottom sheet
 // ---------------------------------------------------------------------------
 void _showAddExpense(
-    BuildContext context, WidgetRef ref, String bikeId) {
+    BuildContext context, WidgetRef ref, String vehicleId) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -578,16 +578,16 @@ void _showAddExpense(
           top: Radius.circular(AppRadius.large)),
     ),
     builder: (_) =>
-        _AddExpenseSheet(bikeId: bikeId, ref: ref),
+        _AddExpenseSheet(vehicleId: vehicleId, ref: ref),
   );
 }
 
 class _AddExpenseSheet extends StatefulWidget {
-  final String bikeId;
+  final String vehicleId;
   final WidgetRef ref;
 
   const _AddExpenseSheet(
-      {required this.bikeId, required this.ref});
+      {required this.vehicleId, required this.ref});
 
   @override
   State<_AddExpenseSheet> createState() => _AddExpenseSheetState();
@@ -614,14 +614,14 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     try {
       final expense = Expense(
         id: _uuid.v4(),
-        bikeId: widget.bikeId,
+        vehicleId: widget.vehicleId,
         date: _date,
         category: _category,
         amount: amount,
         note: _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
       );
       await widget.ref
-          .read(expensesProvider(widget.bikeId).notifier)
+          .read(expensesProvider(widget.vehicleId).notifier)
           .addExpense(expense);
       if (mounted) Navigator.pop(context);
     } finally {

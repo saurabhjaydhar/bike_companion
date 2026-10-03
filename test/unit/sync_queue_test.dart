@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:bike_companion/core/services/sync_service.dart';
 import 'package:bike_companion/data/database/app_database.dart';
-import 'package:bike_companion/data/models/bike.dart';
+import 'package:bike_companion/data/models/vehicle.dart';
 import 'package:bike_companion/data/models/expense.dart';
 import 'package:bike_companion/data/models/fuel_log.dart';
-import 'package:bike_companion/data/repositories/bike_repository.dart';
+import 'package:bike_companion/data/repositories/vehicle_repository.dart';
 import 'package:bike_companion/data/repositories/expense_repository.dart';
 import 'package:bike_companion/data/repositories/fuel_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,7 +23,7 @@ Future<List<Map<String, Object?>>> queue() =>
 Map<String, dynamic> payloadOf(Map<String, Object?> row) =>
     jsonDecode(row['payload_json'] as String) as Map<String, dynamic>;
 
-Bike bike(String id, {int odometer = 1000}) => Bike(
+Vehicle vehicle(String id, {int odometer = 1000}) => Vehicle(
   id: id,
   name: 'Bullet',
   brand: 'Royal Enfield',
@@ -47,17 +47,17 @@ void main() {
     tempDir.deleteSync(recursive: true);
   });
 
-  test('saving a bike queues it for upload', () async {
-    await BikeRepository(appDb).insertBike(bike('b1'));
+  test('saving a vehicle queues it for upload', () async {
+    await VehicleRepository(appDb).insertVehicle(vehicle('b1'));
     final q = await queue();
     expect(q.single['operation'], 'upsert');
-    expect(q.single['table_name'], 'bikes');
+    expect(q.single['table_name'], 'vehicles');
     expect(payloadOf(q.single)['name'], 'Bullet');
   });
 
   test('only the latest state of a record is queued', () async {
-    final repo = BikeRepository(appDb);
-    await repo.insertBike(bike('b1'));
+    final repo = VehicleRepository(appDb);
+    await repo.insertVehicle(vehicle('b1'));
     await repo.updateOdometer('b1', 1500);
     await repo.updateOdometer('b1', 2000);
     final q = await queue();
@@ -65,12 +65,12 @@ void main() {
     expect(payloadOf(q.single)['odometer_current'], 2000);
   });
 
-  test('deleting a record queues a delete with its bike id', () async {
-    await BikeRepository(appDb).insertBike(bike('b1'));
+  test('deleting a record queues a delete with its vehicle id', () async {
+    await VehicleRepository(appDb).insertVehicle(vehicle('b1'));
     final expenses = ExpenseRepository(appDb);
     await expenses.insertExpense(Expense(
       id: 'e1',
-      bikeId: 'b1',
+      vehicleId: 'b1',
       date: DateTime(2024, 2, 1),
       category: 'fuel',
       amount: 300,
@@ -79,20 +79,20 @@ void main() {
     final entry =
         (await queue()).singleWhere((r) => r['record_id'] == 'e1');
     expect(entry['operation'], 'delete');
-    expect(payloadOf(entry)['bike_id'], 'b1');
+    expect(payloadOf(entry)['vehicle_id'], 'b1');
   });
 
-  test('deleting a bike also deletes its records in the cloud', () async {
-    final repo = BikeRepository(appDb);
-    await repo.insertBike(bike('b1'));
+  test('deleting a vehicle also deletes its records in the cloud', () async {
+    final repo = VehicleRepository(appDb);
+    await repo.insertVehicle(vehicle('b1'));
     await FuelRepository(appDb).insertFuelLog(FuelLog(
       id: 'f1',
-      bikeId: 'b1',
+      vehicleId: 'b1',
       date: DateTime(2024, 2, 1),
       odometer: 1100,
       amount: 500,
     ));
-    await repo.deleteBike('b1');
+    await repo.deleteVehicle('b1');
     final deletes = {
       for (final r in await queue())
         if (r['operation'] == 'delete') r['record_id'],
@@ -105,7 +105,7 @@ void main() {
     var calls = 0;
     SyncService.onEnqueued = () => calls++;
     addTearDown(() => SyncService.onEnqueued = null);
-    await BikeRepository(appDb).insertBike(bike('b1'));
+    await VehicleRepository(appDb).insertVehicle(vehicle('b1'));
     expect(calls, 1);
   });
 }

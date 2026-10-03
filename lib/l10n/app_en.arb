@@ -47,7 +47,7 @@
   "onboardingWelcomeTitle": "Your bike,\nalways healthy",
   "onboardingWelcomeBody": "Track fuel, service, expenses and documents — all in one place. Know exactly when your bike needs attention.",
   "onboardingGetStarted": "Get started",
-  "onboardingAddMyBike": "Add my bike",
+  "onboardingAddMyVehicle": "Add my bike",
   "fieldBrand": "Brand",
   "fieldModel": "Model",
   "fieldModelHint": "e.g. Classic 350, Activa",
@@ -60,16 +60,16 @@
   "fieldPucExpiry": "PUC expiry",
   "validationRequired": "Required",
   "validationEnterNumber": "Enter a number",
-  "addBikeInvalidFormat": "Invalid format. Use format like MH12DE1234 or DL01AA1234.",
-  "addBikeNotFound": "Vehicle not found in registry.",
-  "addBikeApiLimit": "API limit reached. Please try again later.",
-  "addBikeNoInternet": "No internet connection. Please check your network.",
-  "addBikeFetchFailed": "Could not fetch vehicle details.",
-  "addBikeTitle": "Add Your Bike",
-  "addBikeSubtitle": "Enter your registration number and we'll pull your vehicle details automatically.",
-  "addBikeExamples": "e.g. UK07AB1234 · DL01AA1234 · MH12DE1234",
-  "addBikeContinue": "Continue →",
-  "addBikeFetching": "Fetching vehicle details…",
+  "addVehicleInvalidFormat": "Invalid format. Use format like MH12DE1234 or DL01AA1234.",
+  "addVehicleNotFound": "Vehicle not found in registry.",
+  "addVehicleApiLimit": "API limit reached. Please try again later.",
+  "addVehicleNoInternet": "No internet connection. Please check your network.",
+  "addVehicleFetchFailed": "Could not fetch vehicle details.",
+  "addVehicleTitle": "Add Your Bike",
+  "addVehicleSubtitle": "Enter your registration number and we'll pull your vehicle details automatically.",
+  "addVehicleExamples": "e.g. UK07AB1234 · DL01AA1234 · MH12DE1234",
+  "addVehicleContinue": "Continue →",
+  "addVehicleFetching": "Fetching vehicle details…",
   "vehicleBrandRequired": "Brand is required",
   "vehicleModelRequired": "Model is required",
   "vehicleSaveFailed": "Failed to save bike. Please try again.",
@@ -85,7 +85,7 @@
   "vehicleSectionIdentifiers": "IDENTIFIERS",
   "vehicleEngineNumber": "Engine Number",
   "vehicleChassisNumber": "Chassis Number",
-  "vehicleSaveBike": "Save Bike",
+  "vehicleSaveVehicle": "Save Bike",
   "vehicleFetchSuccess": "Vehicle details fetched. Review and confirm.",
   "vehicleFetchFailure": "Couldn't fetch vehicle details. Please enter them manually below.",
   "commonError": "Error: {error}",
@@ -100,27 +100,27 @@
   "garageTitle": "My Garage",
   "garageEmptyTitle": "No bikes yet",
   "garageEmptyBody": "Add your first bike to start tracking fuel, service and expenses.",
-  "garageYourBikes": "Your bikes",
+  "garageYourVehicles": "Your bikes",
   "garageAddAnother": "Add another bike",
-  "garageStatBikes": "bikes",
+  "garageStatVehicles": "bikes",
   "garageStatAlerts": "alerts",
-  "garageDeleteBike": "Delete {name}",
-  "@garageDeleteBike": {
+  "garageDeleteVehicle": "Delete {name}",
+  "@garageDeleteVehicle": {
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "garageDeleteBikeTitle": "Delete {name}?",
-  "@garageDeleteBikeTitle": {
+  "garageDeleteVehicleTitle": "Delete {name}?",
+  "@garageDeleteVehicleTitle": {
     "placeholders": {
       "name": {
         "type": "String"
       }
     }
   },
-  "garageDeleteBikeBody": "All fuel logs, service records, and expenses will be deleted.",
+  "garageDeleteVehicleBody": "All fuel logs, service records, and expenses will be deleted.",
   "commonToday": "Today",
   "commonYesterday": "Yesterday",
   "commonDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
@@ -315,7 +315,7 @@
   "navRides": "Rides",
   "navDocs": "Docs",
   "ridesComingSoon": "GPS ride tracking\ncoming soon",
-  "noBikeSelected": "Select a bike from the Home tab first.",
+  "noVehicleSelected": "Select a bike from the Home tab first.",
   "offlineBanner": "No internet — working offline",
   "notifDocBody": "{days, plural, =1{{title} expires tomorrow} other{{title} expires in {days} days}}",
   "@notifDocBody": {
@@ -337,10 +337,10 @@
     }
   },
   "notifDocTomorrowTitle": "Document expires tomorrow!",
-  "notifServiceOverdueTitle": "Service overdue — {bike}",
+  "notifServiceOverdueTitle": "Service overdue — {vehicle}",
   "@notifServiceOverdueTitle": {
     "placeholders": {
-      "bike": {
+      "vehicle": {
         "type": "String"
       }
     }
@@ -465,12 +465,12 @@
   },
   "healthEconomyDropping": "Fuel economy dropping — service may be needed",
   "healthEconomyDeclining": "Fuel economy slightly declining — monitor it",
-  "addBikeHubSubtitle": "Scan your RC card, or fill in the details yourself.",
-  "addBikeScanTitle": "Scan RC card",
-  "addBikeScanBody": "Snap your RC and we'll fill in the details.",
-  "addBikeManualTitle": "Enter manually",
-  "addBikeManualBody": "Type in your bike's details yourself.",
-  "addBikeLookupTitle": "Look up by number",
+  "addVehicleHubSubtitle": "Scan your RC card, or fill in the details yourself.",
+  "addVehicleScanTitle": "Scan RC card",
+  "addVehicleScanBody": "Snap your RC and we'll fill in the details.",
+  "addVehicleManualTitle": "Enter manually",
+  "addVehicleManualBody": "Type in your bike's details yourself.",
+  "addVehicleLookupTitle": "Look up by number",
   "scanTakePhoto": "Take photo",
   "scanChooseGallery": "Choose from gallery",
   "scanUseGemini": "Read with Gemini AI",
@@ -488,7 +488,7 @@
   "scanPickerError": "Couldn't open the camera or gallery. Check the app's permissions in Settings.",
   "vehicleScanSuccess": "Details read from your RC. Check everything before saving.",
   "vehicleScanFailure": "Couldn't read your RC clearly. Please fill in the details below.",
-  "vehicleSectionYourBike": "YOUR BIKE",
+  "vehicleSectionYourVehicle": "YOUR BIKE",
   "vahanSmsButton": "Check on VAHAN by SMS",
   "vahanSmsHint": "Sends your number to the official VAHAN SMS service. The reply arrives in your SMS inbox — copy the details into this form.",
   "vahanSmsError": "Couldn't open your SMS app."

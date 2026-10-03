@@ -50,12 +50,11 @@ The app manages **vehicles** — bikes, scooters and cars — so code is named f
 |---|---|---|
 | **Dart code** — classes, files, variables, parameters, providers, routes | Use *vehicle* | `Vehicle`, `VehicleRepository`, `vehicle_repository.dart`, `vehicleId`, `vehiclesProvider`, `/garage/vehicle/:vehicleId` |
 | **Type-specific code** | Name the type only where behaviour really differs | `bikeServiceTypes`, `carServiceTypes`, `if (vehicle.type == VehicleType.car)` |
-| **Stored names** — SQLite tables/columns, Firestore paths and fields | Keep as they are: `bikes`, `bike_id`, `users/{uid}/bikes/...` | Renaming would mean migrating every user's phone database and cloud data |
-| **Mapping** | Stored names appear **only** in the data layer (`lib/data/`, sync and restore), as named constants — nowhere else | `VehicleRepository` reads table `bikes`; `Vehicle.fromMap` reads `bike_id` |
+| **Stored names** — SQLite tables/columns, Firestore paths and fields, preference keys | Use *vehicle* too | table `vehicles`, column `vehicle_id`, `users/{uid}/vehicles/...`, `active_vehicle_id` |
 | **RC scan result** | Called `RcDetails` — it's what the RC says, not a saved vehicle | `RcDetails`, `rcDetailsFromJson` |
 | **User-facing text** | "vehicle" on shared screens; "bike" / "car" only where the screen is about that type | l10n keys follow the same rule: `vehicleAdd`, not `bikeAdd` |
 
-New code follows these rules from the start; the existing code is renamed in step 0.6.
+New code follows these rules from the start; the existing code was renamed in step 0.6. The brand (`bike_companion` package, `BikeCompanionApp`, app IDs) changes with the Garajo rebrand in Phase 3.
 
 ### UX principles (apply to every feature)
 
@@ -85,12 +84,12 @@ Effort: **S** ≈ days, **M** ≈ 1 week, **L** ≈ 2+ weeks.
 |---|---|---|
 | 0.1 | Commit the pending RC-scan work | Clean starting point |
 | 0.2 | Cloud restore copies only known columns | Restore inserts raw Firestore rows into SQLite; any new column breaks restore across versions |
-| 0.3 | Migration test harness (create v2 DB → upgrade → verify) | Every later phase adds a case |
+| 0.3 | Migration test harness (frozen schema snapshot per version → upgrade → verify) | Every later phase adds a case |
 | 0.4 | Stable notification IDs (fixed hash instead of `String.hashCode`) | IDs must stay the same across app versions to cancel/reschedule |
 | 0.5 | Fix cloud sync: every repository write queues an upload; uploads run after each change and on sign-in; one-time backfill of existing data; deleting a vehicle deletes its records in the cloud | Nothing ever called the sync queue, so no data had ever reached the cloud and restore had nothing to restore |
-| 0.6 | Rename `Bike` → `Vehicle` in code (classes, files, variables, routes, l10n keys); RC-scan `Vehicle` → `RcDetails`; stored names unchanged, mapped in the data layer | Code matches the product before car support; see *Naming conventions* |
+| 0.6 | Rename `Bike` → `Vehicle` everywhere — classes, files, variables, routes, l10n keys and storage (table `vehicles`, `vehicle_id`, Firestore `users/{uid}/vehicles`); RC-scan `Vehicle` → `RcDetails`. Fresh database `garajo.db` at schema v1 (pre-release data isn't carried over) | Code and data match the product before car support; see *Naming conventions* |
 
-**Done when:** tests green; restore of an older backup into the current schema works; a change made on one phone appears after restore on another; no `bike` identifiers left in Dart code outside the data-layer mapping.
+**Done when:** tests green; a change made on one phone appears after restore on another; no `bike` identifiers left in Dart code except the brand until Phase 3.
 
 ### Phase 1 — Reminders (M)
 
@@ -112,7 +111,7 @@ Today only documents in the Documents tab get reminders, and only after that tab
 - **Notifications do something**: tapping one opens the exact place to fix it, e.g. the insurance date picker, prefilled.
 - **Permission asked at the right moment**: after the user saves their first expiry date, with one sentence explaining why, not on first launch.
 
-**DB v3:** `bikes.reg_validity`
+**DB v2:** `vehicles.reg_validity`
 
 **Done when:** unit tests for dates, dedupe and cancel; manual QA on Android 13/14 and iOS — permission granted, denied, and reminders surviving a reboot; tapping a notification lands on the right screen; UX review passed.
 
@@ -136,7 +135,7 @@ Today fuel logs and service costs are stored separately and **are not counted** 
 - **Analytics you can read in 2 seconds**: headline number first (this month, ↑/↓ % vs last month), then the chart. Swipe left/right to change month or year. Tap a chart bar to see that month's breakdown.
 - **Cost per km** shown as a single big stat card with a short explanation line.
 
-**DB v4:** `bikes.monthly_budget`, `bikes.yearly_budget`
+**DB v3:** `vehicles.monthly_budget`, `vehicles.yearly_budget`
 
 **Done when:** totals match hand-calculated fixtures; budget alerts fire exactly once per threshold per period; quick add works in 2 taps after the amount; UX review passed.
 
@@ -155,7 +154,7 @@ Done together because both rewrite the same "bike" wording.
 | 3.7 | Rebrand: app name, icon, splash, store text |
 | 3.8 | New identifiers (`app.garajo`) + new Firebase apps and config files |
 
-Code already says *vehicle* (step 0.6); stored names stay `bikes` / `bike_id` — see *Naming conventions*.
+Code and storage already say *vehicle* (step 0.6) — see *Naming conventions*.
 
 **UX:**
 - **Vehicle type picker**: large illustrated cards (Bike · Scooter · Car) as the first step of adding a vehicle — or skipped entirely when the RC scan already detected the type ("Looks like a car — correct?").
@@ -163,7 +162,7 @@ Code already says *vehicle* (step 0.6); stored names stay `bikes` / `bike_id` �
 - **Type-aware screens**: car users never see chain items; wording and icons always match the vehicle.
 - **New look for Garajo**: refreshed icon and splash; the welcome screen explains the app in 3 swipeable cards (track · remind · scan), with "Add your first vehicle" as the only button.
 
-**DB v5:** `bikes.vehicle_type`
+**DB v4:** `vehicles.vehicle_type`
 
 **Done when:** a car can be added by scan and manually with car services and health score; existing bikes are unchanged after upgrade; no "bike" wording left on shared screens; sign-in, sync and scan work on the new identifiers; UX review passed.
 
@@ -196,7 +195,7 @@ Code already says *vehicle* (step 0.6); stored names stay `bikes` / `bike_id` �
 
 - [x] RC scan: front/back capture, upright rotation, position-based OCR parsing, Gemini with on-device gap-fill
 - [x] Name decided: **Garajo**
-- [ ] Phase 0 — Foundation (0.1–0.4 done; 0.5 sync fix and 0.6 rename in progress)
+- [x] Phase 0 — Foundation (incl. 0.5 sync fix, 0.6 vehicle rename)
 - [ ] Phase 1 — Reminders
 - [ ] Phase 2 — Spending, budgets and analytics
 - [ ] Phase 3 — Car support and rebrand

@@ -64,7 +64,7 @@ class NotificationService {
 
   // Called whenever the documents list changes — reschedules all doc reminders.
   static Future<void> scheduleDocumentReminders(
-      List<BikeDocument> docs) async {
+      List<VehicleDocument> docs) async {
     for (final doc in docs) {
       await cancelDocumentReminders(doc.id);
     }
@@ -78,7 +78,7 @@ class NotificationService {
     }
   }
 
-  static Future<void> _scheduleForDoc(AppLocalizations l, BikeDocument doc,
+  static Future<void> _scheduleForDoc(AppLocalizations l, VehicleDocument doc,
       {required int threshold}) async {
     final expiry = doc.expiryDate!;
     final fireDate =
@@ -117,13 +117,13 @@ class NotificationService {
   }
 
   static Future<void> showServiceAlert({
-    required String bikeName,
+    required String vehicleName,
     required String serviceType,
   }) async {
     final l = await loadAppLocalizations();
     await _showNow(
       id: 50000 + serviceType.hashCode.abs() % 1000,
-      title: l.notifServiceOverdueTitle(bikeName),
+      title: l.notifServiceOverdueTitle(vehicleName),
       body: l.notifServiceOverdueBody(serviceType),
     );
   }

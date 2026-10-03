@@ -8,14 +8,14 @@ class ExpenseRepository {
   ExpenseRepository(this._db);
 
   Future<List<Expense>> getExpensesByMonth(
-      String bikeId, int year, int month) async {
+      String vehicleId, int year, int month) async {
     final db = await _db.db;
     final start = DateTime(year, month).millisecondsSinceEpoch;
     final end = DateTime(year, month + 1).millisecondsSinceEpoch;
     final rows = await db.query(
       'expenses',
-      where: 'bike_id = ? AND date >= ? AND date < ?',
-      whereArgs: [bikeId, start, end],
+      where: 'vehicle_id = ? AND date >= ? AND date < ?',
+      whereArgs: [vehicleId, start, end],
       orderBy: 'date DESC',
     );
     return rows.map(Expense.fromMap).toList();
@@ -34,28 +34,28 @@ class ExpenseRepository {
     await db.delete('expenses', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<double> getMonthlyTotal(String bikeId, int year, int month) async {
+  Future<double> getMonthlyTotal(String vehicleId, int year, int month) async {
     final db = await _db.db;
     final start = DateTime(year, month).millisecondsSinceEpoch;
     final end = DateTime(year, month + 1).millisecondsSinceEpoch;
     final result = await db.rawQuery(
       'SELECT COALESCE(SUM(amount), 0) as total FROM expenses '
-      'WHERE bike_id = ? AND date >= ? AND date < ?',
-      [bikeId, start, end],
+      'WHERE vehicle_id = ? AND date >= ? AND date < ?',
+      [vehicleId, start, end],
     );
     return (result.first['total'] as num).toDouble();
   }
 
   Future<Map<String, double>> getCategoryBreakdown(
-      String bikeId, int year, int month) async {
+      String vehicleId, int year, int month) async {
     final db = await _db.db;
     final start = DateTime(year, month).millisecondsSinceEpoch;
     final end = DateTime(year, month + 1).millisecondsSinceEpoch;
     final rows = await db.rawQuery(
       'SELECT category, SUM(amount) as total FROM expenses '
-      'WHERE bike_id = ? AND date >= ? AND date < ? '
+      'WHERE vehicle_id = ? AND date >= ? AND date < ? '
       'GROUP BY category',
-      [bikeId, start, end],
+      [vehicleId, start, end],
     );
     return {
       for (final row in rows)
@@ -63,7 +63,7 @@ class ExpenseRepository {
     };
   }
 
-  Future<List<MonthSummary>> getSixMonthTrend(String bikeId) async {
+  Future<List<MonthSummary>> getSixMonthTrend(String vehicleId) async {
     final db = await _db.db;
     final now = DateTime.now();
     final summaries = <MonthSummary>[];
@@ -74,8 +74,8 @@ class ExpenseRepository {
           DateTime(month.year, month.month + 1).millisecondsSinceEpoch;
       final result = await db.rawQuery(
         'SELECT COALESCE(SUM(amount), 0) as total FROM expenses '
-        'WHERE bike_id = ? AND date >= ? AND date < ?',
-        [bikeId, start, end],
+        'WHERE vehicle_id = ? AND date >= ? AND date < ?',
+        [vehicleId, start, end],
       );
       summaries.add(MonthSummary(
         year: month.year,
@@ -86,14 +86,14 @@ class ExpenseRepository {
     return summaries;
   }
 
-  Future<double> getYearTotal(String bikeId, int year) async {
+  Future<double> getYearTotal(String vehicleId, int year) async {
     final db = await _db.db;
     final start = DateTime(year).millisecondsSinceEpoch;
     final end = DateTime(year + 1).millisecondsSinceEpoch;
     final result = await db.rawQuery(
       'SELECT COALESCE(SUM(amount), 0) as total FROM expenses '
-      'WHERE bike_id = ? AND date >= ? AND date < ?',
-      [bikeId, start, end],
+      'WHERE vehicle_id = ? AND date >= ? AND date < ?',
+      [vehicleId, start, end],
     );
     return (result.first['total'] as num).toDouble();
   }

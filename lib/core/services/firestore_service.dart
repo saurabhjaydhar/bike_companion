@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Firestore path structure:
-///   users/{uid}/bikes/{bikeId}
-///   users/{uid}/bikes/{bikeId}/fuel_logs/{logId}
-///   users/{uid}/bikes/{bikeId}/service_records/{recordId}
-///   users/{uid}/bikes/{bikeId}/expenses/{expenseId}
-///   users/{uid}/bikes/{bikeId}/documents/{docId}
+///   users/{uid}/vehicles/{vehicleId}
+///   users/{uid}/vehicles/{vehicleId}/fuel_logs/{logId}
+///   users/{uid}/vehicles/{vehicleId}/service_records/{recordId}
+///   users/{uid}/vehicles/{vehicleId}/expenses/{expenseId}
+///   users/{uid}/vehicles/{vehicleId}/documents/{docId}
 ///
 /// Security rules (paste in Firebase Console → Firestore → Rules):
 /// ---
@@ -20,65 +20,65 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  CollectionReference<Map<String, dynamic>> _bikesRef(String uid) =>
-      _db.collection('users').doc(uid).collection('bikes');
+  CollectionReference<Map<String, dynamic>> _vehiclesRef(String uid) =>
+      _db.collection('users').doc(uid).collection('vehicles');
 
   CollectionReference<Map<String, dynamic>> _subRef(
-          String uid, String bikeId, String collection) =>
+          String uid, String vehicleId, String collection) =>
       _db
           .collection('users')
           .doc(uid)
-          .collection('bikes')
-          .doc(bikeId)
+          .collection('vehicles')
+          .doc(vehicleId)
           .collection(collection);
 
   // ---------------------------------------------------------------------------
   // Push (upsert) methods — called by SyncService
   // ---------------------------------------------------------------------------
 
-  Future<void> pushBike(String uid, Map<String, dynamic> data) async {
-    await _bikesRef(uid)
+  Future<void> pushVehicle(String uid, Map<String, dynamic> data) async {
+    await _vehiclesRef(uid)
         .doc(data['id'] as String)
         .set(data, SetOptions(merge: true));
   }
 
   Future<void> pushRecord(
     String uid,
-    String bikeId,
+    String vehicleId,
     String collection,
     Map<String, dynamic> data,
   ) async {
-    await _subRef(uid, bikeId, collection)
+    await _subRef(uid, vehicleId, collection)
         .doc(data['id'] as String)
         .set(data, SetOptions(merge: true));
   }
 
-  Future<void> deleteBike(String uid, String bikeId) async {
-    await _bikesRef(uid).doc(bikeId).delete();
+  Future<void> deleteVehicle(String uid, String vehicleId) async {
+    await _vehiclesRef(uid).doc(vehicleId).delete();
   }
 
   Future<void> deleteRecord(
-      String uid, String bikeId, String collection, String id) async {
-    await _subRef(uid, bikeId, collection).doc(id).delete();
+      String uid, String vehicleId, String collection, String id) async {
+    await _subRef(uid, vehicleId, collection).doc(id).delete();
   }
 
   // ---------------------------------------------------------------------------
   // Restore — fetch all user data from Firestore
   // ---------------------------------------------------------------------------
 
-  Future<List<Map<String, dynamic>>> fetchBikes(String uid) async {
-    final snap = await _bikesRef(uid).get();
+  Future<List<Map<String, dynamic>>> fetchVehicles(String uid) async {
+    final snap = await _vehiclesRef(uid).get();
     return snap.docs.map((d) => d.data()).toList();
   }
 
   Future<List<Map<String, dynamic>>> fetchCollection(
-      String uid, String bikeId, String collection) async {
-    final snap = await _subRef(uid, bikeId, collection).get();
+      String uid, String vehicleId, String collection) async {
+    final snap = await _subRef(uid, vehicleId, collection).get();
     return snap.docs.map((d) => d.data()).toList();
   }
 
   Future<bool> userHasData(String uid) async {
-    final snap = await _bikesRef(uid).limit(1).get();
+    final snap = await _vehiclesRef(uid).limit(1).get();
     return snap.docs.isNotEmpty;
   }
 

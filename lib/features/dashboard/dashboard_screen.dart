@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/constants/app_constants.dart';
-import '../../core/providers/active_bike_provider.dart';
+import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/health_score.dart';
@@ -19,8 +19,8 @@ import '../../shared/widgets/stat_card.dart';
 import 'dashboard_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
-  final String bikeId;
-  const DashboardScreen({super.key, required this.bikeId});
+  final String vehicleId;
+  const DashboardScreen({super.key, required this.vehicleId});
 
   @override
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
@@ -31,15 +31,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   void initState() {
     super.initState();
-    // Set this bike as active when screen opens
+    // Set this vehicle as active when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setActiveBike(ref, widget.bikeId);
+      setActiveVehicle(ref, widget.vehicleId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dashAsync = ref.watch(dashboardProvider(widget.bikeId));
+    final dashAsync = ref.watch(dashboardProvider(widget.vehicleId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l = context.l10n;
 
@@ -47,7 +47,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go('/garage')),
         title: dashAsync.maybeWhen(
-          data: (d) => Text(d.bike.name),
+          data: (d) => Text(d.vehicle.name),
           orElse: () => Text(l.dashboardTitle),
         ),
         actions: [
@@ -62,15 +62,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
         error: (e, _) => Center(child: Text('$e')),
         data: (dash) => RefreshIndicator(
           onRefresh: () => ref
-              .read(dashboardProvider(widget.bikeId).notifier)
+              .read(dashboardProvider(widget.vehicleId).notifier)
               .refresh(),
           child: ListView(
             padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
             children: [
-              // Bike switcher chips
-              _BikeSwitcherRow(
-                bikes: dash.allBikes,
-                activeBikeId: widget.bikeId,
+              // Vehicle switcher chips
+              _VehicleSwitcherRow(
+                vehicles: dash.allVehicles,
+                activeVehicleId: widget.vehicleId,
               ),
 
               const SizedBox(height: AppSpacing.lg),
@@ -106,7 +106,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   label: l.dashboardLogFuel,
                   icon: Icons.local_gas_station_rounded,
                   onPressed: () =>
-                      context.push('/garage/dashboard/${widget.bikeId}/fuel/log'),
+                      context.push('/garage/dashboard/${widget.vehicleId}/fuel/log'),
                 ),
               ),
 
@@ -132,14 +132,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 }
 
 // ---------------------------------------------------------------------------
-// Bike switcher row
+// Vehicle switcher row
 // ---------------------------------------------------------------------------
-class _BikeSwitcherRow extends ConsumerWidget {
-  final List<dynamic> bikes;
-  final String activeBikeId;
+class _VehicleSwitcherRow extends ConsumerWidget {
+  final List<dynamic> vehicles;
+  final String activeVehicleId;
 
-  const _BikeSwitcherRow(
-      {required this.bikes, required this.activeBikeId});
+  const _VehicleSwitcherRow(
+      {required this.vehicles, required this.activeVehicleId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -152,17 +152,17 @@ class _BikeSwitcherRow extends ConsumerWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        itemCount: bikes.length,
+        itemCount: vehicles.length,
         separatorBuilder: (context, index) =>
             const SizedBox(width: AppSpacing.sm),
         itemBuilder: (context, i) {
-          final bike = bikes[i];
-          final isActive = bike.id == activeBikeId;
+          final vehicle = vehicles[i];
+          final isActive = vehicle.id == activeVehicleId;
           return GestureDetector(
             onTap: () {
               if (!isActive) {
-                setActiveBike(ref, bike.id);
-                context.go('/garage/dashboard/${bike.id}');
+                setActiveVehicle(ref, vehicle.id);
+                context.go('/garage/dashboard/${vehicle.id}');
               }
             },
             child: AnimatedContainer(
@@ -197,13 +197,13 @@ class _BikeSwitcherRow extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: isActive
                           ? Colors.white
-                          : bike.colour,
+                          : vehicle.colour,
                       shape: BoxShape.circle,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
-                    bike.name,
+                    vehicle.name,
                     style: AppTextStyles.label.copyWith(
                       fontSize: 13,
                       color: isActive
@@ -240,7 +240,7 @@ class _HealthHero extends StatelessWidget {
     final rupeeFormat = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l = context.l10n;
-    final bike = dash.bike;
+    final vehicle = dash.vehicle;
 
     return Padding(
       padding:
@@ -255,13 +255,13 @@ class _HealthHero extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${bike.brand} ${bike.model}'.toUpperCase(),
+                    '${vehicle.brand} ${vehicle.model}'.toUpperCase(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.label.copyWith(color: textSecondary),
                   ),
                 ),
-                PlateBadge(bike.regNumber),
+                PlateBadge(vehicle.regNumber),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -316,7 +316,7 @@ class _QuickStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final insuranceDays = dash.bike.insuranceExpiry
+    final insuranceDays = dash.vehicle.insuranceExpiry
         ?.difference(now)
         .inDays;
     final lastFuelDays = dash.lastFuelLog != null
@@ -351,7 +351,7 @@ class _QuickStats extends StatelessWidget {
                 child: StatCard(
                   label: l.dashboardNextService,
                   value: dash.nextService?.nextDueKm != null
-                      ? '${dash.bike.odometerCurrent < dash.nextService!.nextDueKm! ? dash.nextService!.nextDueKm! - dash.bike.odometerCurrent : 0} km'
+                      ? '${dash.vehicle.odometerCurrent < dash.nextService!.nextDueKm! ? dash.nextService!.nextDueKm! - dash.vehicle.odometerCurrent : 0} km'
                       : l.dashboardUpToDate,
                   icon: Icons.build_outlined,
                 ),
@@ -378,7 +378,7 @@ class _QuickStats extends StatelessWidget {
                 child: StatCard(
                   label: l.fieldOdometer,
                   value: NumberFormat('#,##,###')
-                      .format(dash.bike.odometerCurrent),
+                      .format(dash.vehicle.odometerCurrent),
                   trend: 'km',
                   trendPositive: true,
                   icon: Icons.speed_outlined,
@@ -467,7 +467,7 @@ class _DashboardSkeleton extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        // Bike switcher row
+        // Vehicle switcher row
         const ShimmerBox(height: 36, borderRadius: AppRadius.full),
         const SizedBox(height: AppSpacing.lg),
 

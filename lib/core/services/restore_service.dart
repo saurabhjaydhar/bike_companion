@@ -20,26 +20,26 @@ class RestoreService {
     final hasData = await _firestore.userHasData(uid);
     if (!hasData) return false;
 
-    final bikes = await _firestore.fetchBikes(uid);
+    final vehicles = await _firestore.fetchVehicles(uid);
 
     // Fetch all sub-collections before opening the SQLite transaction.
     final children = <String, List<Map<String, dynamic>>>{
       for (final table in restoreChildTables) table: [],
     };
-    for (final bike in bikes) {
-      final bikeId = bike['id'] as String;
+    for (final vehicle in vehicles) {
+      final vehicleId = vehicle['id'] as String;
       for (final table in restoreChildTables) {
         children[table]!
-            .addAll(await _firestore.fetchCollection(uid, bikeId, table));
+            .addAll(await _firestore.fetchCollection(uid, vehicleId, table));
       }
     }
 
-    await writeRestoredData(await _db.db, {'bikes': bikes, ...children});
+    await writeRestoredData(await _db.db, {'vehicles': vehicles, ...children});
     return true;
   }
 }
 
-/// Per-bike Firestore sub-collections, each restored into the local table
+/// Per-vehicle Firestore sub-collections, each restored into the local table
 /// of the same name.
 const restoreChildTables = [
   'fuel_logs',
@@ -52,14 +52,14 @@ const restoreChildTables = [
 typedef TableColumn = ({String name, bool required});
 
 /// Writes restored cloud documents into local tables in one transaction.
-/// [rowsByTable] maps table name to Firestore documents; bikes are written
+/// [rowsByTable] maps table name to Firestore documents; vehicles are written
 /// first so child rows satisfy their foreign key. Rows that can't be stored
 /// are skipped and logged rather than failing the whole restore.
 Future<void> writeRestoredData(
   Database db,
   Map<String, List<Map<String, dynamic>>> rowsByTable,
 ) async {
-  final order = ['bikes', ...rowsByTable.keys.where((t) => t != 'bikes')];
+  final order = ['vehicles', ...rowsByTable.keys.where((t) => t != 'vehicles')];
   await db.transaction((txn) async {
     for (final table in order) {
       final docs = rowsByTable[table];

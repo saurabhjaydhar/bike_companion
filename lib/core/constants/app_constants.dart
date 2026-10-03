@@ -71,7 +71,7 @@ class DocumentTypes {
 }
 
 class SharedPrefKeys {
-  static const String activeBikeId = 'active_bike_id';
+  static const String activeVehicleId = 'active_vehicle_id';
   static const String isOnboardingDone = 'is_onboarding_done';
   static const String themeMode = 'theme_mode';
   static const String locale = 'locale';

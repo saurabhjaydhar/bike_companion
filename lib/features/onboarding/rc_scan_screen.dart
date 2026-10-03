@@ -11,7 +11,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/rc_scan_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../data/models/vehicle.dart';
+import '../../data/models/rc_details.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/primary_button.dart';
@@ -125,8 +125,8 @@ class _RcScanScreenState extends ConsumerState<RcScanScreen> {
     context.push(
       '/onboarding/vehicle-details',
       extra: {
-        'vehicle': result.vehicle ?? const Vehicle(rcNumber: ''),
-        'source': VehiclePrefill.scan,
+        'details': result.details ?? const RcDetails(rcNumber: ''),
+        'source': RcPrefill.scan,
         'prefillSuccess': result.found,
         'failureReason': null,
       },

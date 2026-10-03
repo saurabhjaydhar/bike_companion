@@ -1,6 +1,6 @@
 class Expense {
   final String id;
-  final String bikeId;
+  final String vehicleId;
   final DateTime date;
   final String category;
   final double amount;
@@ -8,7 +8,7 @@ class Expense {
 
   const Expense({
     required this.id,
-    required this.bikeId,
+    required this.vehicleId,
     required this.date,
     required this.category,
     required this.amount,
@@ -17,7 +17,7 @@ class Expense {
 
   factory Expense.fromMap(Map<String, dynamic> map) => Expense(
         id: map['id'] as String,
-        bikeId: map['bike_id'] as String,
+        vehicleId: map['vehicle_id'] as String,
         date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
         category: map['category'] as String,
         amount: (map['amount'] as num).toDouble(),
@@ -26,7 +26,7 @@ class Expense {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'bike_id': bikeId,
+        'vehicle_id': vehicleId,
         'date': date.millisecondsSinceEpoch,
         'category': category,
         'amount': amount,
@@ -35,7 +35,7 @@ class Expense {
 
   Expense copyWith({
     String? id,
-    String? bikeId,
+    String? vehicleId,
     DateTime? date,
     String? category,
     double? amount,
@@ -43,7 +43,7 @@ class Expense {
   }) =>
       Expense(
         id: id ?? this.id,
-        bikeId: bikeId ?? this.bikeId,
+        vehicleId: vehicleId ?? this.vehicleId,
         date: date ?? this.date,
         category: category ?? this.category,
         amount: amount ?? this.amount,

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
 
-/// Glowing tile with a bike icon, tinted with the bike's colour.
-class BikeAvatar extends StatelessWidget {
+/// Glowing tile with a vehicle icon, tinted with the vehicle's colour.
+class VehicleAvatar extends StatelessWidget {
   final Color colour;
   final double size;
   final String? initials;
 
-  const BikeAvatar({
+  const VehicleAvatar({
     super.key,
     required this.colour,
     this.size = 48,

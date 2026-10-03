@@ -6,7 +6,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/primary_button.dart';
 
-/// First-run welcome. Adding the bike itself happens in [AddBikeScreen]
+/// First-run welcome. Adding the vehicle itself happens in [AddVehicleScreen]
 /// (scan RC, look up by number, or enter manually).
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -16,7 +16,7 @@ class OnboardingScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: _WelcomePage(
-          onStart: () => context.push('/onboarding/add-bike'),
+          onStart: () => context.push('/onboarding/add-vehicle'),
         ),
       ),
     );

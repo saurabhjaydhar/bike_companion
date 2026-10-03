@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
-import '../core/providers/active_bike_provider.dart';
+import '../core/providers/active_vehicle_provider.dart';
 import '../core/services/auth_service.dart';
 import '../core/theme/app_colors.dart';
 import '../l10n/l10n.dart';
@@ -20,12 +20,12 @@ import '../features/expenses/expenses_screen.dart';
 import '../features/fuel/fuel_history_screen.dart';
 import '../features/fuel/fuel_log_screen.dart';
 import '../features/garage/garage_screen.dart';
-import '../features/onboarding/add_bike_screen.dart';
+import '../features/onboarding/add_vehicle_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/onboarding/rc_scan_screen.dart';
 import '../features/onboarding/vehicle_details_screen.dart';
 import '../features/service/service_screen.dart';
-import '../data/models/vehicle.dart';
+import '../data/models/rc_details.dart';
 import '../features/settings/settings_screen.dart';
 
 // Bridges Firebase auth stream → GoRouter refreshListenable.
@@ -68,16 +68,16 @@ class _RidesPlaceholder extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// No-bike selected placeholder (shown when tab tapped before any bike is active)
+// No-vehicle selected placeholder (shown when tab tapped before any vehicle is active)
 // ---------------------------------------------------------------------------
-class _NoBikePlaceholder extends StatelessWidget {
-  const _NoBikePlaceholder();
+class _NoVehiclePlaceholder extends StatelessWidget {
+  const _NoVehiclePlaceholder();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(context.l10n.noBikeSelected,
+        child: Text(context.l10n.noVehicleSelected,
             style: const TextStyle(color: Colors.grey)),
       ),
     );
@@ -85,7 +85,7 @@ class _NoBikePlaceholder extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Bottom nav shell — reads activeBikeIdProvider to navigate tabs with bikeId
+// Bottom nav shell — reads activeVehicleIdProvider to navigate tabs with vehicleId
 // ---------------------------------------------------------------------------
 class _NavShell extends ConsumerWidget {
   final StatefulNavigationShell shell;
@@ -101,27 +101,27 @@ class _NavShell extends ConsumerWidget {
 
   void _onTap(BuildContext context, WidgetRef ref, int index) {
     HapticFeedback.selectionClick();
-    final bikeId = ref.read(activeBikeIdProvider);
+    final vehicleId = ref.read(activeVehicleIdProvider);
     switch (index) {
       case 0:
         shell.goBranch(0, initialLocation: index == shell.currentIndex);
       case 1:
-        if (bikeId != null) {
-          context.go('/expenses/$bikeId');
+        if (vehicleId != null) {
+          context.go('/expenses/$vehicleId');
         } else {
           shell.goBranch(1, initialLocation: index == shell.currentIndex);
         }
       case 2:
-        if (bikeId != null) {
-          context.go('/service/$bikeId');
+        if (vehicleId != null) {
+          context.go('/service/$vehicleId');
         } else {
           shell.goBranch(2, initialLocation: index == shell.currentIndex);
         }
       case 3:
         shell.goBranch(3, initialLocation: index == shell.currentIndex);
       case 4:
-        if (bikeId != null) {
-          context.go('/documents/$bikeId');
+        if (vehicleId != null) {
+          context.go('/documents/$vehicleId');
         } else {
           shell.goBranch(4, initialLocation: index == shell.currentIndex);
         }
@@ -196,11 +196,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             _fade(state, const OnboardingScreen()),
       ),
 
-      // Add bike: scan RC, look up by number, or enter manually
+      // Add vehicle: scan RC, look up by number, or enter manually
       GoRoute(
-        path: '/onboarding/add-bike',
+        path: '/onboarding/add-vehicle',
         pageBuilder: (context, state) =>
-            _slide(state, const AddBikeScreen()),
+            _slide(state, const AddVehicleScreen()),
       ),
       GoRoute(
         path: '/onboarding/scan-rc',
@@ -214,9 +214,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return _slide(
             state,
             VehicleDetailsScreen(
-              vehicle: extra['vehicle'] as Vehicle,
-              source: extra['source'] as VehiclePrefill? ??
-                  VehiclePrefill.lookup,
+              details: extra['details'] as RcDetails,
+              source: extra['source'] as RcPrefill? ??
+                  RcPrefill.lookup,
               prefillSuccess: extra['prefillSuccess'] as bool,
               failureReason: extra['failureReason'] as String?,
             ),
@@ -236,11 +236,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   _fade(state, const GarageScreen()),
               routes: [
                 GoRoute(
-                  path: 'dashboard/:bikeId',
+                  path: 'dashboard/:vehicleId',
                   pageBuilder: (context, state) => _slide(
                     state,
                     DashboardScreen(
-                        bikeId: state.pathParameters['bikeId']!),
+                        vehicleId: state.pathParameters['vehicleId']!),
                   ),
                   routes: [
                     GoRoute(
@@ -248,7 +248,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       pageBuilder: (context, state) => _slide(
                         state,
                         FuelLogScreen(
-                            bikeId: state.pathParameters['bikeId']!),
+                            vehicleId: state.pathParameters['vehicleId']!),
                       ),
                     ),
                     GoRoute(
@@ -256,7 +256,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       pageBuilder: (context, state) => _slide(
                         state,
                         FuelHistoryScreen(
-                            bikeId: state.pathParameters['bikeId']!),
+                            vehicleId: state.pathParameters['vehicleId']!),
                       ),
                     ),
                   ],
@@ -270,13 +270,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: '/expenses',
               pageBuilder: (context, state) =>
-                  _fade(state, const _NoBikePlaceholder()),
+                  _fade(state, const _NoVehiclePlaceholder()),
             ),
             GoRoute(
-              path: '/expenses/:bikeId',
+              path: '/expenses/:vehicleId',
               pageBuilder: (context, state) => _fade(
                 state,
-                ExpensesScreen(bikeId: state.pathParameters['bikeId']!),
+                ExpensesScreen(vehicleId: state.pathParameters['vehicleId']!),
               ),
             ),
           ]),
@@ -286,13 +286,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: '/service',
               pageBuilder: (context, state) =>
-                  _fade(state, const _NoBikePlaceholder()),
+                  _fade(state, const _NoVehiclePlaceholder()),
             ),
             GoRoute(
-              path: '/service/:bikeId',
+              path: '/service/:vehicleId',
               pageBuilder: (context, state) => _fade(
                 state,
-                ServiceScreen(bikeId: state.pathParameters['bikeId']!),
+                ServiceScreen(vehicleId: state.pathParameters['vehicleId']!),
               ),
             ),
           ]),
@@ -311,14 +311,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: '/documents',
               pageBuilder: (context, state) =>
-                  _fade(state, const _NoBikePlaceholder()),
+                  _fade(state, const _NoVehiclePlaceholder()),
             ),
             GoRoute(
-              path: '/documents/:bikeId',
+              path: '/documents/:vehicleId',
               pageBuilder: (context, state) => _fade(
                 state,
                 DocumentsScreen(
-                    bikeId: state.pathParameters['bikeId']!),
+                    vehicleId: state.pathParameters['vehicleId']!),
               ),
             ),
           ]),

@@ -19,19 +19,19 @@ import 'documents_provider.dart';
 const _uuid = Uuid();
 
 class DocumentsScreen extends ConsumerWidget {
-  final String bikeId;
-  const DocumentsScreen({super.key, required this.bikeId});
+  final String vehicleId;
+  const DocumentsScreen({super.key, required this.vehicleId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final docsAsync = ref.watch(documentsProvider(bikeId));
+    final docsAsync = ref.watch(documentsProvider(vehicleId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(title: Text(l.documentsTitle)),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDocument(context, ref, bikeId),
+        onPressed: () => _showAddDocument(context, ref, vehicleId),
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -61,7 +61,7 @@ class DocumentsScreen extends ConsumerWidget {
           final expired = docs.where((d) => d.isExpired).toList();
 
           return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(documentsProvider(bikeId)),
+            onRefresh: () async => ref.invalidate(documentsProvider(vehicleId)),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(
                   AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 100),
@@ -70,7 +70,7 @@ class DocumentsScreen extends ConsumerWidget {
                   _SectionHeader(l.documentsExpiringSoon, isDark: isDark),
                   _DocGrid(
                       docs: expiring,
-                      bikeId: bikeId,
+                      vehicleId: vehicleId,
                       isDark: isDark,
                       ref: ref),
                   const SizedBox(height: AppSpacing.lg),
@@ -78,14 +78,14 @@ class DocumentsScreen extends ConsumerWidget {
                 if (valid.isNotEmpty) ...[
                   _SectionHeader(l.documentsValid, isDark: isDark),
                   _DocGrid(
-                      docs: valid, bikeId: bikeId, isDark: isDark, ref: ref),
+                      docs: valid, vehicleId: vehicleId, isDark: isDark, ref: ref),
                   const SizedBox(height: AppSpacing.lg),
                 ],
                 if (expired.isNotEmpty) ...[
                   _SectionHeader(l.documentsExpired, isDark: isDark),
                   _DocGrid(
                       docs: expired,
-                      bikeId: bikeId,
+                      vehicleId: vehicleId,
                       isDark: isDark,
                       ref: ref),
                 ],
@@ -119,14 +119,14 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _DocGrid extends StatelessWidget {
-  final List<BikeDocument> docs;
-  final String bikeId;
+  final List<VehicleDocument> docs;
+  final String vehicleId;
   final bool isDark;
   final WidgetRef ref;
 
   const _DocGrid({
     required this.docs,
-    required this.bikeId,
+    required this.vehicleId,
     required this.isDark,
     required this.ref,
   });
@@ -146,9 +146,9 @@ class _DocGrid extends StatelessWidget {
       itemBuilder: (context, i) => _DocCard(
         doc: docs[i],
         isDark: isDark,
-        onTap: () => _showDocDetail(context, ref, docs[i], bikeId),
+        onTap: () => _showDocDetail(context, ref, docs[i], vehicleId),
         onDelete: () => ref
-            .read(documentsProvider(bikeId).notifier)
+            .read(documentsProvider(vehicleId).notifier)
             .deleteDocument(docs[i].id),
       ),
     );
@@ -156,7 +156,7 @@ class _DocGrid extends StatelessWidget {
 }
 
 class _DocCard extends StatelessWidget {
-  final BikeDocument doc;
+  final VehicleDocument doc;
   final bool isDark;
   final VoidCallback onTap;
   final VoidCallback onDelete;
@@ -283,7 +283,7 @@ class _DocCard extends StatelessWidget {
 // Document detail sheet
 // ---------------------------------------------------------------------------
 void _showDocDetail(
-    BuildContext context, WidgetRef ref, BikeDocument doc, String bikeId) {
+    BuildContext context, WidgetRef ref, VehicleDocument doc, String vehicleId) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -291,17 +291,17 @@ void _showDocDetail(
       borderRadius:
           BorderRadius.vertical(top: Radius.circular(AppRadius.large)),
     ),
-    builder: (_) => _DocDetailSheet(doc: doc, bikeId: bikeId, ref: ref),
+    builder: (_) => _DocDetailSheet(doc: doc, vehicleId: vehicleId, ref: ref),
   );
 }
 
 class _DocDetailSheet extends StatelessWidget {
-  final BikeDocument doc;
-  final String bikeId;
+  final VehicleDocument doc;
+  final String vehicleId;
   final WidgetRef ref;
 
   const _DocDetailSheet(
-      {required this.doc, required this.bikeId, required this.ref});
+      {required this.doc, required this.vehicleId, required this.ref});
 
   @override
   Widget build(BuildContext context) {
@@ -372,7 +372,7 @@ class _DocDetailSheet extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
                 ref
-                    .read(documentsProvider(bikeId).notifier)
+                    .read(documentsProvider(vehicleId).notifier)
                     .deleteDocument(doc.id);
               },
               icon: const Icon(Icons.delete_outline_rounded,
@@ -501,7 +501,7 @@ void _showFullPhoto(BuildContext context, String path) {
 // Add document bottom sheet
 // ---------------------------------------------------------------------------
 void _showAddDocument(
-    BuildContext context, WidgetRef ref, String bikeId) {
+    BuildContext context, WidgetRef ref, String vehicleId) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -509,14 +509,14 @@ void _showAddDocument(
       borderRadius:
           BorderRadius.vertical(top: Radius.circular(AppRadius.large)),
     ),
-    builder: (_) => _AddDocSheet(bikeId: bikeId, ref: ref),
+    builder: (_) => _AddDocSheet(vehicleId: vehicleId, ref: ref),
   );
 }
 
 class _AddDocSheet extends StatefulWidget {
-  final String bikeId;
+  final String vehicleId;
   final WidgetRef ref;
-  const _AddDocSheet({required this.bikeId, required this.ref});
+  const _AddDocSheet({required this.vehicleId, required this.ref});
 
   @override
   State<_AddDocSheet> createState() => _AddDocSheetState();
@@ -580,23 +580,23 @@ class _AddDocSheetState extends State<_AddDocSheet> {
         if (user != null && !user.isAnonymous) {
           try {
             finalPath = await getIt<StorageService>()
-                .uploadDocument(widget.bikeId, docId, _imagePath!);
+                .uploadDocument(widget.vehicleId, docId, _imagePath!);
           } catch (_) {
             // Upload failed — store local path as fallback
           }
         }
       }
 
-      final doc = BikeDocument(
+      final doc = VehicleDocument(
         id: docId,
-        bikeId: widget.bikeId,
+        vehicleId: widget.vehicleId,
         type: _type,
         title: title,
         filePath: finalPath,
         expiryDate: _expiryDate,
       );
       await widget.ref
-          .read(documentsProvider(widget.bikeId).notifier)
+          .read(documentsProvider(widget.vehicleId).notifier)
           .addDocument(doc);
       if (mounted) Navigator.pop(context);
     } finally {

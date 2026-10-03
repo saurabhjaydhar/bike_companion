@@ -8,13 +8,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../core/providers/active_bike_provider.dart';
+import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/services/rc_scan_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../data/models/bike.dart';
 import '../../data/models/vehicle.dart';
-import '../../data/repositories/bike_repository.dart';
+import '../../data/models/rc_details.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
@@ -23,18 +23,18 @@ import '../../shared/widgets/primary_button.dart';
 
 const _uuid = Uuid();
 
-/// Review / edit form for a new bike. Used for all three add-bike paths:
+/// Review / edit form for a new vehicle. Used for all three add-vehicle paths:
 /// pre-filled from an RC scan or lookup, or empty for manual entry.
 class VehicleDetailsScreen extends ConsumerStatefulWidget {
-  final Vehicle vehicle;
-  final VehiclePrefill source;
+  final RcDetails details;
+  final RcPrefill source;
   final bool prefillSuccess;
   final String? failureReason;
 
   const VehicleDetailsScreen({
     super.key,
-    required this.vehicle,
-    this.source = VehiclePrefill.lookup,
+    required this.details,
+    this.source = RcPrefill.lookup,
     required this.prefillSuccess,
     this.failureReason,
   });
@@ -71,7 +71,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    final v = widget.vehicle;
+    final v = widget.details;
     _rcCtrl = TextEditingController(text: v.rcNumber);
     _nameCtrl = TextEditingController();
     _odometerCtrl = TextEditingController();
@@ -124,7 +124,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     final l = context.l10n;
     final rc = normalizeRegNumber(_rcCtrl.text);
     if (!isValidRegNumber(rc)) {
-      setState(() => _rcError = l.addBikeInvalidFormat);
+      setState(() => _rcError = l.addVehicleInvalidFormat);
       return;
     }
     // Encode the body by hand: Uri.queryParameters would turn the space
@@ -157,7 +157,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     setState(() {
       _rcError = rc.isEmpty
           ? l.validationRequired
-          : (isValidRegNumber(rc) ? null : l.addBikeInvalidFormat);
+          : (isValidRegNumber(rc) ? null : l.addVehicleInvalidFormat);
       _brandError = brand.isEmpty ? l.vehicleBrandRequired : null;
       _modelError = model.isEmpty ? l.vehicleModelRequired : null;
       _odometerError = odometer == null ? l.validationEnterNumber : null;
@@ -175,12 +175,12 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     });
 
     try {
-      final bike = Bike(
+      final vehicle = Vehicle(
         id: _uuid.v4(),
         name: _text(_nameCtrl) ?? '$brand $model',
         brand: brand,
         model: model,
-        variant: widget.vehicle.variant,
+        variant: widget.details.variant,
         colourHex: _colourHex,
         regNumber: rc,
         purchaseDate: _registrationDate,
@@ -196,17 +196,17 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
         chassisNumber: _text(_chassisCtrl)?.toUpperCase(),
       );
 
-      await getIt<BikeRepository>().insertBike(bike);
+      await getIt<VehicleRepository>().insertVehicle(vehicle);
 
-      // First bike completes onboarding; otherwise the router would send
+      // First vehicle completes onboarding; otherwise the router would send
       // the user back to the welcome screen.
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(SharedPrefKeys.isOnboardingDone, true);
 
       ref.invalidate(garageProvider);
-      await setActiveBike(ref, bike.id);
+      await setActiveVehicle(ref, vehicle.id);
 
-      if (mounted) context.go('/garage/dashboard/${bike.id}');
+      if (mounted) context.go('/garage/dashboard/${vehicle.id}');
     } catch (_) {
       if (mounted) {
         setState(() => _saveError = l.vehicleSaveFailed);
@@ -243,7 +243,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (widget.source != VehiclePrefill.manual) ...[
+                    if (widget.source != RcPrefill.manual) ...[
                       _StatusBanner(
                         source: widget.source,
                         success: widget.prefillSuccess,
@@ -292,8 +292,8 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                     _FieldLabel(l.vahanSmsHint, isDark: isDark),
                     const SizedBox(height: AppSpacing.xl),
 
-                    // ── YOUR BIKE ─────────────────────────────────────────
-                    _SectionLabel(l.vehicleSectionYourBike),
+                    // ── YOUR VEHICLE ─────────────────────────────────────────
+                    _SectionLabel(l.vehicleSectionYourVehicle),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(
                       label: l.fieldNickname,
@@ -459,7 +459,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                 AppSpacing.xl,
               ),
               child: PrimaryButton(
-                label: l.vehicleSaveBike,
+                label: l.vehicleSaveVehicle,
                 onPressed: _save,
                 isLoading: _saving,
               ),
@@ -475,7 +475,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
 // Status banner
 // ---------------------------------------------------------------------------
 class _StatusBanner extends StatelessWidget {
-  final VehiclePrefill source;
+  final RcPrefill source;
   final bool success;
   final String? failureReason;
 
@@ -493,8 +493,8 @@ class _StatusBanner extends StatelessWidget {
         ? (isDark ? AppColors.successDark : AppColors.success)
         : (isDark ? AppColors.warningDark : AppColors.warning);
     final message = switch ((source, success)) {
-      (VehiclePrefill.scan, true) => l.vehicleScanSuccess,
-      (VehiclePrefill.scan, false) => l.vehicleScanFailure,
+      (RcPrefill.scan, true) => l.vehicleScanSuccess,
+      (RcPrefill.scan, false) => l.vehicleScanFailure,
       (_, true) => l.vehicleFetchSuccess,
       (_, false) => failureReason != null
           ? '$failureReason ${l.vehicleFetchFailure}'

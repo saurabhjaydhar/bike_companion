@@ -45,8 +45,8 @@ class AppColors {
     Color(0xFFFF3D3D),
   ];
 
-  // Bike avatar colour presets
-  static const List<Color> bikeColors = [
+  // Vehicle avatar colour presets
+  static const List<Color> vehicleColors = [
     Color(0xFF1A56DB), // Blue
     Color(0xFFEF4444), // Red
     Color(0xFF0E9F6E), // Green

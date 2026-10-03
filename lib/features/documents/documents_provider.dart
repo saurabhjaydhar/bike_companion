@@ -5,20 +5,20 @@ import '../../data/repositories/document_repository.dart';
 import '../../main.dart';
 
 class DocumentsNotifier
-    extends FamilyAsyncNotifier<List<BikeDocument>, String> {
+    extends FamilyAsyncNotifier<List<VehicleDocument>, String> {
   @override
-  Future<List<BikeDocument>> build(String arg) async {
+  Future<List<VehicleDocument>> build(String arg) async {
     final docs = await getIt<DocumentRepository>().getDocuments(arg);
     NotificationService.scheduleDocumentReminders(docs);
     return docs;
   }
 
-  Future<void> addDocument(BikeDocument doc) async {
+  Future<void> addDocument(VehicleDocument doc) async {
     await getIt<DocumentRepository>().insertDocument(doc);
     await _reload();
   }
 
-  Future<void> updateDocument(BikeDocument doc) async {
+  Future<void> updateDocument(VehicleDocument doc) async {
     await getIt<DocumentRepository>().updateDocument(doc);
     await _reload();
   }
@@ -40,6 +40,6 @@ class DocumentsNotifier
 }
 
 final documentsProvider =
-    AsyncNotifierProvider.family<DocumentsNotifier, List<BikeDocument>, String>(
+    AsyncNotifierProvider.family<DocumentsNotifier, List<VehicleDocument>, String>(
   DocumentsNotifier.new,
 );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 
-/// Row of bike colour swatches; [selected] and [onChanged] use '#RRGGBB'.
+/// Row of vehicle colour swatches; [selected] and [onChanged] use '#RRGGBB'.
 class ColourPicker extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;

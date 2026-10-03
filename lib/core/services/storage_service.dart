@@ -6,17 +6,17 @@ class StorageService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<String> uploadDocument(
-      String bikeId, String docId, String filePath) async {
+      String vehicleId, String docId, String filePath) async {
     final file = File(filePath);
     final ext = _ext(filePath);
-    final ref = _storage.ref('documents/$bikeId/$docId$ext');
+    final ref = _storage.ref('documents/$vehicleId/$docId$ext');
     final task = await ref.putFile(file);
     return task.ref.getDownloadURL();
   }
 
-  Future<void> deleteDocument(String bikeId, String docId) async {
+  Future<void> deleteDocument(String vehicleId, String docId) async {
     try {
-      await _storage.ref('documents/$bikeId/$docId').delete();
+      await _storage.ref('documents/$vehicleId/$docId').delete();
     } catch (_) {}
   }
 

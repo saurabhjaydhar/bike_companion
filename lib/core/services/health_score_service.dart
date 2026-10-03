@@ -1,4 +1,4 @@
-import '../../data/models/bike.dart';
+import '../../data/models/vehicle.dart';
 import '../../data/models/fuel_log.dart';
 import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
@@ -7,7 +7,7 @@ import '../constants/app_constants.dart';
 
 class HealthScoreService {
   HealthScore compute({
-    required Bike bike,
+    required Vehicle vehicle,
     required List<ServiceRecord> services,
     required List<FuelLog> fuelLogs,
   }) {
@@ -44,7 +44,7 @@ class HealthScoreService {
     // 1. Engine oil — 20 pts
     final lastOil = lastOf(ServiceTypes.oilChange);
     final kmOil = lastOil != null
-        ? (bike.odometerCurrent - lastOil.odometer).toDouble()
+        ? (vehicle.odometerCurrent - lastOil.odometer).toDouble()
         : double.maxFinite;
     final oilPts =
         linearScore(current: kmOil, full: 3000, zero: 5000, maxPts: 20);
@@ -66,7 +66,7 @@ class HealthScoreService {
     final lastChain =
         lastOf(ServiceTypes.chainClean) ?? lastOf(ServiceTypes.chainLube);
     final kmChain = lastChain != null
-        ? (bike.odometerCurrent - lastChain.odometer).toDouble()
+        ? (vehicle.odometerCurrent - lastChain.odometer).toDouble()
         : double.maxFinite;
     final chainPts =
         linearScore(current: kmChain, full: 800, zero: 1500, maxPts: 15);
@@ -85,7 +85,7 @@ class HealthScoreService {
     // 3. Air filter — 10 pts
     final lastAir = lastOf(ServiceTypes.airFilter);
     final kmAir = lastAir != null
-        ? (bike.odometerCurrent - lastAir.odometer).toDouble()
+        ? (vehicle.odometerCurrent - lastAir.odometer).toDouble()
         : double.maxFinite;
     final airPts =
         linearScore(current: kmAir, full: 8000, zero: 12000, maxPts: 10);
@@ -104,7 +104,7 @@ class HealthScoreService {
     // 4. Brake pads — 15 pts
     final lastBrakes = lastOf(ServiceTypes.brakePads);
     final kmBrakes = lastBrakes != null
-        ? (bike.odometerCurrent - lastBrakes.odometer).toDouble()
+        ? (vehicle.odometerCurrent - lastBrakes.odometer).toDouble()
         : double.maxFinite;
     final brakesPts =
         linearScore(current: kmBrakes, full: 8000, zero: 15000, maxPts: 15);
@@ -161,11 +161,11 @@ class HealthScoreService {
     // 7. Insurance — 10 pts
     final double insurancePts;
     final String Function(AppLocalizations l) insuranceMsg;
-    if (bike.insuranceExpiry == null) {
+    if (vehicle.insuranceExpiry == null) {
       insurancePts = 0;
       insuranceMsg = (l) => l.healthInsuranceNotSet;
     } else {
-      final days = bike.insuranceExpiry!.difference(now).inDays;
+      final days = vehicle.insuranceExpiry!.difference(now).inDays;
       insurancePts = days >= 30
           ? 10.0
           : days <= 0

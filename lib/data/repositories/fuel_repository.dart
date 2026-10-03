@@ -9,15 +9,15 @@ class FuelRepository {
   FuelRepository(this._db);
 
   Future<List<FuelLog>> getFuelLogs(
-    String bikeId, {
+    String vehicleId, {
     int? limit,
     int offset = 0,
   }) async {
     final db = await _db.db;
     final rows = await db.query(
       'fuel_logs',
-      where: 'bike_id = ?',
-      whereArgs: [bikeId],
+      where: 'vehicle_id = ?',
+      whereArgs: [vehicleId],
       orderBy: 'date DESC',
       limit: limit,
       offset: offset,
@@ -32,25 +32,25 @@ class FuelRepository {
     return log.id;
   }
 
-  Future<FuelLog?> getLastFuelLog(String bikeId) async {
+  Future<FuelLog?> getLastFuelLog(String vehicleId) async {
     final db = await _db.db;
     final rows = await db.query(
       'fuel_logs',
-      where: 'bike_id = ?',
-      whereArgs: [bikeId],
+      where: 'vehicle_id = ?',
+      whereArgs: [vehicleId],
       orderBy: 'date DESC',
       limit: 1,
     );
     return rows.isEmpty ? null : FuelLog.fromMap(rows.first);
   }
 
-  Future<double?> getAverageMileage(String bikeId, {int lastN = 5}) async {
+  Future<double?> getAverageMileage(String vehicleId, {int lastN = 5}) async {
     final db = await _db.db;
     final rows = await db.query(
       'fuel_logs',
       columns: ['mileage_calculated'],
-      where: 'bike_id = ? AND mileage_calculated IS NOT NULL',
-      whereArgs: [bikeId],
+      where: 'vehicle_id = ? AND mileage_calculated IS NOT NULL',
+      whereArgs: [vehicleId],
       orderBy: 'date DESC',
       limit: lastN,
     );
@@ -61,19 +61,19 @@ class FuelRepository {
   }
 
   Future<double> getMonthlyFuelCost(
-      String bikeId, int year, int month) async {
+      String vehicleId, int year, int month) async {
     final db = await _db.db;
     final start = DateTime(year, month).millisecondsSinceEpoch;
     final end = DateTime(year, month + 1).millisecondsSinceEpoch;
     final result = await db.rawQuery(
       'SELECT COALESCE(SUM(amount), 0) as total FROM fuel_logs '
-      'WHERE bike_id = ? AND date >= ? AND date < ? AND amount IS NOT NULL',
-      [bikeId, start, end],
+      'WHERE vehicle_id = ? AND date >= ? AND date < ? AND amount IS NOT NULL',
+      [vehicleId, start, end],
     );
     return (result.first['total'] as num).toDouble();
   }
 
-  Future<List<MonthSummary>> getSixMonthFuelTrend(String bikeId) async {
+  Future<List<MonthSummary>> getSixMonthFuelTrend(String vehicleId) async {
     final db = await _db.db;
     final now = DateTime.now();
     final summaries = <MonthSummary>[];
@@ -84,8 +84,8 @@ class FuelRepository {
           DateTime(month.year, month.month + 1).millisecondsSinceEpoch;
       final result = await db.rawQuery(
         'SELECT COALESCE(SUM(amount), 0) as total FROM fuel_logs '
-        'WHERE bike_id = ? AND date >= ? AND date < ? AND amount IS NOT NULL',
-        [bikeId, start, end],
+        'WHERE vehicle_id = ? AND date >= ? AND date < ? AND amount IS NOT NULL',
+        [vehicleId, start, end],
       );
       summaries.add(MonthSummary(
         year: month.year,

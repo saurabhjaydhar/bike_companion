@@ -10,12 +10,12 @@ import '../../shared/widgets/stat_card.dart';
 import 'fuel_provider.dart';
 
 class FuelHistoryScreen extends ConsumerWidget {
-  final String bikeId;
-  const FuelHistoryScreen({super.key, required this.bikeId});
+  final String vehicleId;
+  const FuelHistoryScreen({super.key, required this.vehicleId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final logsAsync = ref.watch(fuelHistoryProvider(bikeId));
+    final logsAsync = ref.watch(fuelHistoryProvider(vehicleId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;

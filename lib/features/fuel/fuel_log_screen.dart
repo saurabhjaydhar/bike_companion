@@ -8,7 +8,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/fuel_log.dart';
-import '../../data/repositories/bike_repository.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../features/dashboard/dashboard_provider.dart';
 import '../../features/garage/garage_provider.dart';
@@ -20,8 +20,8 @@ import 'fuel_provider.dart';
 const _uuid = Uuid();
 
 class FuelLogScreen extends ConsumerStatefulWidget {
-  final String bikeId;
-  const FuelLogScreen({super.key, required this.bikeId});
+  final String vehicleId;
+  const FuelLogScreen({super.key, required this.vehicleId});
 
   @override
   ConsumerState<FuelLogScreen> createState() => _FuelLogScreenState();
@@ -51,8 +51,8 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
   Future<void> _loadLastLog() async {
     final repo = getIt<FuelRepository>();
-    _lastLog = await repo.getLastFuelLog(widget.bikeId);
-    _avgMileage = await repo.getAverageMileage(widget.bikeId);
+    _lastLog = await repo.getLastFuelLog(widget.vehicleId);
+    _avgMileage = await repo.getAverageMileage(widget.vehicleId);
     if (mounted) setState(() {});
   }
 
@@ -91,7 +91,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
       final log = FuelLog(
         id: _uuid.v4(),
-        bikeId: widget.bikeId,
+        vehicleId: widget.vehicleId,
         date: _date,
         odometer: odometer,
         litres: litres,
@@ -103,12 +103,12 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
       );
 
       await getIt<FuelRepository>().insertFuelLog(log);
-      await getIt<BikeRepository>()
-          .updateOdometer(widget.bikeId, odometer);
+      await getIt<VehicleRepository>()
+          .updateOdometer(widget.vehicleId, odometer);
 
-      ref.invalidate(dashboardProvider(widget.bikeId));
+      ref.invalidate(dashboardProvider(widget.vehicleId));
       ref.invalidate(garageProvider);
-      ref.invalidate(fuelHistoryProvider(widget.bikeId));
+      ref.invalidate(fuelHistoryProvider(widget.vehicleId));
 
       HapticFeedback.mediumImpact();
       if (mounted) {

@@ -9,22 +9,22 @@ import '../../core/services/rc_lookup_service.dart';
 import '../../core/services/rc_scan_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../data/models/vehicle.dart';
+import '../../data/models/rc_details.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/primary_button.dart';
 
-/// Add-bike hub: scan the RC card, enter details manually, or (when a lookup
+/// Add-vehicle hub: scan the RC card, enter details manually, or (when a lookup
 /// provider is configured) look the RC up by registration number. Every path
 /// ends in the same review form, [VehicleDetailsScreen].
-class AddBikeScreen extends ConsumerStatefulWidget {
-  const AddBikeScreen({super.key});
+class AddVehicleScreen extends ConsumerStatefulWidget {
+  const AddVehicleScreen({super.key});
 
   @override
-  ConsumerState<AddBikeScreen> createState() => _AddBikeScreenState();
+  ConsumerState<AddVehicleScreen> createState() => _AddVehicleScreenState();
 }
 
-class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
+class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
   final _rcCtrl = TextEditingController();
   String? _error;
   bool _fetching = false;
@@ -35,10 +35,10 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
     super.dispose();
   }
 
-  void _openDetails(Vehicle vehicle, VehiclePrefill source,
+  void _openDetails(RcDetails details, RcPrefill source,
       {required bool prefillSuccess, String? failureReason}) {
     context.push('/onboarding/vehicle-details', extra: {
-      'vehicle': vehicle,
+      'details': details,
       'source': source,
       'prefillSuccess': prefillSuccess,
       'failureReason': failureReason,
@@ -49,7 +49,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
     final normalized = normalizeRegNumber(_rcCtrl.text);
 
     if (!isValidRegNumber(normalized)) {
-      setState(() => _error = context.l10n.addBikeInvalidFormat);
+      setState(() => _error = context.l10n.addVehicleInvalidFormat);
       return;
     }
 
@@ -64,19 +64,19 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
     if (!mounted) return;
     setState(() => _fetching = false);
 
-    if (result.status == RcLookupStatus.success && result.vehicle != null) {
-      _openDetails(result.vehicle!, VehiclePrefill.lookup,
+    if (result.status == RcLookupStatus.success && result.details != null) {
+      _openDetails(result.details!, RcPrefill.lookup,
           prefillSuccess: true);
       return;
     }
     final l = context.l10n;
-    _openDetails(Vehicle(rcNumber: normalized), VehiclePrefill.lookup,
+    _openDetails(RcDetails(rcNumber: normalized), RcPrefill.lookup,
         prefillSuccess: false,
         failureReason: switch (result.status) {
-          RcLookupStatus.notFound => l.addBikeNotFound,
-          RcLookupStatus.apiLimitExceeded => l.addBikeApiLimit,
-          RcLookupStatus.networkError => l.addBikeNoInternet,
-          _ => l.addBikeFetchFailed,
+          RcLookupStatus.notFound => l.addVehicleNotFound,
+          RcLookupStatus.apiLimitExceeded => l.addVehicleApiLimit,
+          RcLookupStatus.networkError => l.addVehicleNoInternet,
+          _ => l.addVehicleFetchFailed,
         });
   }
 
@@ -104,37 +104,37 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
                   AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.xl),
               children: [
                 Text(
-                  l.addBikeTitle,
+                  l.addVehicleTitle,
                   style: AppTextStyles.heading1.copyWith(color: textPrimary),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  l.addBikeHubSubtitle,
+                  l.addVehicleHubSubtitle,
                   style: AppTextStyles.body.copyWith(color: textSecondary),
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
                 _OptionCard(
                   icon: Icons.document_scanner_rounded,
-                  title: l.addBikeScanTitle,
-                  body: l.addBikeScanBody,
+                  title: l.addVehicleScanTitle,
+                  body: l.addVehicleScanBody,
                   highlighted: true,
                   onTap: () => context.push('/onboarding/scan-rc'),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 _OptionCard(
                   icon: Icons.edit_note_rounded,
-                  title: l.addBikeManualTitle,
-                  body: l.addBikeManualBody,
+                  title: l.addVehicleManualTitle,
+                  body: l.addVehicleManualBody,
                   onTap: () => _openDetails(
-                      const Vehicle(rcNumber: ''), VehiclePrefill.manual,
+                      const RcDetails(rcNumber: ''), RcPrefill.manual,
                       prefillSuccess: false),
                 ),
 
                 if (RcLookupService.isConfigured) ...[
                   const SizedBox(height: AppSpacing.xxl),
                   Text(
-                    l.addBikeLookupTitle.toUpperCase(),
+                    l.addVehicleLookupTitle.toUpperCase(),
                     style: AppTextStyles.label.copyWith(
                       color: AppColors.primary,
                       letterSpacing: 1.2,
@@ -142,7 +142,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    l.addBikeSubtitle,
+                    l.addVehicleSubtitle,
                     style:
                         AppTextStyles.caption.copyWith(color: textSecondary),
                   ),
@@ -187,7 +187,7 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    l.addBikeExamples,
+                    l.addVehicleExamples,
                     style:
                         AppTextStyles.caption.copyWith(color: textTertiary),
                   ),
@@ -197,11 +197,11 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
                     child: _fetching
                         ? _LoadingPill(
                             key: const ValueKey('pill'),
-                            label: l.addBikeFetching,
+                            label: l.addVehicleFetching,
                             isDark: isDark)
                         : PrimaryButton(
                             key: const ValueKey('btn'),
-                            label: l.addBikeContinue,
+                            label: l.addVehicleContinue,
                             isOutlined: true,
                             onPressed: _lookup,
                           ),

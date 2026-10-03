@@ -16,7 +16,7 @@ class SyncService {
   /// Called after every enqueue. Set at startup so changes upload right away.
   static void Function()? onEnqueued;
 
-  /// Per-bike tables, stored in Firestore under the bike's document.
+  /// Per-vehicle tables, stored in Firestore under the vehicle's document.
   static const childTables = [
     'fuel_logs',
     'service_records',
@@ -68,25 +68,25 @@ class SyncService {
   );
 
   /// Queues the cloud delete of record [id]. Call before deleting it
-  /// locally — child records need their bike_id to be found in Firestore.
+  /// locally — child records need their vehicle_id to be found in Firestore.
   static Future<void> queueDelete(Database db, String table, String id) async {
-    String? bikeId;
-    if (table != 'bikes') {
+    String? vehicleId;
+    if (table != 'vehicles') {
       final rows = await db.query(
         table,
-        columns: ['bike_id'],
+        columns: ['vehicle_id'],
         where: 'id = ?',
         whereArgs: [id],
       );
       if (rows.isEmpty) return;
-      bikeId = rows.first['bike_id'] as String?;
+      vehicleId = rows.first['vehicle_id'] as String?;
     }
     await enqueue(
       db,
       tableName: table,
       recordId: id,
       operation: 'delete',
-      payload: {'id': id, 'bike_id': ?bikeId},
+      payload: {'id': id, 'vehicle_id': ?vehicleId},
     );
   }
 
@@ -104,7 +104,7 @@ class SyncService {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool(_backfillKey) ?? false) return;
     final db = await _db.db;
-    for (final table in ['bikes', ...childTables]) {
+    for (final table in ['vehicles', ...childTables]) {
       for (final row in await db.query(table)) {
         await queueUpsert(db, table, Map.of(row));
       }
@@ -151,18 +151,18 @@ class SyncService {
             jsonDecode(row['payload_json'] as String) as Map<String, dynamic>;
 
         if (operation == 'delete') {
-          if (tableName == 'bikes') {
-            await _firestore.deleteBike(uid, recordId);
+          if (tableName == 'vehicles') {
+            await _firestore.deleteVehicle(uid, recordId);
           } else {
-            final bikeId = payload['bike_id'] as String? ?? '';
-            await _firestore.deleteRecord(uid, bikeId, tableName, recordId);
+            final vehicleId = payload['vehicle_id'] as String? ?? '';
+            await _firestore.deleteRecord(uid, vehicleId, tableName, recordId);
           }
         } else {
-          if (tableName == 'bikes') {
-            await _firestore.pushBike(uid, payload);
+          if (tableName == 'vehicles') {
+            await _firestore.pushVehicle(uid, payload);
           } else {
-            final bikeId = payload['bike_id'] as String? ?? '';
-            await _firestore.pushRecord(uid, bikeId, tableName, payload);
+            final vehicleId = payload['vehicle_id'] as String? ?? '';
+            await _firestore.pushRecord(uid, vehicleId, tableName, payload);
           }
         }
 

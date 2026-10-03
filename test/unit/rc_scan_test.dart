@@ -1,5 +1,5 @@
 import 'package:bike_companion/core/services/rc_scan_service.dart';
-import 'package:bike_companion/data/models/vehicle.dart';
+import 'package:bike_companion/data/models/rc_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -23,7 +23,7 @@ void main() {
 
   group('vehicleFromRcJson (Gemini output)', () {
     test('maps fields, normalizes numbers and brand', () {
-      final v = vehicleFromRcJson({
+      final v = rcDetailsFromJson({
         'is_rc': true,
         'registration_number': 'MH 12 DE 1234',
         'brand': null,
@@ -45,11 +45,11 @@ void main() {
     });
 
     test('returns null when the photo is not an RC', () {
-      expect(vehicleFromRcJson({'is_rc': false}), isNull);
+      expect(rcDetailsFromJson({'is_rc': false}), isNull);
     });
 
     test('treats empty and "null" strings as missing', () {
-      final v = vehicleFromRcJson({
+      final v = rcDetailsFromJson({
         'is_rc': true,
         'registration_number': '',
         'model': 'null',
@@ -62,7 +62,7 @@ void main() {
   });
 
   group('maker / model mix-ups (Gemini output)', () {
-    Vehicle? read(String? manufacturer, String? model) => vehicleFromRcJson({
+    RcDetails? read(String? manufacturer, String? model) => rcDetailsFromJson({
           'is_rc': true,
           'registration_number': 'MH12DE1234',
           'manufacturer': manufacturer,
@@ -220,9 +220,9 @@ CLASSIC 350
   });
 
   group('two-sided smart card', () {
-    const back = Vehicle(
+    const back = RcDetails(
         rcNumber: '', brand: 'Honda', model: 'Shine', vehicleClass: 'MCWG');
-    const front = Vehicle(
+    const front = RcDetails(
       rcNumber: 'MH12DE1234',
       fuelType: 'Petrol',
       engineNumber: 'JC36E1234567',
@@ -320,14 +320,14 @@ SOME FINANCE LTD.
       expect(v.rcNumber, 'UK07AB1234');
       expect(v.manufacturer, 'TVS MOTOR COMPANY LTD');
       expect(v.brand, 'TVS');
-      // Brand prefix dropped, so the bike isn't named "TVS TVS RONIN".
+      // Brand prefix dropped, so the vehicle isn't named "TVS TVS RONIN".
       expect(v.model, 'RONIN');
       expect(v.vehicleClass, 'M-CYCLE/SCOOTER');
       expect(v.registrationDate, isNull); // "Month & Yr. of Mfg" is not it
     });
 
     test('Gemini output also drops the brand prefix from the model', () {
-      final v = vehicleFromRcJson({
+      final v = rcDetailsFromJson({
         'manufacturer': 'TVS MOTOR COMPANY LTD',
         'model': 'TVS RONIN',
       })!;

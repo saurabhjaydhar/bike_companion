@@ -7,25 +7,25 @@ class DocumentRepository {
 
   DocumentRepository(this._db);
 
-  Future<List<BikeDocument>> getDocuments(String bikeId) async {
+  Future<List<VehicleDocument>> getDocuments(String vehicleId) async {
     final db = await _db.db;
     final rows = await db.query(
       'documents',
-      where: 'bike_id = ?',
-      whereArgs: [bikeId],
+      where: 'vehicle_id = ?',
+      whereArgs: [vehicleId],
       orderBy: 'expiry_date ASC',
     );
-    return rows.map(BikeDocument.fromMap).toList();
+    return rows.map(VehicleDocument.fromMap).toList();
   }
 
-  Future<String> insertDocument(BikeDocument doc) async {
+  Future<String> insertDocument(VehicleDocument doc) async {
     final db = await _db.db;
     await db.insert('documents', doc.toMap());
     await SyncService.queueUpsert(db, 'documents', doc.toMap());
     return doc.id;
   }
 
-  Future<void> updateDocument(BikeDocument doc) async {
+  Future<void> updateDocument(VehicleDocument doc) async {
     final db = await _db.db;
     await db.update('documents', doc.toMap(),
         where: 'id = ?', whereArgs: [doc.id]);
@@ -38,7 +38,7 @@ class DocumentRepository {
     await db.delete('documents', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<List<BikeDocument>> getExpiringDocuments({int withinDays = 30}) async {
+  Future<List<VehicleDocument>> getExpiringDocuments({int withinDays = 30}) async {
     final db = await _db.db;
     final now = DateTime.now().millisecondsSinceEpoch;
     final threshold =
@@ -49,6 +49,6 @@ class DocumentRepository {
       whereArgs: [now, threshold],
       orderBy: 'expiry_date ASC',
     );
-    return rows.map(BikeDocument.fromMap).toList();
+    return rows.map(VehicleDocument.fromMap).toList();
   }
 }

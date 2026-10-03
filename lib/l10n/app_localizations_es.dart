@@ -141,7 +141,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onboardingGetStarted => 'Empezar';
 
   @override
-  String get onboardingAddMyBike => 'Añadir mi moto';
+  String get onboardingAddMyVehicle => 'Añadir mi moto';
 
   @override
   String get fieldBrand => 'Marca';
@@ -180,38 +180,39 @@ class AppLocalizationsEs extends AppLocalizations {
   String get validationEnterNumber => 'Introduce un número';
 
   @override
-  String get addBikeInvalidFormat =>
+  String get addVehicleInvalidFormat =>
       'Formato no válido. Usa un formato como MH12DE1234 o DL01AA1234.';
 
   @override
-  String get addBikeNotFound => 'Vehículo no encontrado en el registro.';
+  String get addVehicleNotFound => 'Vehículo no encontrado en el registro.';
 
   @override
-  String get addBikeApiLimit =>
+  String get addVehicleApiLimit =>
       'Se alcanzó el límite de la API. Inténtalo más tarde.';
 
   @override
-  String get addBikeNoInternet => 'Sin conexión a internet. Revisa tu red.';
+  String get addVehicleNoInternet => 'Sin conexión a internet. Revisa tu red.';
 
   @override
-  String get addBikeFetchFailed =>
+  String get addVehicleFetchFailed =>
       'No se pudieron obtener los datos del vehículo.';
 
   @override
-  String get addBikeTitle => 'Añade tu moto';
+  String get addVehicleTitle => 'Añade tu moto';
 
   @override
-  String get addBikeSubtitle =>
+  String get addVehicleSubtitle =>
       'Introduce tu matrícula y obtendremos los datos de tu vehículo automáticamente.';
 
   @override
-  String get addBikeExamples => 'p. ej. UK07AB1234 · DL01AA1234 · MH12DE1234';
+  String get addVehicleExamples =>
+      'p. ej. UK07AB1234 · DL01AA1234 · MH12DE1234';
 
   @override
-  String get addBikeContinue => 'Continuar →';
+  String get addVehicleContinue => 'Continuar →';
 
   @override
-  String get addBikeFetching => 'Obteniendo datos del vehículo…';
+  String get addVehicleFetching => 'Obteniendo datos del vehículo…';
 
   @override
   String get vehicleBrandRequired => 'La marca es obligatoria';
@@ -260,7 +261,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get vehicleChassisNumber => 'Número de chasis';
 
   @override
-  String get vehicleSaveBike => 'Guardar moto';
+  String get vehicleSaveVehicle => 'Guardar moto';
 
   @override
   String get vehicleFetchSuccess =>
@@ -289,29 +290,29 @@ class AppLocalizationsEs extends AppLocalizations {
       'Añade tu primera moto para empezar a controlar combustible, servicios y gastos.';
 
   @override
-  String get garageYourBikes => 'Tus motos';
+  String get garageYourVehicles => 'Tus motos';
 
   @override
   String get garageAddAnother => 'Añadir otra moto';
 
   @override
-  String get garageStatBikes => 'motos';
+  String get garageStatVehicles => 'motos';
 
   @override
   String get garageStatAlerts => 'alertas';
 
   @override
-  String garageDeleteBike(String name) {
+  String garageDeleteVehicle(String name) {
     return 'Eliminar $name';
   }
 
   @override
-  String garageDeleteBikeTitle(String name) {
+  String garageDeleteVehicleTitle(String name) {
     return '¿Eliminar $name?';
   }
 
   @override
-  String get garageDeleteBikeBody =>
+  String get garageDeleteVehicleBody =>
       'Se eliminarán todos los registros de combustible, servicios y gastos.';
 
   @override
@@ -701,7 +702,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ridesComingSoon => 'Seguimiento de rutas por GPS\nmuy pronto';
 
   @override
-  String get noBikeSelected =>
+  String get noVehicleSelected =>
       'Primero selecciona una moto en la pestaña Inicio.';
 
   @override
@@ -727,8 +728,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifDocTomorrowTitle => '¡Un documento vence mañana!';
 
   @override
-  String notifServiceOverdueTitle(String bike) {
-    return 'Servicio atrasado — $bike';
+  String notifServiceOverdueTitle(String vehicle) {
+    return 'Servicio atrasado — $vehicle';
   }
 
   @override
@@ -868,24 +869,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'El rendimiento baja ligeramente: vigílalo';
 
   @override
-  String get addBikeHubSubtitle =>
+  String get addVehicleHubSubtitle =>
       'Escanea tu tarjeta RC o rellena los datos tú mismo.';
 
   @override
-  String get addBikeScanTitle => 'Escanear tarjeta RC';
+  String get addVehicleScanTitle => 'Escanear tarjeta RC';
 
   @override
-  String get addBikeScanBody =>
+  String get addVehicleScanBody =>
       'Haz una foto de tu RC y rellenaremos los datos.';
 
   @override
-  String get addBikeManualTitle => 'Introducir manualmente';
+  String get addVehicleManualTitle => 'Introducir manualmente';
 
   @override
-  String get addBikeManualBody => 'Escribe tú mismo los datos de tu moto.';
+  String get addVehicleManualBody => 'Escribe tú mismo los datos de tu moto.';
 
   @override
-  String get addBikeLookupTitle => 'Buscar por matrícula';
+  String get addVehicleLookupTitle => 'Buscar por matrícula';
 
   @override
   String get scanTakePhoto => 'Hacer foto';
@@ -944,7 +945,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo leer bien tu RC. Rellena los datos a continuación.';
 
   @override
-  String get vehicleSectionYourBike => 'TU MOTO';
+  String get vehicleSectionYourVehicle => 'TU MOTO';
 
   @override
   String get vahanSmsButton => 'Consultar en VAHAN por SMS';

@@ -10,24 +10,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
 
-import '../../data/models/vehicle.dart';
+import '../../data/models/rc_details.dart';
 import '../constants/app_constants.dart';
 import 'rc_ocr_layout.dart';
 
 enum RcScanSource { gemini, onDevice }
 
 class RcScanResult {
-  final Vehicle? vehicle;
+  final RcDetails? details;
   final RcScanSource source;
 
-  const RcScanResult({required this.vehicle, required this.source});
+  const RcScanResult({required this.details, required this.source});
 
   /// True when at least the registration number or the make/model was read.
   bool get found =>
-      vehicle != null &&
-      (vehicle!.rcNumber.isNotEmpty ||
-          vehicle!.brand != null ||
-          vehicle!.model != null);
+      details != null &&
+      (details!.rcNumber.isNotEmpty ||
+          details!.brand != null ||
+          details!.model != null);
 }
 
 /// Reads RC (registration certificate) photos into a [Vehicle].
@@ -52,7 +52,7 @@ class RcScanService {
     // Cards are often photographed sideways — turn each photo upright first.
     // Both readers then use the upright photo.
     final pages = [for (final path in imagePaths) await _readUpright(path)];
-    Vehicle? local;
+    RcDetails? local;
     for (final page in pages) {
       final side = parseRcText(page.text);
       local = local == null ? side : mergeRcScans(local, side);
@@ -60,16 +60,16 @@ class RcScanService {
 
     if (allowCloud) {
       try {
-        final vehicle = await _scanWithGemini([for (final p in pages) p.path]);
-        if (vehicle != null) {
-          _logMissing('Gemini', vehicle);
+        final details = await _scanWithGemini([for (final p in pages) p.path]);
+        if (details != null) {
+          _logMissing('Gemini', details);
           // Fill anything Gemini left blank from on-device OCR.
           if (local == null) {
-            return RcScanResult(vehicle: vehicle, source: RcScanSource.gemini);
+            return RcScanResult(details: details, source: RcScanSource.gemini);
           }
-          final merged = mergeRcScans(vehicle, local);
+          final merged = mergeRcScans(details, local);
           _logMissing('Gemini + on-device', merged);
-          return RcScanResult(vehicle: merged, source: RcScanSource.gemini);
+          return RcScanResult(details: merged, source: RcScanSource.gemini);
         }
         debugPrint('RC scan: Gemini found no RC, using on-device OCR');
       } catch (e) {
@@ -78,10 +78,10 @@ class RcScanService {
       }
     }
     if (local != null) _logMissing('On-device', local);
-    return RcScanResult(vehicle: local, source: RcScanSource.onDevice);
+    return RcScanResult(details: local, source: RcScanSource.onDevice);
   }
 
-  static List<String> _missingKeyFields(Vehicle v) => [
+  static List<String> _missingKeyFields(RcDetails v) => [
     if (v.rcNumber.isEmpty) 'registration number',
     if (v.registrationDate == null) 'registration date',
     if (v.engineNumber == null) 'engine number',
@@ -91,7 +91,7 @@ class RcScanService {
     if (v.fuelType == null) 'fuel',
   ];
 
-  static void _logMissing(String reader, Vehicle v) {
+  static void _logMissing(String reader, RcDetails v) {
     final missing = _missingKeyFields(v);
     debugPrint(
       'RC scan: $reader read the RC'
@@ -99,7 +99,7 @@ class RcScanService {
     );
   }
 
-  Future<Vehicle?> _scanWithGemini(List<String> imagePaths) async {
+  Future<RcDetails?> _scanWithGemini(List<String> imagePaths) async {
     final model = FirebaseAI.googleAI().generativeModel(
       model: geminiModel,
       generationConfig: GenerationConfig(
@@ -120,7 +120,7 @@ class RcScanService {
         .replaceFirst(RegExp(r'^```(?:json)?\s*'), '')
         .replaceFirst(RegExp(r'\s*```$'), '');
     if (text == null || text.isEmpty) return null;
-    return vehicleFromRcJson(jsonDecode(text) as Map<String, dynamic>);
+    return rcDetailsFromJson(jsonDecode(text) as Map<String, dynamic>);
   }
 
   /// Reads [path] with ML Kit and returns an upright copy of the photo with
@@ -318,9 +318,9 @@ String? canonicalBrand(String? raw) {
 
 /// Combines the readings of both sides of an RC card. Fields read from
 /// [first] win; [second] only fills the gaps.
-Vehicle mergeRcScans(Vehicle first, Vehicle second) {
+RcDetails mergeRcScans(RcDetails first, RcDetails second) {
   final manufacturer = first.manufacturer ?? second.manufacturer;
-  return Vehicle(
+  return RcDetails(
   rcNumber: first.rcNumber.isNotEmpty ? first.rcNumber : second.rcNumber,
   manufacturer: manufacturer,
   // The maker's name decides the brand — a brand guessed from the other
@@ -340,7 +340,7 @@ Vehicle mergeRcScans(Vehicle first, Vehicle second) {
 
 /// Converts Gemini's structured output into a [Vehicle]. Returns null when
 /// the photo wasn't an RC.
-Vehicle? vehicleFromRcJson(Map<String, dynamic> json) {
+RcDetails? rcDetailsFromJson(Map<String, dynamic> json) {
   if (json['is_rc'] == false) return null;
   String? str(String key) {
     final v = json[key]?.toString().trim();
@@ -355,7 +355,7 @@ Vehicle? vehicleFromRcJson(Map<String, dynamic> json) {
       canonicalBrand(str('brand')) ??
       canonicalBrand(manufacturer) ??
       str('brand');
-  return Vehicle(
+  return RcDetails(
     rcNumber: normalizeRegNumber(str('registration_number') ?? ''),
     manufacturer: manufacturer,
     brand: brand,
@@ -459,7 +459,7 @@ String? _knownFuel(String upper) {
 String? _fuelName(String? s) =>
     s == null ? null : _knownFuel(s.toUpperCase()) ?? s;
 
-/// "TVS RONIN" → "RONIN" when the brand is TVS, so the bike isn't named
+/// "TVS RONIN" → "RONIN" when the brand is TVS, so the vehicle isn't named
 /// "TVS TVS RONIN".
 String? _withoutBrand(String? model, String? brand) {
   if (model == null || brand == null) return model;
@@ -578,7 +578,7 @@ DateTime? _parseDate(String text) {
 /// Best-effort parser for OCR text from an RC. Labels differ between states
 /// and card versions, so each field is looked up by a few label variants and
 /// taken either from the same line (after ':') or from the next line.
-Vehicle parseRcText(String text) {
+RcDetails parseRcText(String text) {
   // OCR often reads the apostrophe in "Maker's" as a curly one.
   text = _straightQuotes(text);
   final lines = text
@@ -704,7 +704,7 @@ Vehicle parseRcText(String text) {
       ).firstMatch(upper)?.group(0);
 
   final brand = canonicalBrand(manufacturer) ?? canonicalBrand(text);
-  return Vehicle(
+  return RcDetails(
     rcNumber: rc,
     manufacturer: manufacturer,
     brand: brand,

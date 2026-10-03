@@ -16,8 +16,8 @@ import 'service_provider.dart';
 const _uuid = Uuid();
 
 class ServiceScreen extends ConsumerStatefulWidget {
-  final String bikeId;
-  const ServiceScreen({super.key, required this.bikeId});
+  final String vehicleId;
+  const ServiceScreen({super.key, required this.vehicleId});
 
   @override
   ConsumerState<ServiceScreen> createState() => _ServiceScreenState();
@@ -61,14 +61,14 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen>
           indicatorColor: AppColors.primary,
         ),
       ),
-      body: ref.watch(serviceProvider(widget.bikeId)).when(
+      body: ref.watch(serviceProvider(widget.vehicleId)).when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('$e')),
             data: (state) => TabBarView(
               controller: _tabs,
               children: [
                 _DueSoonTab(
-                    bikeId: widget.bikeId, items: state.dueItems, ref: ref),
+                    vehicleId: widget.vehicleId, items: state.dueItems, ref: ref),
                 _HistoryTab(history: state.history),
               ],
             ),
@@ -81,12 +81,12 @@ class _ServiceScreenState extends ConsumerState<ServiceScreen>
 // Due soon tab
 // ---------------------------------------------------------------------------
 class _DueSoonTab extends StatelessWidget {
-  final String bikeId;
+  final String vehicleId;
   final List<ServiceItem> items;
   final WidgetRef ref;
 
   const _DueSoonTab(
-      {required this.bikeId, required this.items, required this.ref});
+      {required this.vehicleId, required this.items, required this.ref});
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class _DueSoonTab extends StatelessWidget {
         final item = items[i];
         return _ServiceRow(
           item: item,
-          onTap: () => _showLogSheet(context, ref, bikeId, item.type),
+          onTap: () => _showLogSheet(context, ref, vehicleId, item.type),
         );
       },
     );
@@ -293,7 +293,7 @@ class _HistoryTab extends StatelessWidget {
 // Log service bottom sheet
 // ---------------------------------------------------------------------------
 void _showLogSheet(
-    BuildContext context, WidgetRef ref, String bikeId, String preselectedType) {
+    BuildContext context, WidgetRef ref, String vehicleId, String preselectedType) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -302,7 +302,7 @@ void _showLogSheet(
           top: Radius.circular(AppRadius.large)),
     ),
     builder: (_) => _LogServiceSheet(
-      bikeId: bikeId,
+      vehicleId: vehicleId,
       preselectedType: preselectedType,
       ref: ref,
     ),
@@ -310,12 +310,12 @@ void _showLogSheet(
 }
 
 class _LogServiceSheet extends StatefulWidget {
-  final String bikeId;
+  final String vehicleId;
   final String preselectedType;
   final WidgetRef ref;
 
   const _LogServiceSheet({
-    required this.bikeId,
+    required this.vehicleId,
     required this.preselectedType,
     required this.ref,
   });
@@ -354,7 +354,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
     try {
       final record = ServiceRecord(
         id: _uuid.v4(),
-        bikeId: widget.bikeId,
+        vehicleId: widget.vehicleId,
         date: _date,
         serviceType: _type,
         odometer: int.parse(_odometerCtrl.text),
@@ -362,9 +362,9 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
         notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       );
       await widget.ref
-          .read(serviceProvider(widget.bikeId).notifier)
+          .read(serviceProvider(widget.vehicleId).notifier)
           .addService(record);
-      widget.ref.invalidate(dashboardProvider(widget.bikeId));
+      widget.ref.invalidate(dashboardProvider(widget.vehicleId));
       widget.ref.invalidate(garageProvider);
       if (mounted) Navigator.pop(context);
     } finally {

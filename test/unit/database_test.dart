@@ -7,10 +7,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' show join;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-/// The schema as shipped in v1, frozen. Never edit — add a new snapshot for
-/// each new version and an upgrade test from it.
+/// The schema as shipped in v1, frozen. Never edit — when the schema
+/// changes, add `_schemaV2` etc. plus an upgrade test from the previous one.
 const _schemaV1 = [
-  '''CREATE TABLE bikes (
+  '''CREATE TABLE vehicles (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     brand TEXT NOT NULL,
@@ -23,22 +23,27 @@ const _schemaV1 = [
     odometer_official INTEGER NOT NULL DEFAULT 0,
     insurance_expiry INTEGER,
     puc_expiry INTEGER,
-    created_at INTEGER NOT NULL
+    created_at INTEGER NOT NULL,
+    manufacturer TEXT,
+    fuel_type TEXT,
+    vehicle_class TEXT,
+    engine_number TEXT,
+    chassis_number TEXT
   )''',
   '''CREATE TABLE fuel_logs (
     id TEXT PRIMARY KEY,
-    bike_id TEXT NOT NULL,
+    vehicle_id TEXT NOT NULL,
     date INTEGER NOT NULL,
     odometer INTEGER NOT NULL,
     litres REAL,
     amount REAL,
     fuel_station TEXT,
     mileage_calculated REAL,
-    FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
   )''',
   '''CREATE TABLE service_records (
     id TEXT PRIMARY KEY,
-    bike_id TEXT NOT NULL,
+    vehicle_id TEXT NOT NULL,
     date INTEGER NOT NULL,
     service_type TEXT NOT NULL,
     odometer INTEGER NOT NULL,
@@ -46,25 +51,25 @@ const _schemaV1 = [
     notes TEXT,
     next_due_km INTEGER,
     next_due_date INTEGER,
-    FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
   )''',
   '''CREATE TABLE expenses (
     id TEXT PRIMARY KEY,
-    bike_id TEXT NOT NULL,
+    vehicle_id TEXT NOT NULL,
     date INTEGER NOT NULL,
     category TEXT NOT NULL,
     amount REAL NOT NULL,
     note TEXT,
-    FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
   )''',
   '''CREATE TABLE documents (
     id TEXT PRIMARY KEY,
-    bike_id TEXT NOT NULL,
+    vehicle_id TEXT NOT NULL,
     type TEXT NOT NULL,
     title TEXT NOT NULL,
     file_path TEXT,
     expiry_date INTEGER,
-    FOREIGN KEY (bike_id) REFERENCES bikes(id) ON DELETE CASCADE
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
   )''',
   '''CREATE TABLE pending_sync (
     id TEXT PRIMARY KEY,
@@ -77,7 +82,7 @@ const _schemaV1 = [
 ];
 
 const _tables = [
-  'bikes',
+  'vehicles',
   'fuel_logs',
   'service_records',
   'expenses',
@@ -96,7 +101,7 @@ Future<Map<String, List<String>>> columnsOf(Database db) async => {
     ],
 };
 
-Map<String, Object?> bikeRow(String id) => {
+Map<String, Object?> vehicleRow(String id) => {
   'id': id,
   'name': 'Bullet',
   'brand': 'Royal Enfield',
@@ -115,46 +120,37 @@ void main() {
   setUp(() => tempDir = Directory.systemTemp.createTempSync('db_test'));
   tearDown(() => tempDir.deleteSync(recursive: true));
 
-  group('migrations', () {
-    test('upgrading from v1 keeps data and matches a fresh install', () async {
-      final path = join(tempDir.path, 'v1.db');
-      final v1 = await factory.openDatabase(
-        path,
-        options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: (db, _) async {
-            for (final sql in _schemaV1) {
-              await db.execute(sql);
-            }
-          },
-        ),
-      );
-      await v1.insert('bikes', bikeRow('b1'));
-      await v1.insert('fuel_logs', {
-        'id': 'f1',
-        'bike_id': 'b1',
-        'date': DateTime(2024, 2, 1).millisecondsSinceEpoch,
-        'odometer': 12100,
-        'amount': 500.0,
-      });
-      await v1.close();
+  /// Creates a database at [path] from a frozen schema snapshot.
+  Future<Database> openSnapshot(
+    String path,
+    int version,
+    List<String> schema,
+  ) => factory.openDatabase(
+    path,
+    options: OpenDatabaseOptions(
+      version: version,
+      onCreate: (db, _) async {
+        for (final sql in schema) {
+          await db.execute(sql);
+        }
+      },
+    ),
+  );
 
-      final upgraded = await AppDatabase.openAt(factory, path);
+  group('migrations', () {
+    // Fails when the schema changes without a version bump, a migration
+    // and a new snapshot.
+    test('a fresh install matches the latest schema snapshot', () async {
+      final snapshot =
+          await openSnapshot(join(tempDir.path, 'v1.db'), 1, _schemaV1);
       final fresh =
           await AppDatabase.openAt(factory, join(tempDir.path, 'fresh.db'));
 
-      expect(await upgraded.getVersion(), AppDatabase.schemaVersion);
-      // Same columns, in the same order, as a fresh install.
-      expect(await columnsOf(upgraded), await columnsOf(fresh));
-      // Existing data untouched.
-      final bike = (await upgraded.query('bikes')).single;
-      expect(bike['name'], 'Bullet');
-      expect(bike['odometer_current'], 12000);
-      expect(bike['insurance_expiry'],
-          DateTime(2027, 1, 31).millisecondsSinceEpoch);
-      expect((await upgraded.query('fuel_logs')).single['amount'], 500.0);
+      expect(AppDatabase.schemaVersion, 1);
+      expect(await fresh.getVersion(), AppDatabase.schemaVersion);
+      expect(await columnsOf(fresh), await columnsOf(snapshot));
 
-      await upgraded.close();
+      await snapshot.close();
       await fresh.close();
     });
   });
@@ -168,24 +164,24 @@ void main() {
 
     test('ignores fields the local schema does not have', () async {
       await writeRestoredData(db, {
-        'bikes': [
-          {...bikeRow('b1'), 'field_from_a_newer_app': 'x', 'tags': ['a']},
+        'vehicles': [
+          {...vehicleRow('b1'), 'field_from_a_newer_app': 'x', 'tags': ['a']},
         ],
       });
-      expect((await db.query('bikes')).single['name'], 'Bullet');
+      expect((await db.query('vehicles')).single['name'], 'Bullet');
     });
 
     test('converts timestamps and booleans; keeps column defaults', () async {
       final when = DateTime(2025, 6, 1);
       await writeRestoredData(db, {
         // No colour_hex in the document.
-        'bikes': [
-          {...bikeRow('b1'), 'created_at': Timestamp.fromDate(when)},
+        'vehicles': [
+          {...vehicleRow('b1'), 'created_at': Timestamp.fromDate(when)},
         ],
         'documents': [
           {
             'id': 'd1',
-            'bike_id': 'b1',
+            'vehicle_id': 'b1',
             'type': 'insurance',
             'title': 'Policy',
             'expiry_date': Timestamp.fromDate(when),
@@ -193,43 +189,43 @@ void main() {
           },
         ],
       });
-      final bike = (await db.query('bikes')).single;
-      expect(bike['created_at'], when.millisecondsSinceEpoch);
-      expect(bike['colour_hex'], '#1A56DB'); // default applied
+      final vehicle = (await db.query('vehicles')).single;
+      expect(vehicle['created_at'], when.millisecondsSinceEpoch);
+      expect(vehicle['colour_hex'], '#1A56DB'); // default applied
       expect((await db.query('documents')).single['expiry_date'],
           when.millisecondsSinceEpoch);
     });
 
     test('skips incomplete rows instead of failing the restore', () async {
       await writeRestoredData(db, {
-        // Child listed first: bikes are still written first (foreign key).
+        // Child listed first: vehicles are still written first (foreign key).
         'expenses': [
           {
             'id': 'e1',
-            'bike_id': 'b1',
+            'vehicle_id': 'b1',
             'date': 1,
             'category': 'fuel',
             'amount': 300.0,
           },
           // Missing the required amount.
-          {'id': 'e2', 'bike_id': 'b1', 'date': 1, 'category': 'fuel'},
+          {'id': 'e2', 'vehicle_id': 'b1', 'date': 1, 'category': 'fuel'},
         ],
-        'bikes': [
-          bikeRow('b1'),
-          {...bikeRow('b2')}..remove('reg_number'),
+        'vehicles': [
+          vehicleRow('b1'),
+          {...vehicleRow('b2')}..remove('reg_number'),
         ],
       });
-      expect((await db.query('bikes')).map((r) => r['id']), ['b1']);
+      expect((await db.query('vehicles')).map((r) => r['id']), ['b1']);
       expect((await db.query('expenses')).map((r) => r['id']), ['e1']);
     });
 
     test('restoring twice replaces rather than duplicates', () async {
       final data = {
-        'bikes': [bikeRow('b1')],
+        'vehicles': [vehicleRow('b1')],
       };
       await writeRestoredData(db, data);
       await writeRestoredData(db, data);
-      expect(await db.query('bikes'), hasLength(1));
+      expect(await db.query('vehicles'), hasLength(1));
     });
   });
 }

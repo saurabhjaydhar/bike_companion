@@ -1,6 +1,6 @@
 import 'package:bike_companion/core/services/health_score_service.dart';
 import 'package:bike_companion/data/database/app_database.dart';
-import 'package:bike_companion/data/repositories/bike_repository.dart';
+import 'package:bike_companion/data/repositories/vehicle_repository.dart';
 import 'package:bike_companion/data/repositories/document_repository.dart';
 import 'package:bike_companion/data/repositories/expense_repository.dart';
 import 'package:bike_companion/data/repositories/fuel_repository.dart';
@@ -18,7 +18,7 @@ Future<void> _setupDeps() async {
   final db = AppDatabase.instance;
   getIt
     ..registerSingleton<AppDatabase>(db)
-    ..registerSingleton<BikeRepository>(BikeRepository(db))
+    ..registerSingleton<VehicleRepository>(VehicleRepository(db))
     ..registerSingleton<FuelRepository>(FuelRepository(db))
     ..registerSingleton<ServiceRepository>(ServiceRepository(db))
     ..registerSingleton<ExpenseRepository>(ExpenseRepository(db))

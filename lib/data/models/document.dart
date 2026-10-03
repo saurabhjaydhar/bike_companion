@@ -1,14 +1,14 @@
-class BikeDocument {
+class VehicleDocument {
   final String id;
-  final String bikeId;
+  final String vehicleId;
   final String type;
   final String title;
   final String? filePath;
   final DateTime? expiryDate;
 
-  const BikeDocument({
+  const VehicleDocument({
     required this.id,
-    required this.bikeId,
+    required this.vehicleId,
     required this.type,
     required this.title,
     this.filePath,
@@ -19,9 +19,9 @@ class BikeDocument {
 
   int? get daysUntilExpiry => expiryDate?.difference(DateTime.now()).inDays;
 
-  factory BikeDocument.fromMap(Map<String, dynamic> map) => BikeDocument(
+  factory VehicleDocument.fromMap(Map<String, dynamic> map) => VehicleDocument(
         id: map['id'] as String,
-        bikeId: map['bike_id'] as String,
+        vehicleId: map['vehicle_id'] as String,
         type: map['type'] as String,
         title: map['title'] as String,
         filePath: map['file_path'] as String?,
@@ -32,24 +32,24 @@ class BikeDocument {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'bike_id': bikeId,
+        'vehicle_id': vehicleId,
         'type': type,
         'title': title,
         'file_path': filePath,
         'expiry_date': expiryDate?.millisecondsSinceEpoch,
       };
 
-  BikeDocument copyWith({
+  VehicleDocument copyWith({
     String? id,
-    String? bikeId,
+    String? vehicleId,
     String? type,
     String? title,
     String? filePath,
     DateTime? expiryDate,
   }) =>
-      BikeDocument(
+      VehicleDocument(
         id: id ?? this.id,
-        bikeId: bikeId ?? this.bikeId,
+        vehicleId: vehicleId ?? this.vehicleId,
         type: type ?? this.type,
         title: title ?? this.title,
         filePath: filePath ?? this.filePath,
@@ -58,11 +58,11 @@ class BikeDocument {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is BikeDocument && other.id == id;
+      identical(this, other) || other is VehicleDocument && other.id == id;
 
   @override
   int get hashCode => id.hashCode;
 
   @override
-  String toString() => 'BikeDocument($id, $type, bike=$bikeId)';
+  String toString() => 'VehicleDocument($id, $type, vehicle=$vehicleId)';
 }

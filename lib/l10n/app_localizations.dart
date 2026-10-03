@@ -350,11 +350,11 @@ abstract class AppLocalizations {
   /// **'Get started'**
   String get onboardingGetStarted;
 
-  /// No description provided for @onboardingAddMyBike.
+  /// No description provided for @onboardingAddMyVehicle.
   ///
   /// In en, this message translates to:
   /// **'Add my bike'**
-  String get onboardingAddMyBike;
+  String get onboardingAddMyVehicle;
 
   /// No description provided for @fieldBrand.
   ///
@@ -428,65 +428,65 @@ abstract class AppLocalizations {
   /// **'Enter a number'**
   String get validationEnterNumber;
 
-  /// No description provided for @addBikeInvalidFormat.
+  /// No description provided for @addVehicleInvalidFormat.
   ///
   /// In en, this message translates to:
   /// **'Invalid format. Use format like MH12DE1234 or DL01AA1234.'**
-  String get addBikeInvalidFormat;
+  String get addVehicleInvalidFormat;
 
-  /// No description provided for @addBikeNotFound.
+  /// No description provided for @addVehicleNotFound.
   ///
   /// In en, this message translates to:
   /// **'Vehicle not found in registry.'**
-  String get addBikeNotFound;
+  String get addVehicleNotFound;
 
-  /// No description provided for @addBikeApiLimit.
+  /// No description provided for @addVehicleApiLimit.
   ///
   /// In en, this message translates to:
   /// **'API limit reached. Please try again later.'**
-  String get addBikeApiLimit;
+  String get addVehicleApiLimit;
 
-  /// No description provided for @addBikeNoInternet.
+  /// No description provided for @addVehicleNoInternet.
   ///
   /// In en, this message translates to:
   /// **'No internet connection. Please check your network.'**
-  String get addBikeNoInternet;
+  String get addVehicleNoInternet;
 
-  /// No description provided for @addBikeFetchFailed.
+  /// No description provided for @addVehicleFetchFailed.
   ///
   /// In en, this message translates to:
   /// **'Could not fetch vehicle details.'**
-  String get addBikeFetchFailed;
+  String get addVehicleFetchFailed;
 
-  /// No description provided for @addBikeTitle.
+  /// No description provided for @addVehicleTitle.
   ///
   /// In en, this message translates to:
   /// **'Add Your Bike'**
-  String get addBikeTitle;
+  String get addVehicleTitle;
 
-  /// No description provided for @addBikeSubtitle.
+  /// No description provided for @addVehicleSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Enter your registration number and we\'ll pull your vehicle details automatically.'**
-  String get addBikeSubtitle;
+  String get addVehicleSubtitle;
 
-  /// No description provided for @addBikeExamples.
+  /// No description provided for @addVehicleExamples.
   ///
   /// In en, this message translates to:
   /// **'e.g. UK07AB1234 · DL01AA1234 · MH12DE1234'**
-  String get addBikeExamples;
+  String get addVehicleExamples;
 
-  /// No description provided for @addBikeContinue.
+  /// No description provided for @addVehicleContinue.
   ///
   /// In en, this message translates to:
   /// **'Continue →'**
-  String get addBikeContinue;
+  String get addVehicleContinue;
 
-  /// No description provided for @addBikeFetching.
+  /// No description provided for @addVehicleFetching.
   ///
   /// In en, this message translates to:
   /// **'Fetching vehicle details…'**
-  String get addBikeFetching;
+  String get addVehicleFetching;
 
   /// No description provided for @vehicleBrandRequired.
   ///
@@ -578,11 +578,11 @@ abstract class AppLocalizations {
   /// **'Chassis Number'**
   String get vehicleChassisNumber;
 
-  /// No description provided for @vehicleSaveBike.
+  /// No description provided for @vehicleSaveVehicle.
   ///
   /// In en, this message translates to:
   /// **'Save Bike'**
-  String get vehicleSaveBike;
+  String get vehicleSaveVehicle;
 
   /// No description provided for @vehicleFetchSuccess.
   ///
@@ -626,11 +626,11 @@ abstract class AppLocalizations {
   /// **'Add your first bike to start tracking fuel, service and expenses.'**
   String get garageEmptyBody;
 
-  /// No description provided for @garageYourBikes.
+  /// No description provided for @garageYourVehicles.
   ///
   /// In en, this message translates to:
   /// **'Your bikes'**
-  String get garageYourBikes;
+  String get garageYourVehicles;
 
   /// No description provided for @garageAddAnother.
   ///
@@ -638,11 +638,11 @@ abstract class AppLocalizations {
   /// **'Add another bike'**
   String get garageAddAnother;
 
-  /// No description provided for @garageStatBikes.
+  /// No description provided for @garageStatVehicles.
   ///
   /// In en, this message translates to:
   /// **'bikes'**
-  String get garageStatBikes;
+  String get garageStatVehicles;
 
   /// No description provided for @garageStatAlerts.
   ///
@@ -650,23 +650,23 @@ abstract class AppLocalizations {
   /// **'alerts'**
   String get garageStatAlerts;
 
-  /// No description provided for @garageDeleteBike.
+  /// No description provided for @garageDeleteVehicle.
   ///
   /// In en, this message translates to:
   /// **'Delete {name}'**
-  String garageDeleteBike(String name);
+  String garageDeleteVehicle(String name);
 
-  /// No description provided for @garageDeleteBikeTitle.
+  /// No description provided for @garageDeleteVehicleTitle.
   ///
   /// In en, this message translates to:
   /// **'Delete {name}?'**
-  String garageDeleteBikeTitle(String name);
+  String garageDeleteVehicleTitle(String name);
 
-  /// No description provided for @garageDeleteBikeBody.
+  /// No description provided for @garageDeleteVehicleBody.
   ///
   /// In en, this message translates to:
   /// **'All fuel logs, service records, and expenses will be deleted.'**
-  String get garageDeleteBikeBody;
+  String get garageDeleteVehicleBody;
 
   /// No description provided for @commonToday.
   ///
@@ -1352,11 +1352,11 @@ abstract class AppLocalizations {
   /// **'GPS ride tracking\ncoming soon'**
   String get ridesComingSoon;
 
-  /// No description provided for @noBikeSelected.
+  /// No description provided for @noVehicleSelected.
   ///
   /// In en, this message translates to:
   /// **'Select a bike from the Home tab first.'**
-  String get noBikeSelected;
+  String get noVehicleSelected;
 
   /// No description provided for @offlineBanner.
   ///
@@ -1385,8 +1385,8 @@ abstract class AppLocalizations {
   /// No description provided for @notifServiceOverdueTitle.
   ///
   /// In en, this message translates to:
-  /// **'Service overdue — {bike}'**
-  String notifServiceOverdueTitle(String bike);
+  /// **'Service overdue — {vehicle}'**
+  String notifServiceOverdueTitle(String vehicle);
 
   /// No description provided for @notifServiceOverdueBody.
   ///
@@ -1562,41 +1562,41 @@ abstract class AppLocalizations {
   /// **'Fuel economy slightly declining — monitor it'**
   String get healthEconomyDeclining;
 
-  /// No description provided for @addBikeHubSubtitle.
+  /// No description provided for @addVehicleHubSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Scan your RC card, or fill in the details yourself.'**
-  String get addBikeHubSubtitle;
+  String get addVehicleHubSubtitle;
 
-  /// No description provided for @addBikeScanTitle.
+  /// No description provided for @addVehicleScanTitle.
   ///
   /// In en, this message translates to:
   /// **'Scan RC card'**
-  String get addBikeScanTitle;
+  String get addVehicleScanTitle;
 
-  /// No description provided for @addBikeScanBody.
+  /// No description provided for @addVehicleScanBody.
   ///
   /// In en, this message translates to:
   /// **'Snap your RC and we\'ll fill in the details.'**
-  String get addBikeScanBody;
+  String get addVehicleScanBody;
 
-  /// No description provided for @addBikeManualTitle.
+  /// No description provided for @addVehicleManualTitle.
   ///
   /// In en, this message translates to:
   /// **'Enter manually'**
-  String get addBikeManualTitle;
+  String get addVehicleManualTitle;
 
-  /// No description provided for @addBikeManualBody.
+  /// No description provided for @addVehicleManualBody.
   ///
   /// In en, this message translates to:
   /// **'Type in your bike\'s details yourself.'**
-  String get addBikeManualBody;
+  String get addVehicleManualBody;
 
-  /// No description provided for @addBikeLookupTitle.
+  /// No description provided for @addVehicleLookupTitle.
   ///
   /// In en, this message translates to:
   /// **'Look up by number'**
-  String get addBikeLookupTitle;
+  String get addVehicleLookupTitle;
 
   /// No description provided for @scanTakePhoto.
   ///
@@ -1700,11 +1700,11 @@ abstract class AppLocalizations {
   /// **'Couldn\'t read your RC clearly. Please fill in the details below.'**
   String get vehicleScanFailure;
 
-  /// No description provided for @vehicleSectionYourBike.
+  /// No description provided for @vehicleSectionYourVehicle.
   ///
   /// In en, this message translates to:
   /// **'YOUR BIKE'**
-  String get vehicleSectionYourBike;
+  String get vehicleSectionYourVehicle;
 
   /// No description provided for @vahanSmsButton.
   ///

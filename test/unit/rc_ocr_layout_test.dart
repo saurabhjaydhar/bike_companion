@@ -150,7 +150,7 @@ void main() {
         parseRcText('Model name\nMonth & Yr.of Mfg TVS RONIN').model,
         'RONIN',
       );
-      final gemini = vehicleFromRcJson({
+      final gemini = rcDetailsFromJson({
         'manufacturer': 'TVS MOTOR COMPANY LTD',
         'model': 'Month & Yr. of Mfg TVS RONIN',
       })!;

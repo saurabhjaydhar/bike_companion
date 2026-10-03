@@ -48,12 +48,12 @@ void main() {
       await tester.pumpWidget(_wrap(
         const EmptyState(
           icon: Icons.two_wheeler_rounded,
-          heading: 'No bikes yet',
-          body: 'Add your first bike.',
+          heading: 'No vehicles yet',
+          body: 'Add your first vehicle.',
         ),
       ));
-      expect(find.text('No bikes yet'), findsOneWidget);
-      expect(find.text('Add your first bike.'), findsOneWidget);
+      expect(find.text('No vehicles yet'), findsOneWidget);
+      expect(find.text('Add your first vehicle.'), findsOneWidget);
     });
 
     testWidgets('shows CTA button when provided', (tester) async {
@@ -61,13 +61,13 @@ void main() {
       await tester.pumpWidget(_wrap(
         EmptyState(
           icon: Icons.two_wheeler_rounded,
-          heading: 'No bikes',
+          heading: 'No vehicles',
           body: 'Add one.',
-          ctaLabel: 'Add my bike',
+          ctaLabel: 'Add my vehicle',
           onCta: () => tapped = true,
         ),
       ));
-      await tester.tap(find.text('Add my bike'));
+      await tester.tap(find.text('Add my vehicle'));
       expect(tapped, isTrue);
     });
 
@@ -75,7 +75,7 @@ void main() {
       await tester.pumpWidget(_wrap(
         const EmptyState(
           icon: Icons.two_wheeler_rounded,
-          heading: 'No bikes',
+          heading: 'No vehicles',
           body: 'Empty.',
         ),
       ));

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/constants/app_constants.dart';
-import '../../core/providers/active_bike_provider.dart';
+import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
@@ -12,7 +12,7 @@ import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import 'garage_provider.dart';
-import 'widgets/bike_card.dart';
+import 'widgets/vehicle_card.dart';
 
 class GarageScreen extends ConsumerWidget {
   const GarageScreen({super.key});
@@ -20,7 +20,7 @@ class GarageScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final garageAsync = ref.watch(garageProvider);
-    final activeBikeId = ref.watch(activeBikeIdProvider);
+    final activeVehicleId = ref.watch(activeVehicleIdProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
@@ -45,8 +45,8 @@ class GarageScreen extends ConsumerWidget {
               icon: Icons.two_wheeler_rounded,
               heading: l.garageEmptyTitle,
               body: l.garageEmptyBody,
-              ctaLabel: l.onboardingAddMyBike,
-              onCta: () => context.push('/onboarding/add-bike'),
+              ctaLabel: l.onboardingAddMyVehicle,
+              onCta: () => context.push('/onboarding/add-vehicle'),
             );
           }
 
@@ -60,35 +60,35 @@ class GarageScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
                 _SummaryStrip(
-                  bikeCount: items.length,
+                  vehicleCount: items.length,
                   monthTotal: totalMonthly,
                   alertCount: totalAlerts,
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                Text(l.garageYourBikes,
+                Text(l.garageYourVehicles,
                     style: AppTextStyles.heading3.copyWith(
                         color: isDark
                             ? AppColors.textPrimaryDark
                             : AppColors.textPrimary)),
                 const SizedBox(height: AppSpacing.md),
 
-                // Bike cards with stagger entrance
+                // Vehicle cards with stagger entrance
                 ...items.asMap().entries.map((e) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.md),
                     child: _StaggeredItem(
                       index: e.key,
-                      child: BikeCard(
+                      child: VehicleCard(
                         item: e.value,
-                        isActive: e.value.bike.id == activeBikeId,
+                        isActive: e.value.vehicle.id == activeVehicleId,
                         onTap: () {
                           HapticFeedback.lightImpact();
-                          setActiveBike(ref, e.value.bike.id);
-                          context.go('/garage/dashboard/${e.value.bike.id}');
+                          setActiveVehicle(ref, e.value.vehicle.id);
+                          context.go('/garage/dashboard/${e.value.vehicle.id}');
                         },
                         onDelete: () => ref
                             .read(garageProvider.notifier)
-                            .deleteBike(e.value.bike.id),
+                            .deleteVehicle(e.value.vehicle.id),
                       ),
                     ),
                   );
@@ -96,11 +96,11 @@ class GarageScreen extends ConsumerWidget {
 
                 const SizedBox(height: AppSpacing.sm),
 
-                // Add another bike
+                // Add another vehicle
                 GestureDetector(
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    context.push('/onboarding/add-bike');
+                    context.push('/onboarding/add-vehicle');
                   },
                   child: Container(
                     height: 56,
@@ -149,17 +149,17 @@ class _GarageSkeleton extends StatelessWidget {
         const SizedBox(height: AppSpacing.xl),
         const ShimmerBox(width: 100, height: 20, borderRadius: 6),
         const SizedBox(height: AppSpacing.md),
-        // Bike card skeletons
-        const _BikeCardSkeleton(),
+        // Vehicle card skeletons
+        const _VehicleCardSkeleton(),
         const SizedBox(height: AppSpacing.md),
-        const _BikeCardSkeleton(),
+        const _VehicleCardSkeleton(),
       ],
     );
   }
 }
 
-class _BikeCardSkeleton extends StatelessWidget {
-  const _BikeCardSkeleton();
+class _VehicleCardSkeleton extends StatelessWidget {
+  const _VehicleCardSkeleton();
 
   @override
   Widget build(BuildContext context) {
@@ -254,12 +254,12 @@ class _StaggeredItemState extends State<_StaggeredItem>
 // Summary strip
 // ---------------------------------------------------------------------------
 class _SummaryStrip extends StatelessWidget {
-  final int bikeCount;
+  final int vehicleCount;
   final double monthTotal;
   final int alertCount;
 
   const _SummaryStrip({
-    required this.bikeCount,
+    required this.vehicleCount,
     required this.monthTotal,
     required this.alertCount,
   });
@@ -281,8 +281,8 @@ class _SummaryStrip extends StatelessWidget {
       child: Row(
         children: [
           _Stat(
-            label: l.garageStatBikes,
-            value: '$bikeCount',
+            label: l.garageStatVehicles,
+            value: '$vehicleCount',
             textPrimary: textPrimary,
             textSecondary: textSecondary,
           ),

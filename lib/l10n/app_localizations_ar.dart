@@ -138,7 +138,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingGetStarted => 'ابدأ الآن';
 
   @override
-  String get onboardingAddMyBike => 'أضف دراجتي';
+  String get onboardingAddMyVehicle => 'أضف دراجتي';
 
   @override
   String get fieldBrand => 'العلامة التجارية';
@@ -177,38 +177,38 @@ class AppLocalizationsAr extends AppLocalizations {
   String get validationEnterNumber => 'أدخل رقمًا';
 
   @override
-  String get addBikeInvalidFormat =>
+  String get addVehicleInvalidFormat =>
       'تنسيق غير صالح. استخدم تنسيقًا مثل MH12DE1234 أو DL01AA1234.';
 
   @override
-  String get addBikeNotFound => 'لم يتم العثور على المركبة في السجل.';
+  String get addVehicleNotFound => 'لم يتم العثور على المركبة في السجل.';
 
   @override
-  String get addBikeApiLimit =>
+  String get addVehicleApiLimit =>
       'تم بلوغ حد استخدام API. يُرجى المحاولة لاحقًا.';
 
   @override
-  String get addBikeNoInternet =>
+  String get addVehicleNoInternet =>
       'لا يوجد اتصال بالإنترنت. يُرجى التحقق من الشبكة.';
 
   @override
-  String get addBikeFetchFailed => 'تعذّر جلب تفاصيل المركبة.';
+  String get addVehicleFetchFailed => 'تعذّر جلب تفاصيل المركبة.';
 
   @override
-  String get addBikeTitle => 'أضف دراجتك';
+  String get addVehicleTitle => 'أضف دراجتك';
 
   @override
-  String get addBikeSubtitle =>
+  String get addVehicleSubtitle =>
       'أدخل رقم التسجيل وسنجلب تفاصيل مركبتك تلقائيًا.';
 
   @override
-  String get addBikeExamples => 'مثل UK07AB1234 · DL01AA1234 · MH12DE1234';
+  String get addVehicleExamples => 'مثل UK07AB1234 · DL01AA1234 · MH12DE1234';
 
   @override
-  String get addBikeContinue => 'متابعة ←';
+  String get addVehicleContinue => 'متابعة ←';
 
   @override
-  String get addBikeFetching => 'جارٍ جلب تفاصيل المركبة…';
+  String get addVehicleFetching => 'جارٍ جلب تفاصيل المركبة…';
 
   @override
   String get vehicleBrandRequired => 'العلامة التجارية مطلوبة';
@@ -256,7 +256,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleChassisNumber => 'رقم الهيكل';
 
   @override
-  String get vehicleSaveBike => 'حفظ الدراجة';
+  String get vehicleSaveVehicle => 'حفظ الدراجة';
 
   @override
   String get vehicleFetchSuccess => 'تم جلب تفاصيل المركبة. راجعها وأكّدها.';
@@ -284,29 +284,29 @@ class AppLocalizationsAr extends AppLocalizations {
       'أضف دراجتك الأولى لبدء تتبّع الوقود والصيانة والمصروفات.';
 
   @override
-  String get garageYourBikes => 'دراجاتك';
+  String get garageYourVehicles => 'دراجاتك';
 
   @override
   String get garageAddAnother => 'إضافة دراجة أخرى';
 
   @override
-  String get garageStatBikes => 'دراجات';
+  String get garageStatVehicles => 'دراجات';
 
   @override
   String get garageStatAlerts => 'تنبيهات';
 
   @override
-  String garageDeleteBike(String name) {
+  String garageDeleteVehicle(String name) {
     return 'حذف $name';
   }
 
   @override
-  String garageDeleteBikeTitle(String name) {
+  String garageDeleteVehicleTitle(String name) {
     return 'حذف $name؟';
   }
 
   @override
-  String get garageDeleteBikeBody =>
+  String get garageDeleteVehicleBody =>
       'سيتم حذف جميع سجلات الوقود وسجلات الصيانة والمصروفات.';
 
   @override
@@ -705,7 +705,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ridesComingSoon => 'تتبّع الرحلات عبر GPS\nقريبًا';
 
   @override
-  String get noBikeSelected => 'اختر دراجة من تبويب الرئيسية أولًا.';
+  String get noVehicleSelected => 'اختر دراجة من تبويب الرئيسية أولًا.';
 
   @override
   String get offlineBanner => 'لا يوجد إنترنت — العمل بدون اتصال';
@@ -733,8 +733,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifDocTomorrowTitle => 'تنتهي صلاحية مستند غدًا!';
 
   @override
-  String notifServiceOverdueTitle(String bike) {
-    return 'صيانة متأخرة — $bike';
+  String notifServiceOverdueTitle(String vehicle) {
+    return 'صيانة متأخرة — $vehicle';
   }
 
   @override
@@ -883,23 +883,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get healthEconomyDeclining => 'كفاءة الوقود تنخفض قليلًا — راقبها';
 
   @override
-  String get addBikeHubSubtitle =>
+  String get addVehicleHubSubtitle =>
       'امسح بطاقة RC ضوئيًا أو أدخل البيانات بنفسك.';
 
   @override
-  String get addBikeScanTitle => 'مسح بطاقة RC';
+  String get addVehicleScanTitle => 'مسح بطاقة RC';
 
   @override
-  String get addBikeScanBody => 'التقط صورة لبطاقة RC وسنملأ البيانات.';
+  String get addVehicleScanBody => 'التقط صورة لبطاقة RC وسنملأ البيانات.';
 
   @override
-  String get addBikeManualTitle => 'إدخال يدوي';
+  String get addVehicleManualTitle => 'إدخال يدوي';
 
   @override
-  String get addBikeManualBody => 'اكتب بيانات دراجتك بنفسك.';
+  String get addVehicleManualBody => 'اكتب بيانات دراجتك بنفسك.';
 
   @override
-  String get addBikeLookupTitle => 'البحث برقم اللوحة';
+  String get addVehicleLookupTitle => 'البحث برقم اللوحة';
 
   @override
   String get scanTakePhoto => 'التقاط صورة';
@@ -958,7 +958,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّرت قراءة بطاقة RC بوضوح. يُرجى إدخال البيانات أدناه.';
 
   @override
-  String get vehicleSectionYourBike => 'دراجتك';
+  String get vehicleSectionYourVehicle => 'دراجتك';
 
   @override
   String get vahanSmsButton => 'التحقق عبر VAHAN برسالة SMS';

@@ -1,6 +1,6 @@
 class ServiceRecord {
   final String id;
-  final String bikeId;
+  final String vehicleId;
   final DateTime date;
   final String serviceType;
   final int odometer;
@@ -11,7 +11,7 @@ class ServiceRecord {
 
   const ServiceRecord({
     required this.id,
-    required this.bikeId,
+    required this.vehicleId,
     required this.date,
     required this.serviceType,
     required this.odometer,
@@ -23,7 +23,7 @@ class ServiceRecord {
 
   factory ServiceRecord.fromMap(Map<String, dynamic> map) => ServiceRecord(
         id: map['id'] as String,
-        bikeId: map['bike_id'] as String,
+        vehicleId: map['vehicle_id'] as String,
         date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
         serviceType: map['service_type'] as String,
         odometer: map['odometer'] as int,
@@ -37,7 +37,7 @@ class ServiceRecord {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'bike_id': bikeId,
+        'vehicle_id': vehicleId,
         'date': date.millisecondsSinceEpoch,
         'service_type': serviceType,
         'odometer': odometer,
@@ -49,7 +49,7 @@ class ServiceRecord {
 
   ServiceRecord copyWith({
     String? id,
-    String? bikeId,
+    String? vehicleId,
     DateTime? date,
     String? serviceType,
     int? odometer,
@@ -60,7 +60,7 @@ class ServiceRecord {
   }) =>
       ServiceRecord(
         id: id ?? this.id,
-        bikeId: bikeId ?? this.bikeId,
+        vehicleId: vehicleId ?? this.vehicleId,
         date: date ?? this.date,
         serviceType: serviceType ?? this.serviceType,
         odometer: odometer ?? this.odometer,
@@ -78,5 +78,5 @@ class ServiceRecord {
   int get hashCode => id.hashCode;
 
   @override
-  String toString() => 'ServiceRecord($id, $serviceType, bike=$bikeId)';
+  String toString() => 'ServiceRecord($id, $serviceType, vehicle=$vehicleId)';
 }

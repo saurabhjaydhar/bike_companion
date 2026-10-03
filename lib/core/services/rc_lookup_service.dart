@@ -4,15 +4,15 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/models/vehicle.dart';
+import '../../data/models/rc_details.dart';
 
 enum RcLookupStatus { success, notFound, apiLimitExceeded, networkError, unknown }
 
 class RcLookupResult {
   final RcLookupStatus status;
-  final Vehicle? vehicle;
+  final RcDetails? details;
 
-  const RcLookupResult({required this.status, this.vehicle});
+  const RcLookupResult({required this.status, this.details});
 }
 
 /// Looks up RC details by registration number through a VAHAN-connected
@@ -48,7 +48,7 @@ class RcLookupService {
           final json = jsonDecode(body) as Map<String, dynamic>;
           return RcLookupResult(
             status: RcLookupStatus.success,
-            vehicle: Vehicle.fromApiResponse(json, rcNumber),
+            details: RcDetails.fromApiResponse(json, rcNumber),
           );
         case 404:
           return const RcLookupResult(status: RcLookupStatus.notFound);

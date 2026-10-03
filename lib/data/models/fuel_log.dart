@@ -1,6 +1,6 @@
 class FuelLog {
   final String id;
-  final String bikeId;
+  final String vehicleId;
   final DateTime date;
   final int odometer;
   final double? litres;
@@ -10,7 +10,7 @@ class FuelLog {
 
   const FuelLog({
     required this.id,
-    required this.bikeId,
+    required this.vehicleId,
     required this.date,
     required this.odometer,
     this.litres,
@@ -21,7 +21,7 @@ class FuelLog {
 
   factory FuelLog.fromMap(Map<String, dynamic> map) => FuelLog(
         id: map['id'] as String,
-        bikeId: map['bike_id'] as String,
+        vehicleId: map['vehicle_id'] as String,
         date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
         odometer: map['odometer'] as int,
         litres: map['litres'] as double?,
@@ -32,7 +32,7 @@ class FuelLog {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'bike_id': bikeId,
+        'vehicle_id': vehicleId,
         'date': date.millisecondsSinceEpoch,
         'odometer': odometer,
         'litres': litres,
@@ -43,7 +43,7 @@ class FuelLog {
 
   FuelLog copyWith({
     String? id,
-    String? bikeId,
+    String? vehicleId,
     DateTime? date,
     int? odometer,
     double? litres,
@@ -53,7 +53,7 @@ class FuelLog {
   }) =>
       FuelLog(
         id: id ?? this.id,
-        bikeId: bikeId ?? this.bikeId,
+        vehicleId: vehicleId ?? this.vehicleId,
         date: date ?? this.date,
         odometer: odometer ?? this.odometer,
         litres: litres ?? this.litres,
@@ -70,5 +70,5 @@ class FuelLog {
   int get hashCode => id.hashCode;
 
   @override
-  String toString() => 'FuelLog($id, bike=$bikeId, odo=$odometer)';
+  String toString() => 'FuelLog($id, vehicle=$vehicleId, odo=$odometer)';
 }

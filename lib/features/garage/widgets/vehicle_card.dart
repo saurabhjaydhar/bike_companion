@@ -4,19 +4,19 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../l10n/l10n.dart';
-import '../../../shared/widgets/bike_avatar.dart';
+import '../../../shared/widgets/vehicle_avatar.dart';
 import '../../../shared/widgets/health_ring.dart';
 import '../../../shared/widgets/hud_panel.dart';
 import '../../../shared/widgets/plate_badge.dart';
 import '../garage_provider.dart';
 
-class BikeCard extends StatelessWidget {
+class VehicleCard extends StatelessWidget {
   final GarageItem item;
   final bool isActive;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  const BikeCard({
+  const VehicleCard({
     super.key,
     required this.item,
     required this.isActive,
@@ -45,7 +45,7 @@ class BikeCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              BikeAvatar(colour: item.bike.colour, size: 52),
+              VehicleAvatar(colour: item.vehicle.colour, size: 52),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
@@ -55,7 +55,7 @@ class BikeCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            item.bike.name,
+                            item.vehicle.name,
                             style: AppTextStyles.heading3
                                 .copyWith(color: textPrimary),
                             maxLines: 1,
@@ -83,14 +83,14 @@ class BikeCard extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '${item.bike.brand} ${item.bike.model}',
+                      '${item.vehicle.brand} ${item.vehicle.model}',
                       style:
                           AppTextStyles.caption.copyWith(color: textSecondary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    PlateBadge(item.bike.regNumber, fontSize: 10),
+                    PlateBadge(item.vehicle.regNumber, fontSize: 10),
                   ],
                 ),
               ),
@@ -132,7 +132,7 @@ class BikeCard extends StatelessWidget {
               Icon(Icons.speed_rounded, size: 14, color: textSecondary),
               const SizedBox(width: 4),
               Text(
-                '${NumberFormat('#,##,###').format(item.bike.odometerCurrent)} km',
+                '${NumberFormat('#,##,###').format(item.vehicle.odometerCurrent)} km',
                 style: AppTextStyles.label.copyWith(color: textSecondary),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -191,7 +191,7 @@ class BikeCard extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.delete_outline_rounded,
                   color: AppColors.danger),
-              title: Text(context.l10n.garageDeleteBike(item.bike.name),
+              title: Text(context.l10n.garageDeleteVehicle(item.vehicle.name),
                   style: AppTextStyles.bodyMedium
                       .copyWith(color: AppColors.danger)),
               onTap: () {
@@ -210,8 +210,8 @@ class BikeCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(context.l10n.garageDeleteBikeTitle(item.bike.name)),
-        content: Text(context.l10n.garageDeleteBikeBody),
+        title: Text(context.l10n.garageDeleteVehicleTitle(item.vehicle.name)),
+        content: Text(context.l10n.garageDeleteVehicleBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),

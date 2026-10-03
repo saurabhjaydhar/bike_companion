@@ -3,7 +3,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/health_score_service.dart';
 import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
-import '../../data/repositories/bike_repository.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
 import '../../l10n/l10n.dart';
@@ -42,19 +42,19 @@ class ServiceNotifier extends FamilyAsyncNotifier<ServiceState, String> {
   @override
   Future<ServiceState> build(String arg) => _load(arg);
 
-  Future<ServiceState> _load(String bikeId) async {
-    final bikeRepo = getIt<BikeRepository>();
+  Future<ServiceState> _load(String vehicleId) async {
+    final vehicleRepo = getIt<VehicleRepository>();
     final serviceRepo = getIt<ServiceRepository>();
     final fuelRepo = getIt<FuelRepository>();
 
-    final bike = await bikeRepo.getBikeById(bikeId);
-    if (bike == null) throw StateError('Bike not found');
+    final vehicle = await vehicleRepo.getVehicleById(vehicleId);
+    if (vehicle == null) throw StateError('Vehicle not found');
 
-    final history = await serviceRepo.getServiceHistory(bikeId);
-    final fuelLogs = await fuelRepo.getFuelLogs(bikeId, limit: 10);
+    final history = await serviceRepo.getServiceHistory(vehicleId);
+    final fuelLogs = await fuelRepo.getFuelLogs(vehicleId, limit: 10);
 
     final health = getIt<HealthScoreService>().compute(
-      bike: bike,
+      vehicle: vehicle,
       services: history,
       fuelLogs: fuelLogs,
     );
@@ -71,7 +71,7 @@ class ServiceNotifier extends FamilyAsyncNotifier<ServiceState, String> {
       ServiceTypes.battery: 'Battery',
     };
 
-    final latestPerType = await serviceRepo.getLatestPerType(bikeId);
+    final latestPerType = await serviceRepo.getLatestPerType(vehicleId);
 
     final trackableTypes = [
       ServiceTypes.oilChange,

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:bike_companion/core/constants/app_constants.dart';
 import 'package:bike_companion/core/services/health_score_service.dart';
-import 'package:bike_companion/data/models/bike.dart';
+import 'package:bike_companion/data/models/vehicle.dart';
 import 'package:bike_companion/data/models/health_score.dart';
 import 'package:bike_companion/data/models/service_record.dart';
 import 'package:bike_companion/l10n/l10n.dart';
@@ -69,16 +69,16 @@ void main() {
       expect(en.commonDaysAgo(1), '1 day ago');
       expect(en.commonDaysAgo(5), '5 days ago');
       expect(hi.commonDaysAgo(5), '5 दिन पहले');
-      expect(hi.garageDeleteBike('Bullet'), 'Bullet हटाएं');
+      expect(hi.garageDeleteVehicle('Bullet'), 'Bullet हटाएं');
       expect(en.notifDocBody('RC Book', 1), 'RC Book expires tomorrow');
       expect(en.notifDocBody('RC Book', 7), 'RC Book expires in 7 days');
     });
   });
 
   group('health score messages', () {
-    final bike = Bike(
+    final vehicle = Vehicle(
       id: 'b1',
-      name: 'Test Bike',
+      name: 'Test Vehicle',
       brand: 'Honda',
       model: 'Shine',
       colourHex: '#1A56DB',
@@ -90,11 +90,11 @@ void main() {
 
     test('render in the requested language', () {
       final score = HealthScoreService().compute(
-        bike: bike,
+        vehicle: vehicle,
         services: [
           ServiceRecord(
             id: 's1',
-            bikeId: 'b1',
+            vehicleId: 'b1',
             date: DateTime.now(),
             serviceType: ServiceTypes.oilChange,
             odometer: 9000,

@@ -16,7 +16,7 @@ import 'core/services/storage_service.dart';
 import 'core/services/sync_service.dart';
 import 'core/theme/app_theme.dart';
 import 'data/database/app_database.dart';
-import 'data/repositories/bike_repository.dart';
+import 'data/repositories/vehicle_repository.dart';
 import 'data/repositories/document_repository.dart';
 import 'data/repositories/expense_repository.dart';
 import 'data/repositories/fuel_repository.dart';
@@ -36,7 +36,7 @@ Future<void> _setupDependencies() async {
   final db = AppDatabase.instance;
   getIt
     ..registerSingleton<AppDatabase>(db)
-    ..registerSingleton<BikeRepository>(BikeRepository(db))
+    ..registerSingleton<VehicleRepository>(VehicleRepository(db))
     ..registerSingleton<FuelRepository>(FuelRepository(db))
     ..registerSingleton<ServiceRepository>(ServiceRepository(db))
     ..registerSingleton<ExpenseRepository>(ExpenseRepository(db))

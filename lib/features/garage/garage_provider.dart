@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/bike.dart';
+import '../../data/models/vehicle.dart';
 import '../../data/models/health_score.dart';
-import '../../data/repositories/bike_repository.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/expense_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
@@ -9,12 +9,12 @@ import '../../core/services/health_score_service.dart';
 import '../../main.dart';
 
 class GarageItem {
-  final Bike bike;
+  final Vehicle vehicle;
   final HealthScore healthScore;
   final double monthTotal;
 
   const GarageItem({
-    required this.bike,
+    required this.vehicle,
     required this.healthScore,
     required this.monthTotal,
   });
@@ -27,21 +27,21 @@ class GarageNotifier extends AsyncNotifier<List<GarageItem>> {
   Future<List<GarageItem>> build() => _load();
 
   Future<List<GarageItem>> _load() async {
-    final bikes = await getIt<BikeRepository>().getAllBikes();
+    final vehicles = await getIt<VehicleRepository>().getAllVehicles();
     final now = DateTime.now();
-    return Future.wait(bikes.map((bike) async {
+    return Future.wait(vehicles.map((vehicle) async {
       final services =
-          await getIt<ServiceRepository>().getServiceHistory(bike.id);
+          await getIt<ServiceRepository>().getServiceHistory(vehicle.id);
       final fuelLogs =
-          await getIt<FuelRepository>().getFuelLogs(bike.id, limit: 10);
+          await getIt<FuelRepository>().getFuelLogs(vehicle.id, limit: 10);
       final monthTotal = await getIt<ExpenseRepository>()
-          .getMonthlyTotal(bike.id, now.year, now.month);
+          .getMonthlyTotal(vehicle.id, now.year, now.month);
       final health = getIt<HealthScoreService>().compute(
-        bike: bike,
+        vehicle: vehicle,
         services: services,
         fuelLogs: fuelLogs,
       );
-      return GarageItem(bike: bike, healthScore: health, monthTotal: monthTotal);
+      return GarageItem(vehicle: vehicle, healthScore: health, monthTotal: monthTotal);
     }));
   }
 
@@ -50,8 +50,8 @@ class GarageNotifier extends AsyncNotifier<List<GarageItem>> {
     state = await AsyncValue.guard(_load);
   }
 
-  Future<void> deleteBike(String id) async {
-    await getIt<BikeRepository>().deleteBike(id);
+  Future<void> deleteVehicle(String id) async {
+    await getIt<VehicleRepository>().deleteVehicle(id);
     state = const AsyncLoading();
     state = await AsyncValue.guard(_load);
   }

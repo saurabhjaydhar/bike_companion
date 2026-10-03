@@ -1,15 +1,15 @@
 import 'package:bike_companion/core/constants/app_constants.dart';
 import 'package:bike_companion/core/services/health_score_service.dart';
-import 'package:bike_companion/data/models/bike.dart';
+import 'package:bike_companion/data/models/vehicle.dart';
 import 'package:bike_companion/data/models/fuel_log.dart';
 import 'package:bike_companion/data/models/health_score.dart';
 import 'package:bike_companion/data/models/service_record.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-// A freshly-serviced bike at 10,000 km
-Bike _bike({int odometer = 10000, DateTime? insuranceExpiry}) => Bike(
+// A freshly-serviced vehicle at 10,000 km
+Vehicle _vehicle({int odometer = 10000, DateTime? insuranceExpiry}) => Vehicle(
       id: 'b1',
-      name: 'Test Bike',
+      name: 'Test Vehicle',
       brand: 'Honda',
       model: 'Shine',
       colourHex: '#1A56DB',
@@ -24,7 +24,7 @@ ServiceRecord _service(String type, {int kmAgo = 0, int daysAgo = 0}) {
   final now = DateTime.now();
   return ServiceRecord(
     id: '${type}_1',
-    bikeId: 'b1',
+    vehicleId: 'b1',
     date: now.subtract(Duration(days: daysAgo)),
     serviceType: type,
     odometer: 10000 - kmAgo,
@@ -33,7 +33,7 @@ ServiceRecord _service(String type, {int kmAgo = 0, int daysAgo = 0}) {
 
 FuelLog _fuelLog(double mileage, {int daysAgo = 0}) => FuelLog(
       id: 'fl_$daysAgo',
-      bikeId: 'b1',
+      vehicleId: 'b1',
       date: DateTime.now().subtract(Duration(days: daysAgo)),
       odometer: 10000 - daysAgo * 10,
       mileageCalculated: mileage,
@@ -45,7 +45,7 @@ void main() {
   group('HealthScoreService.compute — grade thresholds', () {
     test('all services recent → score ≥ 90 → excellent', () {
       final result = svc.compute(
-        bike: _bike(
+        vehicle: _vehicle(
             insuranceExpiry: DateTime.now().add(const Duration(days: 180))),
         services: [
           _service(ServiceTypes.oilChange, kmAgo: 500),
@@ -63,7 +63,7 @@ void main() {
 
     test('no services logged → score ≤ 10 → critical', () {
       final result = svc.compute(
-        bike: _bike(),
+        vehicle: _vehicle(),
         services: [],
         fuelLogs: [],
       );
@@ -75,7 +75,7 @@ void main() {
     test('grade poor when score between 25 and 49', () {
       // Just oil changed very recently, everything else stale
       final result = svc.compute(
-        bike: _bike(
+        vehicle: _vehicle(
             insuranceExpiry: DateTime.now().add(const Duration(days: 180))),
         services: [
           _service(ServiceTypes.oilChange, kmAgo: 100),
@@ -91,7 +91,7 @@ void main() {
   group('HealthScoreService.compute — individual factors', () {
     test('engine oil — full points when < 3000 km since last change', () {
       final result = svc.compute(
-        bike: _bike(),
+        vehicle: _vehicle(),
         services: [_service(ServiceTypes.oilChange, kmAgo: 1000)],
         fuelLogs: [],
       );
@@ -102,7 +102,7 @@ void main() {
 
     test('engine oil — 0 points when > 5000 km since last change', () {
       final result = svc.compute(
-        bike: _bike(odometer: 10000),
+        vehicle: _vehicle(odometer: 10000),
         services: [_service(ServiceTypes.oilChange, kmAgo: 6000)],
         fuelLogs: [],
       );
@@ -113,7 +113,7 @@ void main() {
 
     test('chain — partial points in warning zone (800–1500 km)', () {
       final result = svc.compute(
-        bike: _bike(),
+        vehicle: _vehicle(),
         services: [_service(ServiceTypes.chainClean, kmAgo: 1000)],
         fuelLogs: [],
       );
@@ -125,7 +125,7 @@ void main() {
 
     test('insurance — full 10 pts when >30 days remaining', () {
       final result = svc.compute(
-        bike: _bike(
+        vehicle: _vehicle(
             insuranceExpiry: DateTime.now().add(const Duration(days: 60))),
         services: [],
         fuelLogs: [],
@@ -137,7 +137,7 @@ void main() {
 
     test('insurance — 0 pts when expired', () {
       final result = svc.compute(
-        bike: _bike(
+        vehicle: _vehicle(
             insuranceExpiry: DateTime.now().subtract(const Duration(days: 10))),
         services: [],
         fuelLogs: [],
@@ -149,7 +149,7 @@ void main() {
 
     test('fuel economy — 10 pts when < 3 logs (not enough data)', () {
       final result = svc.compute(
-        bike: _bike(),
+        vehicle: _vehicle(),
         services: [],
         fuelLogs: [_fuelLog(45.0), _fuelLog(43.0)],
       );
@@ -166,7 +166,7 @@ void main() {
         _fuelLog(45.0, daysAgo: 40),
         _fuelLog(44.5, daysAgo: 50),
       ];
-      final result = svc.compute(bike: _bike(), services: [], fuelLogs: logs);
+      final result = svc.compute(vehicle: _vehicle(), services: [], fuelLogs: logs);
       final eco = result.factors.firstWhere((f) => f.label == 'Fuel Economy');
       expect(eco.points, equals(10.0));
     });
@@ -180,7 +180,7 @@ void main() {
         _fuelLog(45.0, daysAgo: 40),
         _fuelLog(45.0, daysAgo: 50),
       ];
-      final result = svc.compute(bike: _bike(), services: [], fuelLogs: logs);
+      final result = svc.compute(vehicle: _vehicle(), services: [], fuelLogs: logs);
       final eco = result.factors.firstWhere((f) => f.label == 'Fuel Economy');
       expect(eco.points, lessThan(10));
     });
@@ -188,19 +188,19 @@ void main() {
 
   group('HealthScoreService.compute — factor count and max', () {
     test('always returns 8 factors', () {
-      final result = svc.compute(bike: _bike(), services: [], fuelLogs: []);
+      final result = svc.compute(vehicle: _vehicle(), services: [], fuelLogs: []);
       expect(result.factors.length, equals(8));
     });
 
     test('total max points sum to 100', () {
-      final result = svc.compute(bike: _bike(), services: [], fuelLogs: []);
+      final result = svc.compute(vehicle: _vehicle(), services: [], fuelLogs: []);
       final maxSum =
           result.factors.fold(0.0, (s, f) => s + f.maxPoints);
       expect(maxSum, equals(100.0));
     });
 
     test('score is clamped between 0 and 100', () {
-      final result = svc.compute(bike: _bike(), services: [], fuelLogs: []);
+      final result = svc.compute(vehicle: _vehicle(), services: [], fuelLogs: []);
       expect(result.score, inInclusiveRange(0, 100));
     });
   });

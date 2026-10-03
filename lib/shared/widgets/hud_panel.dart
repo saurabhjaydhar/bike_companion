@@ -3,7 +3,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Glassy instrument-panel surface: a subtle top-lit gradient, a hairline
-/// border, and an optional coloured glow (e.g. a status or bike colour).
+/// border, and an optional coloured glow (e.g. a status or vehicle colour).
 class HudPanel extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;

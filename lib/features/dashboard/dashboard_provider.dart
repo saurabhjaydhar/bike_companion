@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/bike.dart';
+import '../../data/models/vehicle.dart';
 import '../../data/models/fuel_log.dart';
 import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
-import '../../data/repositories/bike_repository.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/expense_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
@@ -29,8 +29,8 @@ class ServiceActivity extends ActivityItem {
 }
 
 class DashboardState {
-  final Bike bike;
-  final List<Bike> allBikes;
+  final Vehicle vehicle;
+  final List<Vehicle> allVehicles;
   final HealthScore healthScore;
   final FuelLog? lastFuelLog;
   final double? avgMileage;
@@ -39,8 +39,8 @@ class DashboardState {
   final List<ActivityItem> recentActivity;
 
   const DashboardState({
-    required this.bike,
-    required this.allBikes,
+    required this.vehicle,
+    required this.allVehicles,
     required this.healthScore,
     required this.lastFuelLog,
     required this.avgMileage,
@@ -55,8 +55,8 @@ class DashboardNotifier
   @override
   Future<DashboardState> build(String arg) => _load(arg);
 
-  Future<DashboardState> _load(String bikeId) async {
-    final bikeRepo = getIt<BikeRepository>();
+  Future<DashboardState> _load(String vehicleId) async {
+    final vehicleRepo = getIt<VehicleRepository>();
     final serviceRepo = getIt<ServiceRepository>();
     final fuelRepo = getIt<FuelRepository>();
     final expenseRepo = getIt<ExpenseRepository>();
@@ -64,27 +64,27 @@ class DashboardNotifier
     final now = DateTime.now();
 
     final results = await Future.wait([
-      bikeRepo.getBikeById(bikeId),
-      bikeRepo.getAllBikes(),
-      serviceRepo.getServiceHistory(bikeId),
-      fuelRepo.getFuelLogs(bikeId, limit: 20),
-      expenseRepo.getMonthlyTotal(bikeId, now.year, now.month),
+      vehicleRepo.getVehicleById(vehicleId),
+      vehicleRepo.getAllVehicles(),
+      serviceRepo.getServiceHistory(vehicleId),
+      fuelRepo.getFuelLogs(vehicleId, limit: 20),
+      expenseRepo.getMonthlyTotal(vehicleId, now.year, now.month),
     ]);
 
-    final bike = results[0] as Bike?;
-    if (bike == null) throw StateError('Bike $bikeId not found');
+    final vehicle = results[0] as Vehicle?;
+    if (vehicle == null) throw StateError('Vehicle $vehicleId not found');
 
-    final allBikes = results[1] as List<Bike>;
+    final allVehicles = results[1] as List<Vehicle>;
     final services = results[2] as List<ServiceRecord>;
     final fuelLogs = results[3] as List<FuelLog>;
     final monthTotal = results[4] as double;
 
     final lastFuelLog = fuelLogs.isEmpty ? null : fuelLogs.first;
-    final avgMileage = await fuelRepo.getAverageMileage(bikeId);
-    final nextService = await serviceRepo.getNextDueService(bikeId);
+    final avgMileage = await fuelRepo.getAverageMileage(vehicleId);
+    final nextService = await serviceRepo.getNextDueService(vehicleId);
 
     final healthScore = healthService.compute(
-      bike: bike,
+      vehicle: vehicle,
       services: services,
       fuelLogs: fuelLogs,
     );
@@ -96,8 +96,8 @@ class DashboardNotifier
     ]..sort((a, b) => b.date.compareTo(a.date));
 
     return DashboardState(
-      bike: bike,
-      allBikes: allBikes,
+      vehicle: vehicle,
+      allVehicles: allVehicles,
       healthScore: healthScore,
       lastFuelLog: lastFuelLog,
       avgMileage: avgMileage,

@@ -14,6 +14,7 @@ import '../../l10n/l10n.dart';
 import '../../data/models/document.dart';
 import '../../main.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/reminder_permission.dart';
 import 'documents_provider.dart';
 
 const _uuid = Uuid();
@@ -598,6 +599,9 @@ class _AddDocSheetState extends State<_AddDocSheet> {
       await widget.ref
           .read(documentsProvider(widget.vehicleId).notifier)
           .addDocument(doc);
+      if (doc.expiryDate != null && mounted) {
+        await askReminderPermissionOnce(context);
+      }
       if (mounted) Navigator.pop(context);
     } finally {
       if (mounted) setState(() => _saving = false);

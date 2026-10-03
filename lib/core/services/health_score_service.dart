@@ -50,6 +50,7 @@ class HealthScoreService {
         linearScore(current: kmOil, full: 3000, zero: 5000, maxPts: 20);
     factors.add(HealthFactor(
       label: 'Engine Oil',
+      serviceType: lastOil == null ? null : ServiceTypes.oilChange,
       points: oilPts,
       maxPoints: 20,
       status: statusFor(oilPts, 20),
@@ -72,6 +73,7 @@ class HealthScoreService {
         linearScore(current: kmChain, full: 800, zero: 1500, maxPts: 15);
     factors.add(HealthFactor(
       label: 'Chain',
+      serviceType: lastChain?.serviceType,
       points: chainPts,
       maxPoints: 15,
       status: statusFor(chainPts, 15),
@@ -91,6 +93,7 @@ class HealthScoreService {
         linearScore(current: kmAir, full: 8000, zero: 12000, maxPts: 10);
     factors.add(HealthFactor(
       label: 'Air Filter',
+      serviceType: lastAir == null ? null : ServiceTypes.airFilter,
       points: airPts,
       maxPoints: 10,
       status: statusFor(airPts, 10),
@@ -110,6 +113,7 @@ class HealthScoreService {
         linearScore(current: kmBrakes, full: 8000, zero: 15000, maxPts: 15);
     factors.add(HealthFactor(
       label: 'Brake Pads',
+      serviceType: lastBrakes == null ? null : ServiceTypes.brakePads,
       points: brakesPts,
       maxPoints: 15,
       status: statusFor(brakesPts, 15),
@@ -129,6 +133,7 @@ class HealthScoreService {
         linearScore(current: tyreYears, full: 2, zero: 4, maxPts: 10);
     factors.add(HealthFactor(
       label: 'Tyres',
+      serviceType: lastTyre == null ? null : ServiceTypes.tyres,
       points: tyrePts,
       maxPoints: 10,
       status: statusFor(tyrePts, 10),
@@ -148,6 +153,7 @@ class HealthScoreService {
         linearScore(current: batteryYears, full: 2, zero: 4, maxPts: 10);
     factors.add(HealthFactor(
       label: 'Battery',
+      serviceType: lastBattery == null ? null : ServiceTypes.battery,
       points: batteryPts,
       maxPoints: 10,
       status: statusFor(batteryPts, 10),

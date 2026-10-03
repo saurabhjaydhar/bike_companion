@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class AppDatabase {
-  static const int _version = 1;
+  static const int _version = 2;
   static const String _name = 'garajo.db';
 
   /// Database file of the app before the vehicle rename. Its data isn't
@@ -64,7 +64,8 @@ class AppDatabase {
         fuel_type TEXT,
         vehicle_class TEXT,
         engine_number TEXT,
-        chassis_number TEXT
+        chassis_number TEXT,
+        reg_validity INTEGER
       )
     ''');
 
@@ -147,8 +148,12 @@ class AppDatabase {
 
   static Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
-    // Add a step per version, e.g. `if (oldVersion < 2) { ... }`, and a
-    // frozen schema snapshot + upgrade test in test/unit/database_test.dart.
+    // One step per version, plus a frozen schema snapshot and an upgrade
+    // test in test/unit/database_test.dart.
+    if (oldVersion < 2) {
+      // v2: registration validity, for RC renewal reminders.
+      await db.execute('ALTER TABLE vehicles ADD COLUMN reg_validity INTEGER');
+    }
   }
 
   Future<void> wipeAll() async {

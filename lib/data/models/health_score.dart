@@ -12,6 +12,11 @@ class HealthFactor {
   final double points;
   final double maxPoints;
   final HealthStatus status;
+
+  /// The [ServiceTypes] item this factor tracks — set only once that
+  /// service has been logged, since only then can it fall due. Null for
+  /// factors that aren't maintenance (insurance, fuel economy).
+  final String? serviceType;
   final String Function(AppLocalizations l) _message;
 
   const HealthFactor({
@@ -19,6 +24,7 @@ class HealthFactor {
     required this.points,
     required this.maxPoints,
     required this.status,
+    this.serviceType,
     required String Function(AppLocalizations l) message,
   }) : _message = message;
 

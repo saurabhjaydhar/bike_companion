@@ -317,38 +317,10 @@
   "ridesComingSoon": "GPS ride tracking\ncoming soon",
   "noVehicleSelected": "Select a bike from the Home tab first.",
   "offlineBanner": "No internet — working offline",
-  "notifDocBody": "{days, plural, =1{{title} expires tomorrow} other{{title} expires in {days} days}}",
-  "@notifDocBody": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      },
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "notifDocTitle": "Document expiring in {days} days",
-  "@notifDocTitle": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "notifDocTomorrowTitle": "Document expires tomorrow!",
   "notifServiceOverdueTitle": "Service overdue — {vehicle}",
   "@notifServiceOverdueTitle": {
     "placeholders": {
       "vehicle": {
-        "type": "String"
-      }
-    }
-  },
-  "notifServiceOverdueBody": "{service} needs attention",
-  "@notifServiceOverdueBody": {
-    "placeholders": {
-      "service": {
         "type": "String"
       }
     }
@@ -491,5 +463,90 @@
   "vehicleSectionYourVehicle": "YOUR BIKE",
   "vahanSmsButton": "Check on VAHAN by SMS",
   "vahanSmsHint": "Sends your number to the official VAHAN SMS service. The reply arrives in your SMS inbox — copy the details into this form.",
-  "vahanSmsError": "Couldn't open your SMS app."
+  "vahanSmsError": "Couldn't open your SMS app.",
+  "vehicleRegValidity": "Registration valid until",
+  "dueRegistration": "Registration",
+  "notifExpiryTitle": "{days, plural, =1{{item} expires tomorrow} other{{item} expires in {days} days}}",
+  "@notifExpiryTitle": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "notifServiceDueTitle": "{days, plural, =1{{item} due tomorrow} other{{item} due in {days} days}}",
+  "@notifServiceDueTitle": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "notifDueBody": "{vehicle} · {date}. Tap to update.",
+  "@notifDueBody": {
+    "placeholders": {
+      "vehicle": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "comingUpTitle": "Coming up",
+  "comingUpEmpty": "You're all set — nothing due soon.",
+  "dueInDays": "{days, plural, =0{today} =1{tomorrow} other{in {days} days}}",
+  "@dueInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueOverdue": "{days, plural, =1{1 day overdue} other{{days} days overdue}}",
+  "@dueOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dueAddDate": "Add date",
+  "dueServiceSoon": "Due soon",
+  "dueServiceOverdue": "Overdue",
+  "dueValidUntil": "{item} valid until",
+  "@dueValidUntil": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "dueUpdated": "Date saved — reminders updated",
+  "remindersTurnOn": "Turn on",
+  "remindersOffBody": "Reminders are off. Turn them on to hear before insurance, PUC and services are due.",
+  "remindersMutedNote": "Reminders are off for this vehicle.",
+  "remindersPermissionTitle": "Get reminders?",
+  "remindersPermissionBody": "We'll remind you 30, 7 and 1 day before insurance, PUC and documents expire — at 9 AM, never at night.",
+  "remindersNotNow": "Not now",
+  "remindersEnableInSettings": "Notifications are blocked. Turn them on for this app in your phone's Settings.",
+  "settingsReminders": "Reminders",
+  "settingsRemindersNext": "Next: {item} · {date}",
+  "@settingsRemindersNext": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRemindersNone": "Nothing due soon"
 }

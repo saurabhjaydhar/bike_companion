@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/constants/app_constants.dart';
+import '../core/services/reminder_planner.dart';
 import '../data/models/health_score.dart';
 import 'app_localizations.dart';
 
@@ -62,6 +63,28 @@ extension L10nLabels on AppLocalizations {
       case DocumentTypes.warranty: return docWarranty;
       default: return commonOther;
     }
+  }
+
+  /// Short name of what's due: "Insurance", a document's title, a service.
+  String dueItemLabel(DueItem item) => switch (item.kind) {
+    DueKind.insurance => docInsurance,
+    DueKind.puc => docPuc,
+    DueKind.registration => dueRegistration,
+    DueKind.licence => docDrivingLicence,
+    DueKind.document => item.title ?? commonOther,
+    DueKind.service => serviceTypeLabel(item.title ?? ''),
+  };
+
+  /// Notification title, e.g. "Insurance expires in 7 days".
+  String dueReminderTitle(DueItem item, int daysBefore) =>
+      item.kind == DueKind.service
+          ? notifServiceDueTitle(dueItemLabel(item), daysBefore)
+          : notifExpiryTitle(dueItemLabel(item), daysBefore);
+
+  /// "today", "tomorrow", "in 5 days" or "3 days overdue".
+  String dueWhen(DueItem item, DateTime now) {
+    final days = item.daysLeft(now);
+    return days < 0 ? dueOverdue(-days) : dueInDays(days);
   }
 
   String healthGradeLabel(HealthGrade grade) {

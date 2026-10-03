@@ -240,7 +240,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   pageBuilder: (context, state) => _slide(
                     state,
                     DashboardScreen(
-                        vehicleId: state.pathParameters['vehicleId']!),
+                      vehicleId: state.pathParameters['vehicleId']!,
+                      // From a reminder: open that date's editor.
+                      edit: state.uri.queryParameters['edit'],
+                    ),
                   ),
                   routes: [
                     GoRoute(

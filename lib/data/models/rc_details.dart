@@ -13,6 +13,9 @@ class RcDetails {
   final String? colour;
   final DateTime? insuranceExpiry;
 
+  /// "Regn. Validity" — registration valid until.
+  final DateTime? regValidity;
+
   const RcDetails({
     required this.rcNumber,
     this.manufacturer,
@@ -26,6 +29,7 @@ class RcDetails {
     this.chassisNumber,
     this.colour,
     this.insuranceExpiry,
+    this.regValidity,
   });
 
   factory RcDetails.fromApiResponse(Map<String, dynamic> json, String rcNumber) {
@@ -59,6 +63,7 @@ class RcDetails {
       chassisNumber: pick('chassis_number', 'chassisNumber'),
       colour: pick('colour', 'color'),
       insuranceExpiry: parseDate('insurance_expiry', 'insuranceExpiry'),
+      regValidity: parseDate('registration_validity', 'regValidity'),
     );
   }
 
@@ -75,6 +80,7 @@ class RcDetails {
     String? chassisNumber,
     String? colour,
     DateTime? insuranceExpiry,
+    DateTime? regValidity,
   }) =>
       RcDetails(
         rcNumber: rcNumber ?? this.rcNumber,
@@ -89,6 +95,7 @@ class RcDetails {
         chassisNumber: chassisNumber ?? this.chassisNumber,
         colour: colour ?? this.colour,
         insuranceExpiry: insuranceExpiry ?? this.insuranceExpiry,
+        regValidity: regValidity ?? this.regValidity,
       );
 
   Map<String, dynamic> toMap() => {
@@ -104,6 +111,7 @@ class RcDetails {
         'chassis_number': chassisNumber,
         'colour': colour,
         'insurance_expiry': insuranceExpiry?.millisecondsSinceEpoch,
+        'registration_validity': regValidity?.millisecondsSinceEpoch,
       };
 
   factory RcDetails.fromMap(Map<String, dynamic> map) {
@@ -123,6 +131,7 @@ class RcDetails {
       chassisNumber: map['chassis_number'] as String?,
       colour: map['colour'] as String?,
       insuranceExpiry: ms(map['insurance_expiry']),
+      regValidity: ms(map['registration_validity']),
     );
   }
 

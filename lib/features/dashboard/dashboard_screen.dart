@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -6,9 +7,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../data/models/health_score.dart';
 import '../../l10n/l10n.dart';
-import '../../shared/widgets/alert_banner.dart';
 import '../../shared/widgets/health_ring.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/plate_badge.dart';
@@ -16,11 +15,22 @@ import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/section_header.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import '../../shared/widgets/stat_card.dart';
+import '../../core/services/reminder_planner.dart';
+import '../../data/repositories/vehicle_repository.dart';
+import '../../main.dart';
+import '../../shared/widgets/reminder_permission.dart';
+import '../garage/garage_provider.dart';
 import 'dashboard_provider.dart';
+import 'widgets/coming_up_card.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   final String vehicleId;
-  const DashboardScreen({super.key, required this.vehicleId});
+
+  /// A [DueKind] name ("insurance", "puc", "registration") whose date
+  /// editor opens on arrival — set when coming from a reminder.
+  final String? edit;
+
+  const DashboardScreen({super.key, required this.vehicleId, this.edit});
 
   @override
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
@@ -34,7 +44,70 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     // Set this vehicle as active when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setActiveVehicle(ref, widget.vehicleId);
+      _openRequestedEditor();
     });
+  }
+
+  @override
+  void didUpdateWidget(DashboardScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.edit != oldWidget.edit) _openRequestedEditor();
+  }
+
+  Future<void> _openRequestedEditor() async {
+    final kind =
+        DueKind.values.where((k) => k.name == widget.edit).firstOrNull;
+    if (kind == null) return;
+    await ref.read(dashboardProvider(widget.vehicleId).future);
+    if (mounted) await _editDate(kind);
+  }
+
+  /// Date picker for one of the vehicle's own dates; saving re-plans its
+  /// reminders.
+  Future<void> _editDate(DueKind kind) async {
+    final dash = ref.read(dashboardProvider(widget.vehicleId)).valueOrNull;
+    if (dash == null) return;
+    final l = context.l10n;
+    final v = dash.vehicle;
+    final current = switch (kind) {
+      DueKind.insurance => v.insuranceExpiry,
+      DueKind.puc => v.pucExpiry,
+      DueKind.registration => v.regValidity,
+      _ => null,
+    };
+    final label = switch (kind) {
+      DueKind.insurance => l.docInsurance,
+      DueKind.puc => l.docPuc,
+      _ => l.dueRegistration,
+    };
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: current != null && current.isAfter(now) ? current : now,
+      firstDate: DateTime(now.year - 1),
+      lastDate: DateTime(2060),
+      helpText: l.dueValidUntil(label),
+    );
+    if (picked == null || !mounted) return;
+
+    final updated = switch (kind) {
+      DueKind.insurance => v.copyWith(insuranceExpiry: picked),
+      DueKind.puc => v.copyWith(pucExpiry: picked),
+      _ => v.copyWith(regValidity: picked),
+    };
+    await getIt<VehicleRepository>().updateVehicle(updated);
+    HapticFeedback.lightImpact();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l.dueUpdated)));
+    await ref.read(dashboardProvider(widget.vehicleId).notifier).refresh();
+    ref.invalidate(garageProvider);
+    if (mounted) await askReminderPermissionOnce(context);
+  }
+
+  Future<void> _turnOnReminders() async {
+    await turnOnReminders(context);
+    await ref.read(dashboardProvider(widget.vehicleId).notifier).refresh();
   }
 
   @override
@@ -80,16 +153,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
               const SizedBox(height: AppSpacing.lg),
 
-              // Alert strip
-              if (dash.healthScore.alerts.isNotEmpty)
-                AlertBanner(
-                  message: dash.healthScore.alerts.first.localizedMessage(l),
-                  type: dash.healthScore.alerts.first.status ==
-                          HealthStatus.danger
-                      ? AlertType.danger
-                      : AlertType.warning,
-                  onTap: () {},
-                ),
+              // What to act on next
+              ComingUpCard(
+                dash: dash,
+                onEditDate: _editDate,
+                onTurnOnReminders: _turnOnReminders,
+              ),
 
               const SizedBox(height: AppSpacing.lg),
 

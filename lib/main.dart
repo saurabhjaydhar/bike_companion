@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,8 @@ import 'core/services/fcm_service.dart';
 import 'core/services/firestore_service.dart';
 import 'core/services/health_score_service.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/reminder_planner.dart';
+import 'core/services/reminder_service.dart';
 import 'core/services/restore_service.dart';
 import 'core/services/storage_service.dart';
 import 'core/services/sync_service.dart';
@@ -52,9 +56,21 @@ Future<void> _setupDependencies() async {
     ..registerSingleton<SyncService>(SyncService(db, fs))
     ..registerSingleton<RestoreService>(RestoreService(db, fs));
 
-  // Upload every local change as soon as it's written.
+  final reminders = ReminderService(
+    getIt<VehicleRepository>(),
+    getIt<DocumentRepository>(),
+    getIt<ServiceRepository>(),
+    getIt<FuelRepository>(),
+    getIt<HealthScoreService>(),
+  );
+  getIt.registerSingleton<ReminderService>(reminders);
+
+  // Every local change is uploaded right away and re-plans reminders.
   final sync = getIt<SyncService>();
-  SyncService.onEnqueued = sync.pushPending;
+  SyncService.onEnqueued = () {
+    sync.pushPending();
+    reminders.scheduleRefresh();
+  };
   sync.start();
 }
 
@@ -65,14 +81,45 @@ void main() async {
   await _setupDependencies();
   await NotificationService.initialize();
   await FcmService.initialize();
+  // Covers reinstalls, restores and anything scheduled by older versions.
+  getIt<ReminderService>().refresh();
   runApp(const ProviderScope(child: BikeCompanionApp()));
 }
 
-class BikeCompanionApp extends ConsumerWidget {
+class BikeCompanionApp extends ConsumerStatefulWidget {
   const BikeCompanionApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BikeCompanionApp> createState() => _BikeCompanionAppState();
+}
+
+class _BikeCompanionAppState extends ConsumerState<BikeCompanionApp> {
+  StreamSubscription<String>? _taps;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tapping a reminder opens the place to act on it.
+    _taps = NotificationService.taps.listen(_openReminder);
+    final launch = NotificationService.takeLaunchPayload();
+    if (launch != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _openReminder(launch));
+    }
+  }
+
+  @override
+  void dispose() {
+    _taps?.cancel();
+    super.dispose();
+  }
+
+  void _openReminder(String payload) {
+    final reminder = ReminderPayload.decode(payload);
+    if (reminder != null) ref.read(appRouterProvider).go(reminder.route);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(syncOnReconnectProvider); // triggers Firestore sync on reconnect
     final router = ref.watch(appRouterProvider);
     final themeMode = ref.watch(themeModeProvider);

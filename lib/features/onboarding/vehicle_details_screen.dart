@@ -20,6 +20,7 @@ import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/colour_picker.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/reminder_permission.dart';
 
 const _uuid = Uuid();
 
@@ -60,6 +61,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   DateTime? _registrationDate;
   DateTime? _insuranceExpiry;
   DateTime? _pucExpiry;
+  DateTime? _regValidity;
 
   String? _rcError;
   String? _brandError;
@@ -83,6 +85,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     _engineCtrl = TextEditingController(text: v.engineNumber ?? '');
     _chassisCtrl = TextEditingController(text: v.chassisNumber ?? '');
     _registrationDate = v.registrationDate;
+    _regValidity = v.regValidity;
     _colourHex = ColourPicker.hexForName(v.colour) ?? _colourHex;
     _insuranceExpiry = v.insuranceExpiry;
   }
@@ -188,6 +191,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
         odometerOfficial: odometer,
         insuranceExpiry: _insuranceExpiry,
         pucExpiry: _pucExpiry,
+        regValidity: _regValidity,
         createdAt: DateTime.now(),
         manufacturer: _text(_manufacturerCtrl),
         fuelType: _text(_fuelTypeCtrl),
@@ -206,6 +210,10 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
       ref.invalidate(garageProvider);
       await setActiveVehicle(ref, vehicle.id);
 
+      final hasDates = _insuranceExpiry != null ||
+          _pucExpiry != null ||
+          _regValidity != null;
+      if (hasDates && mounted) await askReminderPermissionOnce(context);
       if (mounted) context.go('/garage/dashboard/${vehicle.id}');
     } catch (_) {
       if (mounted) {
@@ -411,6 +419,19 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                             firstDate: now.subtract(const Duration(days: 365)),
                             lastDate: DateTime(2050));
                         if (d != null) setState(() => _pucExpiry = d);
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _DatePickerField(
+                      label: l.vehicleRegValidity,
+                      value: _regValidity,
+                      isDark: isDark,
+                      onTap: () async {
+                        final d = await _pickDate(
+                            initial: _regValidity,
+                            firstDate: now.subtract(const Duration(days: 365)),
+                            lastDate: DateTime(2060));
+                        if (d != null) setState(() => _regValidity = d);
                       },
                     ),
                     const SizedBox(height: AppSpacing.xl),

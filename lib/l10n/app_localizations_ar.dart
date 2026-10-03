@@ -711,35 +711,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get offlineBanner => 'لا يوجد إنترنت — العمل بدون اتصال';
 
   @override
-  String notifDocBody(String title, int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: 'تنتهي صلاحية $title بعد $days يوم',
-      many: 'تنتهي صلاحية $title بعد $days يومًا',
-      few: 'تنتهي صلاحية $title بعد $days أيام',
-      two: 'تنتهي صلاحية $title بعد يومين',
-      one: 'تنتهي صلاحية $title غدًا',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String notifDocTitle(int days) {
-    return 'مستند تنتهي صلاحيته قريبًا (الأيام المتبقية: $days)';
-  }
-
-  @override
-  String get notifDocTomorrowTitle => 'تنتهي صلاحية مستند غدًا!';
-
-  @override
   String notifServiceOverdueTitle(String vehicle) {
     return 'صيانة متأخرة — $vehicle';
-  }
-
-  @override
-  String notifServiceOverdueBody(String service) {
-    return '$service يحتاج إلى عناية';
   }
 
   @override
@@ -969,4 +942,118 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get vahanSmsError => 'تعذّر فتح تطبيق الرسائل.';
+
+  @override
+  String get vehicleRegValidity => 'التسجيل صالح حتى';
+
+  @override
+  String get dueRegistration => 'التسجيل';
+
+  @override
+  String notifExpiryTitle(String item, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'تنتهي صلاحية $item خلال $days يومًا',
+      one: 'تنتهي صلاحية $item غدًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifServiceDueTitle(String item, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'موعد $item خلال $days يومًا',
+      one: 'موعد $item غدًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifDueBody(String vehicle, String date) {
+    return '$vehicle · $date. اضغط للتحديث.';
+  }
+
+  @override
+  String get comingUpTitle => 'القادم';
+
+  @override
+  String get comingUpEmpty => 'كل شيء على ما يرام — لا شيء مستحق قريبًا.';
+
+  @override
+  String dueInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'خلال $days يومًا',
+      one: 'غدًا',
+      zero: 'اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dueOverdue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'متأخر $days يومًا',
+      one: 'متأخر يومًا واحدًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dueAddDate => 'إضافة تاريخ';
+
+  @override
+  String get dueServiceSoon => 'قريبًا';
+
+  @override
+  String get dueServiceOverdue => 'متأخر';
+
+  @override
+  String dueValidUntil(String item) {
+    return '$item صالح حتى';
+  }
+
+  @override
+  String get dueUpdated => 'تم حفظ التاريخ — تم تحديث التذكيرات';
+
+  @override
+  String get remindersTurnOn => 'تشغيل';
+
+  @override
+  String get remindersOffBody =>
+      'التذكيرات متوقفة. شغّلها لتعرف مسبقًا بمواعيد التأمين وشهادة PUC والصيانة.';
+
+  @override
+  String get remindersMutedNote => 'التذكيرات متوقفة لهذه المركبة.';
+
+  @override
+  String get remindersPermissionTitle => 'هل تريد تلقي التذكيرات؟';
+
+  @override
+  String get remindersPermissionBody =>
+      'سنذكّرك قبل 30 و7 ويوم واحد من انتهاء التأمين وشهادة PUC والمستندات — في التاسعة صباحًا، وليس ليلًا أبدًا.';
+
+  @override
+  String get remindersNotNow => 'ليس الآن';
+
+  @override
+  String get remindersEnableInSettings =>
+      'الإشعارات محظورة. شغّلها لهذا التطبيق من إعدادات الهاتف.';
+
+  @override
+  String get settingsReminders => 'التذكيرات';
+
+  @override
+  String settingsRemindersNext(String item, String date) {
+    return 'التالي: $item · $date';
+  }
+
+  @override
+  String get settingsRemindersNone => 'لا شيء مستحق قريبًا';
 }

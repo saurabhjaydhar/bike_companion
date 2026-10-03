@@ -8,6 +8,10 @@ import '../../data/repositories/expense_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
 import '../../core/services/health_score_service.dart';
+import '../../core/services/notification_service.dart';
+import '../../core/services/reminder_planner.dart';
+import '../../core/services/reminder_service.dart';
+import '../../data/repositories/document_repository.dart';
 import '../../main.dart';
 
 sealed class ActivityItem {
@@ -38,6 +42,15 @@ class DashboardState {
   final double monthTotal;
   final List<ActivityItem> recentActivity;
 
+  /// Expiries and service dates for this vehicle, soonest first.
+  final List<DueItem> dueItems;
+
+  /// Whether the app may show notifications.
+  final bool remindersPermitted;
+
+  /// Whether the user turned reminders off for this vehicle.
+  final bool remindersMuted;
+
   const DashboardState({
     required this.vehicle,
     required this.allVehicles,
@@ -47,6 +60,9 @@ class DashboardState {
     required this.nextService,
     required this.monthTotal,
     required this.recentActivity,
+    required this.dueItems,
+    required this.remindersPermitted,
+    required this.remindersMuted,
   });
 }
 
@@ -89,6 +105,17 @@ class DashboardNotifier
       fuelLogs: fuelLogs,
     );
 
+    final documents =
+        await getIt<DocumentRepository>().getDocuments(vehicleId);
+    final due = dueItems(
+      vehicles: [vehicle],
+      documents: documents,
+      services: services,
+    );
+    final permitted = await NotificationService.isPermitted();
+    final muted =
+        (await getIt<ReminderService>().mutedVehicleIds()).contains(vehicleId);
+
     // Merge last 3 fuel + service entries, sorted newest first
     final activity = <ActivityItem>[
       ...fuelLogs.take(3).map(FuelActivity.new),
@@ -104,6 +131,9 @@ class DashboardNotifier
       nextService: nextService,
       monthTotal: monthTotal,
       recentActivity: activity.take(3).toList(),
+      dueItems: due,
+      remindersPermitted: permitted,
+      remindersMuted: muted,
     );
   }
 

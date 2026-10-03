@@ -1,12 +1,14 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import '../../data/models/document.dart';
-import '../../l10n/l10n.dart';
 
-/// Notification ID for [key] (e.g. `doc:{id}:30`): a 31-bit FNV-1a hash.
-/// Unlike [String.hashCode] it's the same on every platform and app version,
-/// so a reminder can always be found again to cancel or replace it.
+/// Notification ID for [key] (e.g. `insurance:{vehicleId}::20260601:30`):
+/// a 31-bit FNV-1a hash. Unlike [String.hashCode] it's the same on every
+/// platform and app version, so a reminder can always be found again to
+/// cancel or replace it.
 int notificationId(String key) {
   var hash = 0x811c9dc5;
   for (final unit in key.codeUnits) {
@@ -15,15 +17,31 @@ int notificationId(String key) {
   return hash & 0x7FFFFFFF;
 }
 
+/// Thin wrapper around the local notifications plugin. What to schedule and
+/// when is decided by ReminderService.
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
 
   static const _channelId = 'bike_companion';
-  static const _channelName = 'Bike Companion Alerts';
-  static const _channelDesc = 'Document expiry and service reminders';
+  static const _channelName = 'Reminders';
+  static const _channelDesc = 'Expiry and service reminders';
 
-  // Notification IDs: document reminders use notificationId('doc:...');
-  // service / ad-hoc alerts use 50000–50999.
+  /// Payloads of notifications scheduled by older app versions.
+  static const _legacyPayloads = {'doc_reminder'};
+
+  static final _taps = StreamController<String>.broadcast();
+
+  /// Payloads of notifications the user taps while the app is running.
+  static Stream<String> get taps => _taps.stream;
+
+  /// Payload of the notification that launched the app, if any. Read once.
+  static String? takeLaunchPayload() {
+    final payload = _launchPayload;
+    _launchPayload = null;
+    return payload;
+  }
+
+  static String? _launchPayload;
 
   static Future<void> initialize() async {
     tz.initializeTimeZones();
@@ -33,123 +51,77 @@ class NotificationService {
       // fallback to UTC if timezone lookup fails
     }
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    // Permission is asked later, when the user first saves a date worth a
+    // reminder — not on first launch.
     const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
     );
     await _plugin.initialize(
       const InitializationSettings(
-          android: androidSettings, iOS: iosSettings),
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: iosSettings,
+      ),
+      onDidReceiveNotificationResponse: (response) {
+        final payload = response.payload;
+        if (payload != null) _taps.add(payload);
+      },
     );
 
-    await _plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(const AndroidNotificationChannel(
-          _channelId,
-          _channelName,
-          description: _channelDesc,
-          importance: Importance.high,
-        ));
-
-    // Request permission on Android 13+
-    await _plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-  }
-
-  // Called whenever the documents list changes — reschedules all doc reminders.
-  static Future<void> scheduleDocumentReminders(
-      List<VehicleDocument> docs) async {
-    for (final doc in docs) {
-      await cancelDocumentReminders(doc.id);
+    final launch = await _plugin.getNotificationAppLaunchDetails();
+    if (launch?.didNotificationLaunchApp ?? false) {
+      _launchPayload = launch!.notificationResponse?.payload;
     }
 
-    final l = await loadAppLocalizations();
-    for (final doc in docs) {
-      if (doc.expiryDate == null) continue;
-      await _scheduleForDoc(l, doc, threshold: 30);
-      await _scheduleForDoc(l, doc, threshold: 7);
-      await _scheduleForDoc(l, doc, threshold: 1);
-    }
-  }
-
-  static Future<void> _scheduleForDoc(AppLocalizations l, VehicleDocument doc,
-      {required int threshold}) async {
-    final expiry = doc.expiryDate!;
-    final fireDate =
-        expiry.subtract(Duration(days: threshold));
-    final now = DateTime.now();
-
-    // Already past the fire date — show immediately if still within validity
-    if (fireDate.isBefore(now) && expiry.isAfter(now)) {
-      final daysSince = now.difference(fireDate).inDays;
-      if (daysSince <= 1) {
-        await _showNow(
-          id: _docId(doc.id, threshold),
-          title: _docTitle(l, threshold),
-          body: l.notifDocBody(doc.title, threshold),
-        );
-      }
-      return;
-    }
-
-    if (fireDate.isBefore(now)) return; // already expired + past fire date
-
-    await _scheduleNotification(
-      id: _docId(doc.id, threshold),
-      title: _docTitle(l, threshold),
-      body: l.notifDocBody(doc.title, threshold),
-      scheduledDate: fireDate,
+    await _android?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _channelId,
+        _channelName,
+        description: _channelDesc,
+        importance: Importance.high,
+      ),
     );
   }
 
-  static Future<void> cancelDocumentReminders(String docId) async {
-    for (final threshold in const [30, 7, 1]) {
-      await _plugin.cancel(_docId(docId, threshold));
-      // Reminders scheduled by app versions before stable IDs.
-      await _plugin.cancel(_legacyDocId(docId, threshold));
+  static AndroidFlutterLocalNotificationsPlugin? get _android =>
+      _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >();
+
+  static IOSFlutterLocalNotificationsPlugin? get _ios =>
+      _plugin.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin
+      >();
+
+  /// Whether the app may show notifications.
+  static Future<bool> isPermitted() async {
+    final android = _android;
+    if (android != null) return await android.areNotificationsEnabled() ?? true;
+    final ios = _ios;
+    if (ios != null) return (await ios.checkPermissions())?.isEnabled ?? false;
+    return true;
+  }
+
+  /// Shows the system permission prompt. Returns whether it's granted.
+  static Future<bool> requestPermission() async {
+    final android = _android;
+    if (android != null) {
+      return await android.requestNotificationsPermission() ?? false;
     }
+    final ios = _ios;
+    if (ios != null) {
+      return await ios.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+          false;
+    }
+    return true;
   }
 
-  static Future<void> showServiceAlert({
-    required String vehicleName,
-    required String serviceType,
-  }) async {
-    final l = await loadAppLocalizations();
-    await _showNow(
-      id: 50000 + serviceType.hashCode.abs() % 1000,
-      title: l.notifServiceOverdueTitle(vehicleName),
-      body: l.notifServiceOverdueBody(serviceType),
-    );
-  }
-
-  static Future<void> cancelAll() async => _plugin.cancelAll();
-
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
-  static int _docId(String docId, int threshold) =>
-      notificationId('doc:$docId:$threshold');
-
-  // The old scheme, kept only to cancel reminders it scheduled.
-  static int _legacyDocId(String docId, int threshold) {
-    final band = switch (threshold) {
-      30 => 0,
-      7 => 10000,
-      _ => 20000,
-    };
-    return band + docId.hashCode.abs() % 9000;
-  }
-
-  static String _docTitle(AppLocalizations l, int threshold) =>
-      threshold == 1 ? l.notifDocTomorrowTitle : l.notifDocTitle(threshold);
-
-  static const _notifDetails = NotificationDetails(
+  static const _details = NotificationDetails(
     android: AndroidNotificationDetails(
       _channelId,
       _channelName,
@@ -161,39 +133,59 @@ class NotificationService {
     iOS: DarwinNotificationDetails(),
   );
 
-  static Future<void> _scheduleNotification({
+  /// Schedules (or replaces) notification [id] at [at], local time.
+  static Future<void> schedule({
     required int id,
     required String title,
     required String body,
-    required DateTime scheduledDate,
+    required DateTime at,
+    required String payload,
   }) async {
     try {
-      final tzDate = tz.TZDateTime.from(scheduledDate, tz.local);
-      if (tzDate.isBefore(tz.TZDateTime.now(tz.local))) return;
-
+      final when = tz.TZDateTime.from(at, tz.local);
+      if (when.isBefore(tz.TZDateTime.now(tz.local))) return;
       await _plugin.zonedSchedule(
         id,
         title,
         body,
-        tzDate,
-        _notifDetails,
-        androidScheduleMode: AndroidScheduleMode.inexact,
+        when,
+        _details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        payload: 'doc_reminder',
+        payload: payload,
       );
-    } catch (_) {
-      // Silently ignore scheduling failures (e.g., permission denied)
+    } catch (e) {
+      debugPrint('Notifications: could not schedule $id: $e');
     }
   }
 
-  static Future<void> _showNow({
+  static Future<void> showNow({
     required int id,
     required String title,
     required String body,
+    String? payload,
   }) async {
     try {
-      await _plugin.show(id, title, body, _notifDetails);
-    } catch (_) {}
+      await _plugin.show(id, title, body, _details, payload: payload);
+    } catch (e) {
+      debugPrint('Notifications: could not show $id: $e');
+    }
   }
+
+  static Future<void> cancel(int id) => _plugin.cancel(id);
+
+  /// IDs of scheduled reminders whose payload starts with [payloadPrefix],
+  /// including ones left by older app versions.
+  static Future<Set<int>> scheduledIds(String payloadPrefix) async {
+    final pending = await _plugin.pendingNotificationRequests();
+    return {
+      for (final p in pending)
+        if ((p.payload?.startsWith(payloadPrefix) ?? false) ||
+            _legacyPayloads.contains(p.payload))
+          p.id,
+    };
+  }
+
+  static Future<void> cancelAll() => _plugin.cancelAll();
 }

@@ -1364,35 +1364,11 @@ abstract class AppLocalizations {
   /// **'No internet — working offline'**
   String get offlineBanner;
 
-  /// No description provided for @notifDocBody.
-  ///
-  /// In en, this message translates to:
-  /// **'{days, plural, =1{{title} expires tomorrow} other{{title} expires in {days} days}}'**
-  String notifDocBody(String title, int days);
-
-  /// No description provided for @notifDocTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Document expiring in {days} days'**
-  String notifDocTitle(int days);
-
-  /// No description provided for @notifDocTomorrowTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Document expires tomorrow!'**
-  String get notifDocTomorrowTitle;
-
   /// No description provided for @notifServiceOverdueTitle.
   ///
   /// In en, this message translates to:
   /// **'Service overdue — {vehicle}'**
   String notifServiceOverdueTitle(String vehicle);
-
-  /// No description provided for @notifServiceOverdueBody.
-  ///
-  /// In en, this message translates to:
-  /// **'{service} needs attention'**
-  String notifServiceOverdueBody(String service);
 
   /// No description provided for @healthOilNone.
   ///
@@ -1723,6 +1699,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t open your SMS app.'**
   String get vahanSmsError;
+
+  /// No description provided for @vehicleRegValidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration valid until'**
+  String get vehicleRegValidity;
+
+  /// No description provided for @dueRegistration.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration'**
+  String get dueRegistration;
+
+  /// No description provided for @notifExpiryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{{item} expires tomorrow} other{{item} expires in {days} days}}'**
+  String notifExpiryTitle(String item, int days);
+
+  /// No description provided for @notifServiceDueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{{item} due tomorrow} other{{item} due in {days} days}}'**
+  String notifServiceDueTitle(String item, int days);
+
+  /// No description provided for @notifDueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{vehicle} · {date}. Tap to update.'**
+  String notifDueBody(String vehicle, String date);
+
+  /// No description provided for @comingUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up'**
+  String get comingUpTitle;
+
+  /// No description provided for @comingUpEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all set — nothing due soon.'**
+  String get comingUpEmpty;
+
+  /// No description provided for @dueInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{today} =1{tomorrow} other{in {days} days}}'**
+  String dueInDays(int days);
+
+  /// No description provided for @dueOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day overdue} other{{days} days overdue}}'**
+  String dueOverdue(int days);
+
+  /// No description provided for @dueAddDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Add date'**
+  String get dueAddDate;
+
+  /// No description provided for @dueServiceSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Due soon'**
+  String get dueServiceSoon;
+
+  /// No description provided for @dueServiceOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get dueServiceOverdue;
+
+  /// No description provided for @dueValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'{item} valid until'**
+  String dueValidUntil(String item);
+
+  /// No description provided for @dueUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Date saved — reminders updated'**
+  String get dueUpdated;
+
+  /// No description provided for @remindersTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get remindersTurnOn;
+
+  /// No description provided for @remindersOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are off. Turn them on to hear before insurance, PUC and services are due.'**
+  String get remindersOffBody;
+
+  /// No description provided for @remindersMutedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are off for this vehicle.'**
+  String get remindersMutedNote;
+
+  /// No description provided for @remindersPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get reminders?'**
+  String get remindersPermissionTitle;
+
+  /// No description provided for @remindersPermissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll remind you 30, 7 and 1 day before insurance, PUC and documents expire — at 9 AM, never at night.'**
+  String get remindersPermissionBody;
+
+  /// No description provided for @remindersNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get remindersNotNow;
+
+  /// No description provided for @remindersEnableInSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are blocked. Turn them on for this app in your phone\'s Settings.'**
+  String get remindersEnableInSettings;
+
+  /// No description provided for @settingsReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get settingsReminders;
+
+  /// No description provided for @settingsRemindersNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {item} · {date}'**
+  String settingsRemindersNext(String item, String date);
+
+  /// No description provided for @settingsRemindersNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing due soon'**
+  String get settingsRemindersNone;
 }
 
 class _AppLocalizationsDelegate

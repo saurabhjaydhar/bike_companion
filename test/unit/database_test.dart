@@ -81,6 +81,80 @@ const _schemaV1 = [
   )''',
 ];
 
+/// v2: + vehicles.reg_validity.
+const _schemaV2 = [
+  '''CREATE TABLE vehicles (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    brand TEXT NOT NULL,
+    model TEXT NOT NULL,
+    variant TEXT,
+    colour_hex TEXT NOT NULL DEFAULT '#1A56DB',
+    reg_number TEXT NOT NULL,
+    purchase_date INTEGER,
+    odometer_current INTEGER NOT NULL DEFAULT 0,
+    odometer_official INTEGER NOT NULL DEFAULT 0,
+    insurance_expiry INTEGER,
+    puc_expiry INTEGER,
+    created_at INTEGER NOT NULL,
+    manufacturer TEXT,
+    fuel_type TEXT,
+    vehicle_class TEXT,
+    engine_number TEXT,
+    chassis_number TEXT,
+    reg_validity INTEGER
+  )''',
+  '''CREATE TABLE fuel_logs (
+    id TEXT PRIMARY KEY,
+    vehicle_id TEXT NOT NULL,
+    date INTEGER NOT NULL,
+    odometer INTEGER NOT NULL,
+    litres REAL,
+    amount REAL,
+    fuel_station TEXT,
+    mileage_calculated REAL,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
+  )''',
+  '''CREATE TABLE service_records (
+    id TEXT PRIMARY KEY,
+    vehicle_id TEXT NOT NULL,
+    date INTEGER NOT NULL,
+    service_type TEXT NOT NULL,
+    odometer INTEGER NOT NULL,
+    cost REAL,
+    notes TEXT,
+    next_due_km INTEGER,
+    next_due_date INTEGER,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
+  )''',
+  '''CREATE TABLE expenses (
+    id TEXT PRIMARY KEY,
+    vehicle_id TEXT NOT NULL,
+    date INTEGER NOT NULL,
+    category TEXT NOT NULL,
+    amount REAL NOT NULL,
+    note TEXT,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
+  )''',
+  '''CREATE TABLE documents (
+    id TEXT PRIMARY KEY,
+    vehicle_id TEXT NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    file_path TEXT,
+    expiry_date INTEGER,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
+  )''',
+  '''CREATE TABLE pending_sync (
+    id TEXT PRIMARY KEY,
+    table_name TEXT NOT NULL,
+    record_id TEXT NOT NULL,
+    operation TEXT NOT NULL,
+    payload_json TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  )''',
+];
+
 const _tables = [
   'vehicles',
   'fuel_logs',
@@ -142,15 +216,35 @@ void main() {
     // and a new snapshot.
     test('a fresh install matches the latest schema snapshot', () async {
       final snapshot =
-          await openSnapshot(join(tempDir.path, 'v1.db'), 1, _schemaV1);
+          await openSnapshot(join(tempDir.path, 'v2.db'), 2, _schemaV2);
       final fresh =
           await AppDatabase.openAt(factory, join(tempDir.path, 'fresh.db'));
 
-      expect(AppDatabase.schemaVersion, 1);
+      expect(AppDatabase.schemaVersion, 2);
       expect(await fresh.getVersion(), AppDatabase.schemaVersion);
       expect(await columnsOf(fresh), await columnsOf(snapshot));
 
       await snapshot.close();
+      await fresh.close();
+    });
+
+    test('upgrading from v1 keeps data and matches a fresh install', () async {
+      final path = join(tempDir.path, 'v1.db');
+      final v1 = await openSnapshot(path, 1, _schemaV1);
+      await v1.insert('vehicles', vehicleRow('v1'));
+      await v1.close();
+
+      final upgraded = await AppDatabase.openAt(factory, path);
+      final fresh =
+          await AppDatabase.openAt(factory, join(tempDir.path, 'fresh.db'));
+
+      expect(await upgraded.getVersion(), AppDatabase.schemaVersion);
+      expect(await columnsOf(upgraded), await columnsOf(fresh));
+      final row = (await upgraded.query('vehicles')).single;
+      expect(row['name'], 'Bullet');
+      expect(row['reg_validity'], isNull);
+
+      await upgraded.close();
       await fresh.close();
     });
   });

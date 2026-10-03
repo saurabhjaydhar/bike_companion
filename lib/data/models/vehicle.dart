@@ -13,6 +13,9 @@ class Vehicle {
   final int odometerOfficial;
   final DateTime? insuranceExpiry;
   final DateTime? pucExpiry;
+
+  /// Registration (RC) valid until — "Regn. Validity" on the RC.
+  final DateTime? regValidity;
   final DateTime createdAt;
 
   // Registration (RC) details — all optional.
@@ -35,6 +38,7 @@ class Vehicle {
     required this.odometerOfficial,
     this.insuranceExpiry,
     this.pucExpiry,
+    this.regValidity,
     required this.createdAt,
     this.manufacturer,
     this.fuelType,
@@ -71,6 +75,9 @@ class Vehicle {
         pucExpiry: map['puc_expiry'] != null
             ? DateTime.fromMillisecondsSinceEpoch(map['puc_expiry'] as int)
             : null,
+        regValidity: map['reg_validity'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(map['reg_validity'] as int)
+            : null,
         createdAt:
             DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
         manufacturer: map['manufacturer'] as String?,
@@ -93,6 +100,7 @@ class Vehicle {
         'odometer_official': odometerOfficial,
         'insurance_expiry': insuranceExpiry?.millisecondsSinceEpoch,
         'puc_expiry': pucExpiry?.millisecondsSinceEpoch,
+        'reg_validity': regValidity?.millisecondsSinceEpoch,
         'created_at': createdAt.millisecondsSinceEpoch,
         'manufacturer': manufacturer,
         'fuel_type': fuelType,
@@ -114,6 +122,7 @@ class Vehicle {
     int? odometerOfficial,
     DateTime? insuranceExpiry,
     DateTime? pucExpiry,
+    DateTime? regValidity,
     DateTime? createdAt,
     String? manufacturer,
     String? fuelType,
@@ -134,6 +143,7 @@ class Vehicle {
         odometerOfficial: odometerOfficial ?? this.odometerOfficial,
         insuranceExpiry: insuranceExpiry ?? this.insuranceExpiry,
         pucExpiry: pucExpiry ?? this.pucExpiry,
+        regValidity: regValidity ?? this.regValidity,
         createdAt: createdAt ?? this.createdAt,
         manufacturer: manufacturer ?? this.manufacturer,
         fuelType: fuelType ?? this.fuelType,

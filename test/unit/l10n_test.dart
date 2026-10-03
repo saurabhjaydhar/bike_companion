@@ -70,8 +70,11 @@ void main() {
       expect(en.commonDaysAgo(5), '5 days ago');
       expect(hi.commonDaysAgo(5), '5 दिन पहले');
       expect(hi.garageDeleteVehicle('Bullet'), 'Bullet हटाएं');
-      expect(en.notifDocBody('RC Book', 1), 'RC Book expires tomorrow');
-      expect(en.notifDocBody('RC Book', 7), 'RC Book expires in 7 days');
+      expect(en.notifExpiryTitle('Insurance', 1), 'Insurance expires tomorrow');
+      expect(en.notifExpiryTitle('Insurance', 7), 'Insurance expires in 7 days');
+      expect(en.dueInDays(0), 'today');
+      expect(en.dueOverdue(3), '3 days overdue');
+      expect(hi.dueInDays(1), 'कल');
     });
   });
 

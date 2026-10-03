@@ -689,32 +689,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get offlineBanner => 'इंटरनेट नहीं है — ऑफ़लाइन काम कर रहे हैं';
 
   @override
-  String notifDocBody(String title, int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '$title $days दिन में समाप्त हो रहा है',
-      one: '$title कल समाप्त हो रहा है',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String notifDocTitle(int days) {
-    return 'दस्तावेज़ $days दिन में समाप्त हो रहा है';
-  }
-
-  @override
-  String get notifDocTomorrowTitle => 'दस्तावेज़ कल समाप्त हो रहा है!';
-
-  @override
   String notifServiceOverdueTitle(String vehicle) {
     return 'सर्विस का समय निकल गया — $vehicle';
-  }
-
-  @override
-  String notifServiceOverdueBody(String service) {
-    return '$service पर ध्यान देने की ज़रूरत है';
   }
 
   @override
@@ -916,4 +892,118 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get vahanSmsError => 'आपका SMS ऐप नहीं खुल सका।';
+
+  @override
+  String get vehicleRegValidity => 'पंजीकरण वैधता तिथि';
+
+  @override
+  String get dueRegistration => 'पंजीकरण';
+
+  @override
+  String notifExpiryTitle(String item, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$item $days दिनों में समाप्त हो रहा है',
+      one: '$item कल समाप्त हो रहा है',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifServiceDueTitle(String item, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$item $days दिनों में देय है',
+      one: '$item कल देय है',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifDueBody(String vehicle, String date) {
+    return '$vehicle · $date। अपडेट करने के लिए टैप करें।';
+  }
+
+  @override
+  String get comingUpTitle => 'आने वाला';
+
+  @override
+  String get comingUpEmpty => 'सब ठीक है — जल्द कुछ भी देय नहीं।';
+
+  @override
+  String dueInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days दिनों में',
+      one: 'कल',
+      zero: 'आज',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dueOverdue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days दिन की देरी',
+      one: '1 दिन की देरी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dueAddDate => 'तिथि जोड़ें';
+
+  @override
+  String get dueServiceSoon => 'जल्द देय';
+
+  @override
+  String get dueServiceOverdue => 'देरी हो गई';
+
+  @override
+  String dueValidUntil(String item) {
+    return '$item वैधता तिथि';
+  }
+
+  @override
+  String get dueUpdated => 'तिथि सहेजी गई — रिमाइंडर अपडेट हुए';
+
+  @override
+  String get remindersTurnOn => 'चालू करें';
+
+  @override
+  String get remindersOffBody =>
+      'रिमाइंडर बंद हैं। बीमा, PUC और सर्विस की तारीख से पहले सूचना पाने के लिए इन्हें चालू करें।';
+
+  @override
+  String get remindersMutedNote => 'इस वाहन के लिए रिमाइंडर बंद हैं।';
+
+  @override
+  String get remindersPermissionTitle => 'रिमाइंडर पाएं?';
+
+  @override
+  String get remindersPermissionBody =>
+      'बीमा, PUC और दस्तावेज़ समाप्त होने से 30, 7 और 1 दिन पहले हम आपको याद दिलाएंगे — सुबह 9 बजे, रात में कभी नहीं।';
+
+  @override
+  String get remindersNotNow => 'अभी नहीं';
+
+  @override
+  String get remindersEnableInSettings =>
+      'सूचनाएं बंद हैं। फ़ोन की सेटिंग्स में इस ऐप के लिए इन्हें चालू करें।';
+
+  @override
+  String get settingsReminders => 'रिमाइंडर';
+
+  @override
+  String settingsRemindersNext(String item, String date) {
+    return 'अगला: $item · $date';
+  }
+
+  @override
+  String get settingsRemindersNone => 'जल्द कुछ भी देय नहीं';
 }

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/reminder_planner.dart';
+import '../../core/services/reminder_service.dart';
+import '../../data/models/vehicle.dart';
+import '../../data/repositories/document_repository.dart';
+import '../../data/repositories/service_repository.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
@@ -160,6 +167,14 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           const SizedBox(height: AppSpacing.xl),
+
+          // Reminders — one switch per vehicle
+          _RemindersSection(
+            surface: surface,
+            border: border,
+            textPrimary: textPrimary,
+            textSecondary: textSecondary,
+          ),
 
           // Language section
           _SectionLabel(l.settingsLanguage, textSecondary),
@@ -407,6 +422,97 @@ class _AccountTile extends StatelessWidget {
       subtitle: email.isNotEmpty
           ? Text(email, style: AppTextStyles.label.copyWith(color: textSecondary))
           : null,
+    );
+  }
+}
+
+/// Each vehicle's reminder switch, with a preview of its next reminder.
+final _reminderSettingsProvider = FutureProvider.autoDispose<
+    List<({Vehicle vehicle, bool muted, DueItem? next})>>((ref) async {
+  final vehicles = await getIt<VehicleRepository>().getAllVehicles();
+  final muted = await getIt<ReminderService>().mutedVehicleIds();
+  final now = DateTime.now();
+  return [
+    for (final v in vehicles)
+      (
+        vehicle: v,
+        muted: muted.contains(v.id),
+        next: dueItems(
+          vehicles: [v],
+          documents: await getIt<DocumentRepository>().getDocuments(v.id),
+          services: await getIt<ServiceRepository>().getServiceHistory(v.id),
+        ).where((i) => i.daysLeft(now) >= 0).firstOrNull,
+      ),
+  ];
+});
+
+class _RemindersSection extends ConsumerWidget {
+  final Color surface;
+  final Color border;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _RemindersSection({
+    required this.surface,
+    required this.border,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rows = ref.watch(_reminderSettingsProvider).valueOrNull ?? const [];
+    if (rows.isEmpty) return const SizedBox.shrink();
+    final l = context.l10n;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SectionLabel(l.settingsReminders, textSecondary),
+        Container(
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+            border: Border.all(color: border),
+          ),
+          child: Column(
+            children: [
+              for (final (i, row) in rows.indexed) ...[
+                if (i > 0) Divider(height: 1, color: border),
+                SwitchListTile(
+                  value: !row.muted,
+                  activeThumbColor: AppColors.primary,
+                  secondary: Icon(
+                    row.muted
+                        ? Icons.notifications_off_outlined
+                        : Icons.notifications_active_outlined,
+                    color: row.muted ? textSecondary : AppColors.primary,
+                  ),
+                  title: Text(row.vehicle.name,
+                      style: AppTextStyles.body.copyWith(color: textPrimary)),
+                  subtitle: Text(
+                    row.next == null
+                        ? l.settingsRemindersNone
+                        : l.settingsRemindersNext(
+                            l.dueItemLabel(row.next!),
+                            DateFormat.yMMMd(l.localeName)
+                                .format(row.next!.due),
+                          ),
+                    style:
+                        AppTextStyles.caption.copyWith(color: textSecondary),
+                  ),
+                  onChanged: (on) async {
+                    await getIt<ReminderService>()
+                        .setMuted(row.vehicle.id, !on);
+                    ref.invalidate(_reminderSettingsProvider);
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xl),
+      ],
     );
   }
 }

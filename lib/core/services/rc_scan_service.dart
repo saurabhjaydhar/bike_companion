@@ -242,6 +242,7 @@ Rules:
 - Labels vary by state and card version, are often abbreviated, and the value may be beside or below its label. Look for:
   - registration_number: "Regn. No.", "Regn. Number", "Registration No.", "Reg. No.". Output without spaces or hyphens, e.g. MH12DE1234 or 22BH1234AA.
   - registration_date: "Date of Regn.", "Regn. Date", "Regd. Date", "Date of Registration". Not "Regn. Validity" (that is the expiry).
+  - registration_validity: "Regn. Validity", "Valid Upto", "Regn. Valid Upto" — the date the registration expires.
   - engine_number: "Engine No.", "Engine/Motor Number", "E. No.", "Motor No.".
   - chassis_number: "Chassis No.", "Chassis Number", "Ch. No.", "VIN".
   - manufacturer: "Maker's Name", "Maker", "Mfr", "Manufacturer". The company, e.g. "ROYAL ENFIELD (UNIT OF EICHER MOTORS LTD)", "HONDA MOTORCYCLE AND SCOOTER INDIA PVT LTD".
@@ -268,6 +269,7 @@ Rules:
       'vehicle_class': Schema.string(nullable: true),
       'colour': Schema.string(nullable: true),
       'registration_date': Schema.string(nullable: true),
+      'registration_validity': Schema.string(nullable: true),
       'engine_number': Schema.string(nullable: true),
       'chassis_number': Schema.string(nullable: true),
     },
@@ -335,6 +337,7 @@ RcDetails mergeRcScans(RcDetails first, RcDetails second) {
   chassisNumber: first.chassisNumber ?? second.chassisNumber,
   colour: first.colour ?? second.colour,
   insuranceExpiry: first.insuranceExpiry ?? second.insuranceExpiry,
+  regValidity: first.regValidity ?? second.regValidity,
 );
 }
 
@@ -364,10 +367,8 @@ RcDetails? rcDetailsFromJson(Map<String, dynamic> json) {
     vehicleClass: _withoutLabels(str('vehicle_class')),
     colour: _withoutLabels(str('colour')),
     // ISO as asked, or as printed ("23-May-2026") when Gemini copies it.
-    registrationDate: switch (str('registration_date')) {
-      null => null,
-      final d => DateTime.tryParse(d) ?? _parseDate(d),
-    },
+    registrationDate: _anyDate(str('registration_date')),
+    regValidity: _anyDate(str('registration_validity')),
     engineNumber: str('engine_number')?.replaceAll(' ', '').toUpperCase(),
     chassisNumber: str('chassis_number')?.replaceAll(' ', '').toUpperCase(),
   );
@@ -393,6 +394,12 @@ final _regNoLabel = RegExp(r'\bREG(?:N|D|ISTRATION)?\.?\s*(?:NUMBER|NO)\.?');
 final _regDateLabel = RegExp(
   r'DATE\s*OF\s*REG(?:N|ISTRATION)?\b\.?|\bREG(?:N|D|ISTRATION)?\.?\s*(?:DATE|DT)\b\.?',
 );
+final _regValidityLabel = RegExp(
+  r'REG(?:N|ISTRATION)?\.?\s*VALID(?:ITY|\s*UP\s*TO)|\bVALID\s*UP\s*TO\b',
+);
+// Words in labels whose value is a date — to line up a row of date labels
+// with the row of dates below it.
+final _dateLabelWord = RegExp(r'\bDATE\b|VALIDITY|\bUP\s*TO\b|\bEXPIRY\b');
 final _chassisLabel = RegExp(
   r'(?:CHASSIS|\bCH\.?)\s*(?:NO|NUMBER)?\b\.?|\bVIN\b',
 );
@@ -562,6 +569,10 @@ const _months = {
   'DEC': 12,
 };
 
+/// ISO ("2026-05-23") or as printed on the card ("23-May-2026").
+DateTime? _anyDate(String? s) =>
+    s == null ? null : DateTime.tryParse(s) ?? _parseDate(s);
+
 DateTime? _parseDate(String text) {
   final m = _date.firstMatch(text);
   if (m == null) return null;
@@ -672,8 +683,29 @@ RcDetails parseRcText(String text) {
       _vin.firstMatch(upper)?.group(0);
   final engine = parsedAfter(_engineLabel, token);
 
+  /// Date after [label]. When several date labels share a row ("Date of
+  /// Regn  Regn.Validity") and their dates share the row below, takes the
+  /// date in the same position.
+  DateTime? dateAfter(RegExp label) {
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i].toUpperCase();
+      final m = label.firstMatch(line);
+      if (m == null) continue;
+      final values = candidates(i, m.end);
+      final inline = values.isEmpty ? null : _parseDate(values.first);
+      if (inline != null) return inline;
+      if (values.isEmpty) continue;
+      final position =
+          _dateLabelWord.allMatches(line.substring(0, m.start)).length;
+      final dates = _date.allMatches(values.last).toList();
+      if (position < dates.length) return _parseDate(dates[position][0]!);
+    }
+    return null;
+  }
+
   // Dates
-  final registrationDate = parsedAfter(_regDateLabel, _parseDate);
+  final registrationDate = dateAfter(_regDateLabel);
+  final regValidity = dateAfter(_regValidityLabel);
 
   // Maker / model. "Maker's Class(ification)" is the model on older RCs.
   final (manufacturer, model) = _makerAndModel(
@@ -713,6 +745,7 @@ RcDetails parseRcText(String text) {
     vehicleClass: vehicleClass,
     colour: _withoutLabels(valueAfter(RegExp(r'\bCOLOU?R\b'))),
     registrationDate: registrationDate,
+    regValidity: regValidity,
     engineNumber: engine,
     chassisNumber: chassis,
   );

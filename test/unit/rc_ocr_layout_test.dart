@@ -117,6 +117,7 @@ void main() {
       expect(v.chassisNumber, 'MD626AN16S2A01234');
       expect(v.engineNumber, 'AN1DS2401234');
       expect(v.fuelType, 'Petrol');
+      expect(v.regValidity, DateTime(2040, 1, 11));
     });
 
     test('back side', () {

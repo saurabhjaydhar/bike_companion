@@ -326,6 +326,15 @@ SOME FINANCE LTD.
       expect(v.registrationDate, isNull); // "Month & Yr. of Mfg" is not it
     });
 
+    test('reads the registration validity from both readers', () {
+      expect(parseRcText(frontRows).regValidity, DateTime(2040, 1, 11));
+      final gemini = rcDetailsFromJson({
+        'registration_number': 'UK07AB1234',
+        'registration_validity': '11-Jan-2040', // as printed
+      })!;
+      expect(gemini.regValidity, DateTime(2040, 1, 11));
+    });
+
     test('Gemini output also drops the brand prefix from the model', () {
       final v = rcDetailsFromJson({
         'manufacturer': 'TVS MOTOR COMPANY LTD',

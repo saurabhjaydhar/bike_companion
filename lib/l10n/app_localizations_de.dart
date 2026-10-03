@@ -708,32 +708,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get offlineBanner => 'Kein Internet – Offline-Modus';
 
   @override
-  String notifDocBody(String title, int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '$title läuft in $days Tagen ab',
-      one: '$title läuft morgen ab',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String notifDocTitle(int days) {
-    return 'Dokument läuft in $days Tagen ab';
-  }
-
-  @override
-  String get notifDocTomorrowTitle => 'Dokument läuft morgen ab!';
-
-  @override
   String notifServiceOverdueTitle(String vehicle) {
     return 'Wartung überfällig – $vehicle';
-  }
-
-  @override
-  String notifServiceOverdueBody(String service) {
-    return '$service braucht Aufmerksamkeit';
   }
 
   @override
@@ -956,4 +932,118 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get vahanSmsError => 'SMS-App konnte nicht geöffnet werden.';
+
+  @override
+  String get vehicleRegValidity => 'Zulassung gültig bis';
+
+  @override
+  String get dueRegistration => 'Zulassung';
+
+  @override
+  String notifExpiryTitle(String item, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$item läuft in $days Tagen ab',
+      one: '$item läuft morgen ab',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifServiceDueTitle(String item, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$item in $days Tagen fällig',
+      one: '$item morgen fällig',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifDueBody(String vehicle, String date) {
+    return '$vehicle · $date. Tippen zum Aktualisieren.';
+  }
+
+  @override
+  String get comingUpTitle => 'Demnächst';
+
+  @override
+  String get comingUpEmpty => 'Alles erledigt – bald ist nichts fällig.';
+
+  @override
+  String dueInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'in $days Tagen',
+      one: 'morgen',
+      zero: 'heute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dueOverdue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days Tage überfällig',
+      one: '1 Tag überfällig',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dueAddDate => 'Datum hinzufügen';
+
+  @override
+  String get dueServiceSoon => 'Bald fällig';
+
+  @override
+  String get dueServiceOverdue => 'Überfällig';
+
+  @override
+  String dueValidUntil(String item) {
+    return '$item gültig bis';
+  }
+
+  @override
+  String get dueUpdated => 'Datum gespeichert – Erinnerungen aktualisiert';
+
+  @override
+  String get remindersTurnOn => 'Aktivieren';
+
+  @override
+  String get remindersOffBody =>
+      'Erinnerungen sind aus. Schalte sie ein, um vor Ablauf von Versicherung, PUC und Wartung informiert zu werden.';
+
+  @override
+  String get remindersMutedNote => 'Erinnerungen sind für dieses Fahrzeug aus.';
+
+  @override
+  String get remindersPermissionTitle => 'Erinnerungen erhalten?';
+
+  @override
+  String get remindersPermissionBody =>
+      'Wir erinnern dich 30, 7 und 1 Tag bevor Versicherung, PUC und Dokumente ablaufen – um 9 Uhr, nie nachts.';
+
+  @override
+  String get remindersNotNow => 'Nicht jetzt';
+
+  @override
+  String get remindersEnableInSettings =>
+      'Benachrichtigungen sind blockiert. Aktiviere sie für diese App in den Einstellungen deines Telefons.';
+
+  @override
+  String get settingsReminders => 'Erinnerungen';
+
+  @override
+  String settingsRemindersNext(String item, String date) {
+    return 'Nächste: $item · $date';
+  }
+
+  @override
+  String get settingsRemindersNone => 'Bald ist nichts fällig';
 }

@@ -93,7 +93,9 @@ Effort: **S** ≈ days, **M** ≈ 1 week, **L** ≈ 2+ weeks.
 
 ### Phase 1 — Reminders (M)
 
-Today only documents in the Documents tab get reminders, and only after that tab is opened. Insurance and PUC dates entered on the bike get none.
+Before this phase only documents in the Documents tab got reminders, and only after that tab was opened. Insurance and PUC dates entered on the vehicle got none.
+
+**Status:** built and unit/widget-tested; device QA below still to do.
 
 | # | Task |
 |---|---|
@@ -196,7 +198,7 @@ Code and storage already say *vehicle* (step 0.6) — see *Naming conventions*.
 - [x] RC scan: front/back capture, upright rotation, position-based OCR parsing, Gemini with on-device gap-fill
 - [x] Name decided: **Garajo**
 - [x] Phase 0 — Foundation (incl. 0.5 sync fix, 0.6 vehicle rename)
-- [ ] Phase 1 — Reminders
+- [ ] Phase 1 — Reminders (built; device QA pending)
 - [ ] Phase 2 — Spending, budgets and analytics
 - [ ] Phase 3 — Car support and rebrand
 - [ ] Phase 4 — Release

@@ -174,11 +174,15 @@ Code and storage already say *vehicle* (step 0.6) — see *Naming conventions*.
 
 ### Phase 4 — Release (M)
 
+**Status:** code and documents done — 4.1 (App Check in code), 4.2 drafts, 4.3, 4.4 text, 4.7, 4.8 (code walkthrough). Owner steps are listed in [release/store-compliance.md](release/store-compliance.md): Blaze plan for Gemini, Firebase rules, App Check enforcement, privacy-policy and deletion pages; then 4.5, 4.6, 4.9 and screenshots.
+
+Release documents: [privacy policy draft](release/privacy-policy.md) · [store compliance and Firebase setup](release/store-compliance.md) · [store listing](release/store-listing.md).
+
 | # | Task |
 |---|---|
 | 4.1 | Firebase App Check (Play Integrity / App Attest) |
 | 4.2 | Privacy policy covering RC photos and Gemini processing; Play data-safety form; App Store privacy labels |
-| 4.3 | Review Gemini data terms (free tier vs. Vertex AI) for RC photos |
+| 4.3 | Review Gemini data terms (free tier vs. Vertex AI) for RC photos — **result: the free tier may use submitted content to improve Google's products; move to the Blaze plan before launch** |
 | 4.4 | Store assets: screenshots (English + one more language), listing text above |
 | 4.5 | Play: internal test → closed test (12+ testers, 14 days) → production 20 % → 50 % → 100 % |
 | 4.6 | iOS: TestFlight → App Store review |
@@ -214,4 +218,4 @@ New app IDs need new Firebase apps; the project, its data and its settings stay 
 - [ ] Phase 1 — Reminders (built and merged; device QA pending)
 - [ ] Phase 2 — Spending, budgets and analytics (built; device QA pending)
 - [ ] Phase 3 — Car support and rebrand (built except new app IDs; device QA pending)
-- [ ] Phase 4 — Release
+- [ ] Phase 4 — Release (code and docs done; store and console steps with the owner)

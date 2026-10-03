@@ -11,6 +11,7 @@ import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/shimmer_box.dart';
+import '../expenses/expense_style.dart';
 import 'garage_provider.dart';
 import 'widgets/vehicle_card.dart';
 
@@ -64,6 +65,11 @@ class GarageScreen extends ConsumerWidget {
                   monthTotal: totalMonthly,
                   alertCount: totalAlerts,
                 ),
+                if (items.length > 1 &&
+                    items.any((i) => i.yearTotal > 0)) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _SpendingComparison(items: items),
+                ],
                 const SizedBox(height: AppSpacing.xl),
                 Text(l.garageYourVehicles,
                     style: AppTextStyles.heading3.copyWith(
@@ -248,6 +254,85 @@ class _StaggeredItemState extends State<_StaggeredItem>
         opacity: _opacity,
         child: SlideTransition(position: _slide, child: widget.child),
       );
+}
+
+// ---------------------------------------------------------------------------
+// This year's spending, vehicle by vehicle
+// ---------------------------------------------------------------------------
+class _SpendingComparison extends StatelessWidget {
+  final List<GarageItem> items;
+  const _SpendingComparison({required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final track = isDark ? AppColors.borderDark : AppColors.border;
+    final l = context.l10n;
+    final sorted = [...items]..sort((a, b) => b.yearTotal.compareTo(a.yearTotal));
+    final yearTotal = items.fold(0.0, (s, i) => s + i.yearTotal);
+    final top = sorted.first.yearTotal;
+
+    return HudPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(l.garageSpending,
+                    style: AppTextStyles.heading3.copyWith(color: textPrimary)),
+              ),
+              Text('${l.garageThisYear} · ${rupees(yearTotal)}',
+                  style: AppTextStyles.captionMedium
+                      .copyWith(color: textSecondary)),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          for (final item in sorted)
+            InkWell(
+              borderRadius: BorderRadius.circular(AppRadius.small),
+              onTap: () => context.go('/expenses/${item.vehicle.id}'),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(item.vehicle.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.bodyMedium
+                                  .copyWith(color: textPrimary)),
+                        ),
+                        Text(rupees(item.yearTotal),
+                            style: AppTextStyles.bodyMedium
+                                .copyWith(color: textPrimary)),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppRadius.full),
+                      child: LinearProgressIndicator(
+                        value: top > 0 ? item.yearTotal / top : 0,
+                        minHeight: 6,
+                        color: item.vehicle.colour,
+                        backgroundColor: track,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------

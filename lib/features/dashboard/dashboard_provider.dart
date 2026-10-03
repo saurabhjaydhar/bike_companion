@@ -4,7 +4,8 @@ import '../../data/models/fuel_log.dart';
 import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
 import '../../data/repositories/vehicle_repository.dart';
-import '../../data/repositories/expense_repository.dart';
+import '../../core/services/spending.dart';
+import '../../data/repositories/ledger_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
 import '../../core/services/health_score_service.dart';
@@ -39,7 +40,14 @@ class DashboardState {
   final FuelLog? lastFuelLog;
   final double? avgMileage;
   final ServiceRecord? nextService;
+  /// Spent this month: expenses, fuel and services.
   final double monthTotal;
+
+  /// Lifetime spending per km driven; null until odometer readings allow it.
+  final double? costPerKm;
+
+  /// Monthly budget suggested from recent spending.
+  final double? budgetSuggestion;
   final List<ActivityItem> recentActivity;
 
   /// Expiries and service dates for this vehicle, soonest first.
@@ -59,6 +67,8 @@ class DashboardState {
     required this.avgMileage,
     required this.nextService,
     required this.monthTotal,
+    required this.costPerKm,
+    required this.budgetSuggestion,
     required this.recentActivity,
     required this.dueItems,
     required this.remindersPermitted,
@@ -75,7 +85,7 @@ class DashboardNotifier
     final vehicleRepo = getIt<VehicleRepository>();
     final serviceRepo = getIt<ServiceRepository>();
     final fuelRepo = getIt<FuelRepository>();
-    final expenseRepo = getIt<ExpenseRepository>();
+    final ledger = getIt<LedgerRepository>();
     final healthService = getIt<HealthScoreService>();
     final now = DateTime.now();
 
@@ -84,7 +94,11 @@ class DashboardNotifier
       vehicleRepo.getAllVehicles(),
       serviceRepo.getServiceHistory(vehicleId),
       fuelRepo.getFuelLogs(vehicleId, limit: 20),
-      expenseRepo.getMonthlyTotal(vehicleId, now.year, now.month),
+      ledger.total(
+        vehicleId: vehicleId,
+        from: DateTime(now.year, now.month),
+        to: DateTime(now.year, now.month + 1),
+      ),
     ]);
 
     final vehicle = results[0] as Vehicle?;
@@ -104,6 +118,27 @@ class DashboardNotifier
       services: services,
       fuelLogs: fuelLogs,
     );
+
+    // Lifetime cost per km.
+    final readings = await ledger.odometerReadings(vehicleId);
+    final firstDay = readings.isEmpty ? now : readings.first.date;
+    final km = kmDriven(readings, firstDay, now.add(const Duration(days: 1)));
+    final lifetime = await ledger.total(
+        vehicleId: vehicleId,
+        from: DateTime(1970),
+        to: now.add(const Duration(days: 1)));
+
+    final recentMonths = [
+      for (var i = 3; i >= 1; i--)
+        MonthTotal(
+          DateTime(now.year, now.month - i),
+          await ledger.total(
+            vehicleId: vehicleId,
+            from: DateTime(now.year, now.month - i),
+            to: DateTime(now.year, now.month - i + 1),
+          ),
+        ),
+    ];
 
     final documents =
         await getIt<DocumentRepository>().getDocuments(vehicleId);
@@ -130,6 +165,8 @@ class DashboardNotifier
       avgMileage: avgMileage,
       nextService: nextService,
       monthTotal: monthTotal,
+      costPerKm: km != null && lifetime > 0 ? lifetime / km : null,
+      budgetSuggestion: suggestMonthlyBudget(recentMonths),
       recentActivity: activity.take(3).toList(),
       dueItems: due,
       remindersPermitted: permitted,

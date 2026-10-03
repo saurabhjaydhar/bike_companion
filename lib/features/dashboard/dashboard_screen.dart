@@ -21,7 +21,10 @@ import '../../main.dart';
 import '../../shared/widgets/reminder_permission.dart';
 import '../garage/garage_provider.dart';
 import 'dashboard_provider.dart';
+import '../expenses/budget_sheet.dart';
+import '../expenses/quick_add_sheet.dart';
 import 'widgets/coming_up_card.dart';
+import 'widgets/spending_card.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   final String vehicleId;
@@ -130,6 +133,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           ),
         ],
       ),
+      floatingActionButton: dashAsync.hasValue
+          ? FloatingActionButton(
+              onPressed: () => showQuickAddExpense(context, ref,
+                  vehicleId: widget.vehicleId),
+              backgroundColor: AppColors.primary,
+              tooltip: l.expensesAddTitle,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
       body: dashAsync.when(
         loading: () => const _DashboardSkeleton(),
         error: (e, _) => Center(child: Text('$e')),
@@ -162,6 +174,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
               const SizedBox(height: AppSpacing.lg),
 
+              // This month's spending against the budget
+              SpendingCard(
+                spent: dash.monthTotal,
+                budget: dash.vehicle.monthlyBudget,
+                onOpen: () => context.go('/expenses/${widget.vehicleId}'),
+                onSetBudget: () => showBudgetSheet(
+                  context,
+                  ref,
+                  vehicle: dash.vehicle,
+                  suggestion: dash.budgetSuggestion,
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
               // Quick stats 2×2
               _QuickStats(dash: dash),
 
@@ -186,7 +213,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                 SectionHeader(
                   title: l.dashboardRecentActivity,
                   actionLabel: l.dashboardSeeAll,
-                  onAction: () {},
+                  onAction: () =>
+                      context.go('/expenses/${widget.vehicleId}'),
                 ),
                 ...dash.recentActivity.map(
                   (a) => _ActivityTile(item: a, isDark: isDark),
@@ -300,14 +328,10 @@ class _HealthHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final gradeColor =
         HealthRing.gradeColor(dash.healthScore.grade, isDark: isDark);
-    final rupeeFormat = NumberFormat.currency(
-        locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l = context.l10n;
     final vehicle = dash.vehicle;
 
@@ -344,30 +368,6 @@ class _HealthHero extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppTextStyles.heading3.copyWith(color: gradeColor),
             ),
-            const SizedBox(height: AppSpacing.lg),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: (isDark ? Colors.white : Colors.black)
-                    .withValues(alpha: 0.04),
-                borderRadius: BorderRadius.circular(AppRadius.medium),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(l.dashboardThisMonth,
-                      style: AppTextStyles.label
-                          .copyWith(color: textSecondary)),
-                  const SizedBox(width: AppSpacing.md),
-                  Text(
-                    rupeeFormat.format(dash.monthTotal),
-                    style: AppTextStyles.metric
-                        .copyWith(color: textPrimary, fontSize: 22),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -385,9 +385,6 @@ class _QuickStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final insuranceDays = dash.vehicle.insuranceExpiry
-        ?.difference(now)
-        .inDays;
     final lastFuelDays = dash.lastFuelLog != null
         ? now.difference(dash.lastFuelLog!.date).inDays
         : null;
@@ -433,13 +430,11 @@ class _QuickStats extends StatelessWidget {
             children: [
               Expanded(
                 child: StatCard(
-                  label: l.expenseInsurance,
-                  value: insuranceDays != null
-                      ? l.dashboardDaysLeft(insuranceDays)
-                      : l.commonNotSet,
-                  trendPositive: insuranceDays == null ||
-                      insuranceDays > 30,
-                  icon: Icons.verified_outlined,
+                  label: l.expensesCostPerKm,
+                  value: dash.costPerKm != null
+                      ? '₹${dash.costPerKm!.toStringAsFixed(2)}'
+                      : '—',
+                  icon: Icons.route_outlined,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),

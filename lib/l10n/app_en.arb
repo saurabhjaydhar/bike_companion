@@ -548,5 +548,103 @@
       }
     }
   },
-  "settingsRemindersNone": "Nothing due soon"
+  "settingsRemindersNone": "Nothing due soon",
+  "expensesModeMonth": "Month",
+  "expensesModeYear": "Year",
+  "expensesVsLastYear": "{percent}% vs last year",
+  "@expensesVsLastYear": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "expensesAvgMonthly": "Avg / month",
+  "expensesCostPerKm": "Cost / km",
+  "expensesFuelPerKm": "Fuel / km",
+  "expensesNeedOdometer": "Log fuel or services with odometer readings to see cost per km.",
+  "expensesFromFuelLog": "Fuel log",
+  "expensesFromService": "Service",
+  "expensesDeleted": "Expense deleted",
+  "commonUndo": "Undo",
+  "budgetTitle": "Budget",
+  "budgetOf": "{spent} of {budget}",
+  "@budgetOf": {
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetLeft": "{amount} left",
+  "@budgetLeft": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetLeftOf": "{left} left of {budget}",
+  "@budgetLeftOf": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetOver": "{amount} over budget",
+  "@budgetOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetSet": "Set budget",
+  "budgetSetPrompt": "Set a budget to keep spending in check.",
+  "budgetSheetTitle": "Spending budget",
+  "budgetMonthly": "Monthly budget",
+  "budgetYearly": "Yearly budget",
+  "budgetSuggested": "Suggested from recent months: {amount}",
+  "@budgetSuggested": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetSave": "Save budget",
+  "budgetRemove": "Remove budget",
+  "budgetAlertTitle": "Budget alert — {vehicle}",
+  "@budgetAlertTitle": {
+    "placeholders": {
+      "vehicle": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetAlertMonth": "You've used {percent}% of this month's budget.",
+  "@budgetAlertMonth": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "budgetAlertYear": "You've used {percent}% of this year's budget.",
+  "@budgetAlertYear": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "garageSpending": "Spending",
+  "garageThisYear": "This year"
 }

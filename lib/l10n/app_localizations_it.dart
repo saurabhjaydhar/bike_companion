@@ -1045,4 +1045,111 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsRemindersNone => 'Niente in scadenza a breve';
+
+  @override
+  String get expensesModeMonth => 'Mese';
+
+  @override
+  String get expensesModeYear => 'Anno';
+
+  @override
+  String expensesVsLastYear(String percent) {
+    return '$percent% rispetto all\'anno scorso';
+  }
+
+  @override
+  String get expensesAvgMonthly => 'Media / mese';
+
+  @override
+  String get expensesCostPerKm => 'Costo / km';
+
+  @override
+  String get expensesFuelPerKm => 'Carburante / km';
+
+  @override
+  String get expensesNeedOdometer =>
+      'Registra rifornimenti o tagliandi con il chilometraggio per vedere il costo al km.';
+
+  @override
+  String get expensesFromFuelLog => 'Rifornimento';
+
+  @override
+  String get expensesFromService => 'Tagliando';
+
+  @override
+  String get expensesDeleted => 'Spesa eliminata';
+
+  @override
+  String get commonUndo => 'Annulla';
+
+  @override
+  String get budgetTitle => 'Budget';
+
+  @override
+  String budgetOf(String spent, String budget) {
+    return '$spent su $budget';
+  }
+
+  @override
+  String budgetLeft(String amount) {
+    return 'Restano $amount';
+  }
+
+  @override
+  String budgetLeftOf(String left, String budget) {
+    return 'Restano $left su $budget';
+  }
+
+  @override
+  String budgetOver(String amount) {
+    return '$amount oltre il budget';
+  }
+
+  @override
+  String get budgetSet => 'Imposta budget';
+
+  @override
+  String get budgetSetPrompt =>
+      'Imposta un budget per tenere sotto controllo le spese.';
+
+  @override
+  String get budgetSheetTitle => 'Budget di spesa';
+
+  @override
+  String get budgetMonthly => 'Budget mensile';
+
+  @override
+  String get budgetYearly => 'Budget annuale';
+
+  @override
+  String budgetSuggested(String amount) {
+    return 'Suggerito dai mesi recenti: $amount';
+  }
+
+  @override
+  String get budgetSave => 'Salva budget';
+
+  @override
+  String get budgetRemove => 'Rimuovi budget';
+
+  @override
+  String budgetAlertTitle(String vehicle) {
+    return 'Avviso budget — $vehicle';
+  }
+
+  @override
+  String budgetAlertMonth(int percent) {
+    return 'Hai usato il $percent% del budget di questo mese.';
+  }
+
+  @override
+  String budgetAlertYear(int percent) {
+    return 'Hai usato il $percent% del budget di quest\'anno.';
+  }
+
+  @override
+  String get garageSpending => 'Spese';
+
+  @override
+  String get garageThisYear => 'Quest\'anno';
 }

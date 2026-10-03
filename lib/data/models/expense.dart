@@ -60,15 +60,3 @@ class Expense {
   @override
   String toString() => 'Expense($id, $category, ₹$amount)';
 }
-
-class MonthSummary {
-  final int year;
-  final int month;
-  final double total;
-
-  const MonthSummary({
-    required this.year,
-    required this.month,
-    required this.total,
-  });
-}

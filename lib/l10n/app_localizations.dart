@@ -1843,6 +1843,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing due soon'**
   String get settingsRemindersNone;
+
+  /// No description provided for @expensesModeMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get expensesModeMonth;
+
+  /// No description provided for @expensesModeYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get expensesModeYear;
+
+  /// No description provided for @expensesVsLastYear.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% vs last year'**
+  String expensesVsLastYear(String percent);
+
+  /// No description provided for @expensesAvgMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg / month'**
+  String get expensesAvgMonthly;
+
+  /// No description provided for @expensesCostPerKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost / km'**
+  String get expensesCostPerKm;
+
+  /// No description provided for @expensesFuelPerKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel / km'**
+  String get expensesFuelPerKm;
+
+  /// No description provided for @expensesNeedOdometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Log fuel or services with odometer readings to see cost per km.'**
+  String get expensesNeedOdometer;
+
+  /// No description provided for @expensesFromFuelLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel log'**
+  String get expensesFromFuelLog;
+
+  /// No description provided for @expensesFromService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get expensesFromService;
+
+  /// No description provided for @expensesDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense deleted'**
+  String get expensesDeleted;
+
+  /// No description provided for @commonUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get commonUndo;
+
+  /// No description provided for @budgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budgetTitle;
+
+  /// No description provided for @budgetOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{spent} of {budget}'**
+  String budgetOf(String spent, String budget);
+
+  /// No description provided for @budgetLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left'**
+  String budgetLeft(String amount);
+
+  /// No description provided for @budgetLeftOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{left} left of {budget}'**
+  String budgetLeftOf(String left, String budget);
+
+  /// No description provided for @budgetOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} over budget'**
+  String budgetOver(String amount);
+
+  /// No description provided for @budgetSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set budget'**
+  String get budgetSet;
+
+  /// No description provided for @budgetSetPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a budget to keep spending in check.'**
+  String get budgetSetPrompt;
+
+  /// No description provided for @budgetSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending budget'**
+  String get budgetSheetTitle;
+
+  /// No description provided for @budgetMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly budget'**
+  String get budgetMonthly;
+
+  /// No description provided for @budgetYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly budget'**
+  String get budgetYearly;
+
+  /// No description provided for @budgetSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested from recent months: {amount}'**
+  String budgetSuggested(String amount);
+
+  /// No description provided for @budgetSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save budget'**
+  String get budgetSave;
+
+  /// No description provided for @budgetRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove budget'**
+  String get budgetRemove;
+
+  /// No description provided for @budgetAlertTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget alert — {vehicle}'**
+  String budgetAlertTitle(String vehicle);
+
+  /// No description provided for @budgetAlertMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used {percent}% of this month\'s budget.'**
+  String budgetAlertMonth(int percent);
+
+  /// No description provided for @budgetAlertYear.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used {percent}% of this year\'s budget.'**
+  String budgetAlertYear(int percent);
+
+  /// No description provided for @garageSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending'**
+  String get garageSpending;
+
+  /// No description provided for @garageThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get garageThisYear;
 }
 
 class _AppLocalizationsDelegate

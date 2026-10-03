@@ -9,12 +9,14 @@ import '../../data/models/service_record.dart';
 import '../../data/models/vehicle.dart';
 import '../../data/repositories/document_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
+import '../../data/repositories/ledger_repository.dart';
 import '../../data/repositories/service_repository.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../l10n/l10n.dart';
 import 'health_score_service.dart';
 import 'notification_service.dart';
 import 'reminder_planner.dart';
+import 'spending.dart';
 
 /// Keeps scheduled reminders in step with the data: expiry and service-date
 /// reminders are re-planned after every change, and service items are
@@ -25,6 +27,7 @@ class ReminderService {
   final ServiceRepository _services;
   final FuelRepository _fuel;
   final HealthScoreService _health;
+  final LedgerRepository _ledger;
 
   ReminderService(
     this._vehicles,
@@ -32,10 +35,12 @@ class ReminderService {
     this._services,
     this._fuel,
     this._health,
+    this._ledger,
   );
 
   static const _mutedKey = 'reminders_muted_vehicles';
   static const _serviceDueKey = 'reminders_service_due_notified';
+  static const _budgetKey = 'reminders_budget_notified';
 
   /// iOS keeps at most 64 pending notifications; leave a little room.
   static const _maxScheduled = 60;
@@ -110,6 +115,48 @@ class ReminderService {
     }
 
     await _notifyServiceDue(vehicles, services, muted, l);
+    await _notifyBudgets(vehicles, muted, l);
+  }
+
+  /// Notifies once per period when spending reaches 80 % and 100 % of a
+  /// budget. If both are reached at once, only 100 % is sent.
+  Future<void> _notifyBudgets(
+    List<Vehicle> vehicles,
+    Set<String> muted,
+    AppLocalizations l,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final notified = (prefs.getStringList(_budgetKey) ?? const []).toSet();
+    final current = <String>{};
+    final now = DateTime.now();
+
+    for (final v in vehicles) {
+      if (muted.contains(v.id)) continue;
+      for (final (period, budget) in [
+        (SpendPeriod.current(PeriodKind.month, now), v.monthlyBudget),
+        (SpendPeriod.current(PeriodKind.year, now), v.yearlyBudget),
+      ]) {
+        final spent = await _ledger.total(
+            vehicleId: v.id, from: period.start, to: period.end);
+        final reached = budgetThresholdsReached(spent, budget);
+        if (reached.isEmpty) continue;
+        current.addAll([for (final pct in reached) '${v.id}|${period.key}|$pct']);
+        final top = reached.last;
+        if (notified.contains('${v.id}|${period.key}|$top')) continue;
+        await NotificationService.showNow(
+          id: notificationId('budget:${v.id}|${period.key}|$top'),
+          title: l.budgetAlertTitle(v.name),
+          body: period.kind == PeriodKind.month
+              ? l.budgetAlertMonth(top)
+              : l.budgetAlertYear(top),
+          payload:
+              ReminderPayload(kind: DueKind.budget, vehicleId: v.id).encode(),
+        );
+      }
+    }
+    // Only this month's and year's keys are kept, so a new period starts
+    // fresh, and a threshold no longer reached can alert again.
+    await prefs.setStringList(_budgetKey, current.toList());
   }
 
   /// Notifies once when a logged service item starts needing attention, and

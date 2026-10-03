@@ -177,6 +177,7 @@ class ComingUpCard extends StatelessWidget {
     DueKind.licence => Icons.badge_rounded,
     DueKind.document => Icons.insert_drive_file_rounded,
     DueKind.service => Icons.build_rounded,
+    DueKind.budget => Icons.savings_rounded,
   };
 }
 

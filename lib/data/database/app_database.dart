@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class AppDatabase {
-  static const int _version = 2;
+  static const int _version = 3;
   static const String _name = 'garajo.db';
 
   /// Database file of the app before the vehicle rename. Its data isn't
@@ -65,7 +65,9 @@ class AppDatabase {
         vehicle_class TEXT,
         engine_number TEXT,
         chassis_number TEXT,
-        reg_validity INTEGER
+        reg_validity INTEGER,
+        monthly_budget REAL,
+        yearly_budget REAL
       )
     ''');
 
@@ -153,6 +155,11 @@ class AppDatabase {
     if (oldVersion < 2) {
       // v2: registration validity, for RC renewal reminders.
       await db.execute('ALTER TABLE vehicles ADD COLUMN reg_validity INTEGER');
+    }
+    if (oldVersion < 3) {
+      // v3: spending budgets.
+      await db.execute('ALTER TABLE vehicles ADD COLUMN monthly_budget REAL');
+      await db.execute('ALTER TABLE vehicles ADD COLUMN yearly_budget REAL');
     }
   }
 

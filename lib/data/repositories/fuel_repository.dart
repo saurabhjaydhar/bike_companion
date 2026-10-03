@@ -1,6 +1,5 @@
 import '../database/app_database.dart';
 import '../models/fuel_log.dart';
-import '../models/expense.dart';
 import '../../core/services/sync_service.dart';
 
 class FuelRepository {
@@ -58,41 +57,5 @@ class FuelRepository {
     final values =
         rows.map((r) => r['mileage_calculated'] as double).toList();
     return values.reduce((a, b) => a + b) / values.length;
-  }
-
-  Future<double> getMonthlyFuelCost(
-      String vehicleId, int year, int month) async {
-    final db = await _db.db;
-    final start = DateTime(year, month).millisecondsSinceEpoch;
-    final end = DateTime(year, month + 1).millisecondsSinceEpoch;
-    final result = await db.rawQuery(
-      'SELECT COALESCE(SUM(amount), 0) as total FROM fuel_logs '
-      'WHERE vehicle_id = ? AND date >= ? AND date < ? AND amount IS NOT NULL',
-      [vehicleId, start, end],
-    );
-    return (result.first['total'] as num).toDouble();
-  }
-
-  Future<List<MonthSummary>> getSixMonthFuelTrend(String vehicleId) async {
-    final db = await _db.db;
-    final now = DateTime.now();
-    final summaries = <MonthSummary>[];
-    for (int i = 5; i >= 0; i--) {
-      final month = DateTime(now.year, now.month - i);
-      final start = DateTime(month.year, month.month).millisecondsSinceEpoch;
-      final end =
-          DateTime(month.year, month.month + 1).millisecondsSinceEpoch;
-      final result = await db.rawQuery(
-        'SELECT COALESCE(SUM(amount), 0) as total FROM fuel_logs '
-        'WHERE vehicle_id = ? AND date >= ? AND date < ? AND amount IS NOT NULL',
-        [vehicleId, start, end],
-      );
-      summaries.add(MonthSummary(
-        year: month.year,
-        month: month.month,
-        total: (result.first['total'] as num).toDouble(),
-      ));
-    }
-    return summaries;
   }
 }

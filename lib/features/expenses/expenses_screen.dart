@@ -1,30 +1,24 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:uuid/uuid.dart';
+
 import '../../core/constants/app_constants.dart';
+import '../../core/services/spending.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/expense.dart';
+import '../../data/models/ledger_entry.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
+import 'budget_sheet.dart';
+import 'expense_style.dart';
 import 'expenses_provider.dart';
-
-const _uuid = Uuid();
-
-const _categoryColors = <String, Color>{
-  'fuel': AppColors.primary,
-  'service': Color(0xFF22D98E),
-  'parts': Color(0xFFA78BFA),
-  'insurance': Color(0xFFFFC233),
-  'parking': AppColors.accent,
-  'accessories': Color(0xFFFF4FD8),
-  'fine': Color(0xFFFF4D6A),
-  'other': Color(0xFF8B93A7),
-};
+import 'quick_add_sheet.dart';
 
 class ExpensesScreen extends ConsumerWidget {
   final String vehicleId;
@@ -33,20 +27,14 @@ class ExpensesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stateAsync = ref.watch(expensesProvider(vehicleId));
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final rupee = NumberFormat.currency(
-        locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+    final notifier = ref.read(expensesProvider(vehicleId).notifier);
     final l = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l.expensesTitle),
         actions: [
-          if (stateAsync.valueOrNull?.expenses.isNotEmpty ?? false)
+          if (stateAsync.valueOrNull?.summary.entries.isNotEmpty ?? false)
             IconButton(
               icon: const Icon(Icons.ios_share_rounded),
               tooltip: l.expensesExportCsv,
@@ -55,219 +43,231 @@ class ExpensesScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddExpense(context, ref, vehicleId),
+        onPressed: () =>
+            showQuickAddExpense(context, ref, vehicleId: vehicleId),
         backgroundColor: AppColors.primary,
+        tooltip: l.expensesAddTitle,
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: stateAsync.when(
+        skipLoadingOnReload: true,
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('$e')),
-        data: (s) => RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(expensesProvider(vehicleId));
+        data: (s) => GestureDetector(
+          // Swipe left/right to move between months or years.
+          onHorizontalDragEnd: (d) {
+            final v = d.primaryVelocity ?? 0;
+            if (v > 300) notifier.previous();
+            if (v < -300) notifier.next();
           },
-          child: ListView(
-            padding: const EdgeInsets.only(bottom: 100),
-            children: [
-              // Month selector
-              _MonthSelector(
-                year: s.year,
-                month: s.month,
-                onPrev: () =>
-                    ref.read(expensesProvider(vehicleId).notifier).prevMonth(),
-                onNext: () =>
-                    ref.read(expensesProvider(vehicleId).notifier).nextMonth(),
-              ),
-
-              // Summary card
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg, vertical: AppSpacing.md),
-                child: _SummaryCard(
-                  total: s.total,
-                  prevTotal: s.prevMonthTotal,
-                  breakdown: s.breakdown,
-                  isDark: isDark,
-                ),
-              ),
-
-              // 6-month bar chart
-              if (s.sixMonthTrend.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg),
-                  child: _BarChart(trend: s.sixMonthTrend, isDark: isDark),
-                ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // Category breakdown
-              if (s.breakdown.isNotEmpty) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg),
-                  child: Text(l.expensesByCategory,
-                      style: AppTextStyles.heading3
-                          .copyWith(color: textPrimary)),
-                ),
+          child: RefreshIndicator(
+            onRefresh: notifier.reload,
+            child: ListView(
+              padding: const EdgeInsets.only(bottom: 100),
+              children: [
                 const SizedBox(height: AppSpacing.sm),
-                ...s.breakdown.entries
-                    .toList()
-                    .sorted((a, b) => b.value.compareTo(a.value))
-                    .map((e) => _CategoryRow(
-                          category: e.key,
-                          amount: e.value,
-                          total: s.total,
-                          isDark: isDark,
-                        )),
-                const SizedBox(height: AppSpacing.xl),
+                Center(
+                  child: SegmentedButton<PeriodKind>(
+                    segments: [
+                      ButtonSegment(
+                          value: PeriodKind.month,
+                          label: Text(l.expensesModeMonth)),
+                      ButtonSegment(
+                          value: PeriodKind.year,
+                          label: Text(l.expensesModeYear)),
+                    ],
+                    selected: {s.period.kind},
+                    onSelectionChanged: (k) => notifier.setKind(k.single),
+                  ),
+                ),
+                _PeriodSelector(
+                  period: s.period,
+                  onPrev: notifier.previous,
+                  onNext: notifier.next,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+                  child: _Headline(summary: s.summary),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: _BudgetBar(
+                    state: s,
+                    onEdit: () => showBudgetSheet(
+                      context,
+                      ref,
+                      vehicle: s.vehicle,
+                      suggestion: suggestMonthlyBudget(s.recentMonths),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: _StatsRow(summary: s.summary),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                if (s.summary.chart.any((m) => m.total > 0))
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    child: _BarChart(
+                      summary: s.summary,
+                      onTapMonth: notifier.showMonth,
+                    ),
+                  ),
+                const SizedBox(height: AppSpacing.lg),
+                if (s.summary.byCategory.isNotEmpty) ...[
+                  _SectionTitle(l.expensesByCategory),
+                  for (final e in (s.summary.byCategory.entries.toList()
+                    ..sort((a, b) => b.value.compareTo(a.value))))
+                    _CategoryRow(
+                      category: e.key,
+                      amount: e.value,
+                      total: s.summary.total,
+                    ),
+                  const SizedBox(height: AppSpacing.xl),
+                ],
+                _SectionTitle(l.expensesTransactions),
+                if (s.summary.entries.isEmpty)
+                  EmptyState(
+                    icon: Icons.receipt_long_rounded,
+                    heading: l.expensesEmptyTitle,
+                    body: l.expensesEmptyBody,
+                  )
+                else
+                  ..._entryTiles(context, ref, s.summary.entries),
               ],
-
-              // Transactions
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Text(l.expensesTransactions,
-                    style: AppTextStyles.heading3
-                        .copyWith(color: textPrimary)),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-
-              if (s.expenses.isEmpty)
-                EmptyState(
-                  icon: Icons.receipt_long_rounded,
-                  heading: l.expensesEmptyTitle,
-                  body: l.expensesEmptyBody,
-                )
-              else
-                ..._groupByDate(s.expenses).entries
-                    .toList()
-                    .sorted((a, b) => b.key.compareTo(a.key))
-                    .expand((entry) => [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                AppSpacing.lg, AppSpacing.md,
-                                AppSpacing.lg, AppSpacing.sm),
-                            child: Text(
-                              DateFormat('d MMMM', l.localeName).format(entry.key),
-                              style: AppTextStyles.captionMedium
-                                  .copyWith(color: textSecondary),
-                            ),
-                          ),
-                          ...entry.value.map((exp) => Dismissible(
-                                key: Key(exp.id),
-                                direction: DismissDirection.endToStart,
-                                background: Container(
-                                  alignment: AlignmentDirectional.centerEnd,
-                                  padding: const EdgeInsetsDirectional.only(
-                                      end: AppSpacing.xl),
-                                  color: AppColors.danger,
-                                  child: const Icon(
-                                      Icons.delete_outline_rounded,
-                                      color: Colors.white),
-                                ),
-                                onDismissed: (_) => ref
-                                    .read(expensesProvider(vehicleId).notifier)
-                                    .deleteExpense(exp.id),
-                                child: ListTile(
-                                  leading: Container(
-                                    width: 36,
-                                    height: 36,
-                                    decoration: BoxDecoration(
-                                      color: (_categoryColors[exp.category] ??
-                                              AppColors.textSecondary)
-                                          .withValues(alpha: 0.12),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      _categoryIcon(exp.category),
-                                      size: 18,
-                                      color: _categoryColors[exp.category] ??
-                                          AppColors.textSecondary,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    exp.note?.isNotEmpty == true
-                                        ? exp.note!
-                                        : l.expenseCategoryLabel(exp.category),
-                                    style: AppTextStyles.bodyMedium
-                                        .copyWith(color: textPrimary),
-                                  ),
-                                  subtitle: Text(
-                                    l.expenseCategoryLabel(exp.category),
-                                    style: AppTextStyles.caption
-                                        .copyWith(color: textSecondary),
-                                  ),
-                                  trailing: Text(
-                                    rupee.format(exp.amount),
-                                    style: AppTextStyles.bodySemiBold
-                                        .copyWith(color: textPrimary),
-                                  ),
-                                ),
-                              )),
-                        ]),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Map<DateTime, List<Expense>> _groupByDate(List<Expense> expenses) {
-    final map = <DateTime, List<Expense>>{};
-    for (final e in expenses) {
-      final key = DateTime(e.date.year, e.date.month, e.date.day);
-      map.putIfAbsent(key, () => []).add(e);
+  List<Widget> _entryTiles(
+    BuildContext context,
+    WidgetRef ref,
+    List<LedgerEntry> entries,
+  ) {
+    final l = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final tiles = <Widget>[];
+    DateTime? day;
+    for (final e in entries) {
+      final d = DateUtils.dateOnly(e.date);
+      if (d != day) {
+        day = d;
+        tiles.add(Padding(
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm),
+          child: Text(DateFormat('d MMMM', l.localeName).format(d),
+              style: AppTextStyles.captionMedium.copyWith(color: textSecondary)),
+        ));
+      }
+      final tile = _EntryTile(entry: e);
+      if (e.source != LedgerSource.expense) {
+        tiles.add(tile);
+        continue;
+      }
+      tiles.add(Dismissible(
+        key: ValueKey(e.id),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          alignment: AlignmentDirectional.centerEnd,
+          padding: const EdgeInsetsDirectional.only(end: AppSpacing.xl),
+          color: AppColors.danger,
+          child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
+        ),
+        onDismissed: (_) => _deleteWithUndo(context, ref, e),
+        child: tile,
+      ));
     }
-    return map;
+    return tiles;
   }
 
-  IconData _categoryIcon(String cat) {
-    switch (cat) {
-      case 'fuel': return Icons.local_gas_station_rounded;
-      case 'service': return Icons.build_rounded;
-      case 'parts': return Icons.hardware_rounded;
-      case 'insurance': return Icons.verified_rounded;
-      case 'parking': return Icons.local_parking_rounded;
-      case 'accessories': return Icons.shopping_bag_rounded;
-      case 'fine': return Icons.gavel_rounded;
-      default: return Icons.receipt_rounded;
-    }
+  Future<void> _deleteWithUndo(
+    BuildContext context,
+    WidgetRef ref,
+    LedgerEntry e,
+  ) async {
+    final notifier = ref.read(expensesProvider(vehicleId).notifier);
+    final messenger = ScaffoldMessenger.of(context);
+    final l = context.l10n;
+    await notifier.deleteExpense(e.id);
+    messenger.showSnackBar(SnackBar(
+      content: Text(l.expensesDeleted),
+      action: SnackBarAction(
+        label: l.commonUndo,
+        onPressed: () => notifier.addExpense(Expense(
+          id: e.id,
+          vehicleId: e.vehicleId,
+          date: e.date,
+          category: e.category,
+          amount: e.amount,
+          note: e.note,
+        )),
+      ),
+    ));
   }
 
   void _exportCsv(AppLocalizations l, ExpensesState s) {
-    final monthName = DateFormat('MMMM yyyy', l.localeName)
-        .format(DateTime(s.year, s.month));
-    final buf = StringBuffer();
-    buf.writeln(l.expensesCsvHeader);
-    for (final e in s.expenses) {
+    final period = s.period;
+    final label = period.kind == PeriodKind.year
+        ? '${period.year}'
+        : DateFormat('MMMM yyyy', l.localeName).format(period.start);
+    final buf = StringBuffer()..writeln(l.expensesCsvHeader);
+    for (final e in s.summary.entries.reversed) {
       final date = DateFormat('d MMM y', l.localeName).format(e.date);
-      final note = (e.note ?? '').replaceAll(',', ' ');
       final category = l.expenseCategoryLabel(e.category).replaceAll(',', ' ');
+      final note = _noteFor(l, e).replaceAll(',', ' ');
       buf.writeln('$date,$category,${e.amount.toStringAsFixed(0)},$note');
     }
-    Share.share(
-      buf.toString(),
-      subject: l.expensesCsvSubject(monthName),
+    Share.share(buf.toString(), subject: l.expensesCsvSubject(label));
+  }
+}
+
+/// What a ledger entry is about: the expense note, the fuel station, or the
+/// service done.
+String _noteFor(AppLocalizations l, LedgerEntry e) => switch (e.source) {
+  LedgerSource.expense => e.note ?? '',
+  LedgerSource.fuel => e.note ?? l.expensesFromFuelLog,
+  LedgerSource.service => l.serviceTypeLabel(e.note ?? ''),
+};
+
+class _SectionTitle extends StatelessWidget {
+  final String text;
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.sm),
+      child: Text(text,
+          style: AppTextStyles.heading3.copyWith(
+              color:
+                  isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)),
     );
   }
 }
 
-extension _SortedList<T> on List<T> {
-  List<T> sorted(int Function(T, T) compare) => [...this]..sort(compare);
-}
-
 // ---------------------------------------------------------------------------
-// Month selector
+// Period selector
 // ---------------------------------------------------------------------------
-class _MonthSelector extends StatelessWidget {
-  final int year;
-  final int month;
+class _PeriodSelector extends StatelessWidget {
+  final SpendPeriod period;
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
-  const _MonthSelector({
-    required this.year,
-    required this.month,
+  const _PeriodSelector({
+    required this.period,
     required this.onPrev,
     required this.onNext,
   });
@@ -275,8 +275,11 @@ class _MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final now = DateTime.now();
-    final isCurrentMonth = year == now.year && month == now.month;
+    final l = context.l10n;
+    final canGoNext = !period.next.isFuture(DateTime.now());
+    final label = period.kind == PeriodKind.year
+        ? '${period.year}'
+        : DateFormat('MMMM y', l.localeName).format(period.start);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -285,20 +288,14 @@ class _MonthSelector extends StatelessWidget {
           icon: const Icon(Icons.chevron_left_rounded),
           onPressed: onPrev,
         ),
-        Text(
-          DateFormat('MMMM y', context.l10n.localeName)
-              .format(DateTime(year, month)),
-          style: AppTextStyles.heading3.copyWith(
-              color: isDark
-                  ? AppColors.textPrimaryDark
-                  : AppColors.textPrimary),
-        ),
+        Text(label,
+            style: AppTextStyles.heading3.copyWith(
+                color: isDark
+                    ? AppColors.textPrimaryDark
+                    : AppColors.textPrimary)),
         IconButton(
-          icon: Icon(Icons.chevron_right_rounded,
-              color: isCurrentMonth
-                  ? (isDark ? AppColors.borderDark : AppColors.border)
-                  : null),
-          onPressed: isCurrentMonth ? null : onNext,
+          icon: const Icon(Icons.chevron_right_rounded),
+          onPressed: canGoNext ? onNext : null,
         ),
       ],
     );
@@ -306,35 +303,26 @@ class _MonthSelector extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Summary card with donut chart
+// Headline: total, change vs previous period, category donut
 // ---------------------------------------------------------------------------
-class _SummaryCard extends StatelessWidget {
-  final double total;
-  final double? prevTotal;
-  final Map<String, double> breakdown;
-  final bool isDark;
-
-  const _SummaryCard({
-    required this.total,
-    required this.prevTotal,
-    required this.breakdown,
-    required this.isDark,
-  });
+class _Headline extends StatelessWidget {
+  final SpendingSummary summary;
+  const _Headline({required this.summary});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final rupee = NumberFormat.currency(
-        locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l = context.l10n;
-
-    final diff = prevTotal != null && prevTotal! > 0
-        ? (total - prevTotal!) / prevTotal! * 100
-        : null;
-    final isLess = diff != null && diff < 0;
+    final change = summary.changePercent;
+    final down = change != null && change < 0;
+    final changeColour = down
+        ? (isDark ? AppColors.successDark : AppColors.success)
+        : (isDark ? AppColors.dangerDark : AppColors.danger);
+    final pct = change?.abs().toStringAsFixed(0);
 
     return HudPanel(
       glow: AppColors.primary,
@@ -346,39 +334,33 @@ class _SummaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l.expensesTotalSpent,
-                    style:
-                        AppTextStyles.label.copyWith(color: textSecondary)),
+                    style: AppTextStyles.label.copyWith(color: textSecondary)),
                 const SizedBox(height: AppSpacing.xs),
-                Text(rupee.format(total),
-                    style: AppTextStyles.metric
-                        .copyWith(color: textPrimary, fontSize: 32)),
-                if (diff != null) ...[
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(rupees(summary.total),
+                      style: AppTextStyles.metric
+                          .copyWith(color: textPrimary, fontSize: 32)),
+                ),
+                if (pct != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Row(children: [
                     Icon(
-                      isLess
+                      down
                           ? Icons.trending_down_rounded
                           : Icons.trending_up_rounded,
                       size: 14,
-                      color: isLess
-                          ? (isDark
-                              ? AppColors.successDark
-                              : AppColors.success)
-                          : (isDark
-                              ? AppColors.dangerDark
-                              : AppColors.danger),
+                      color: changeColour,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      l.expensesVsLastMonth(diff.abs().toStringAsFixed(0)),
-                      style: AppTextStyles.captionMedium.copyWith(
-                        color: isLess
-                            ? (isDark
-                                ? AppColors.successDark
-                                : AppColors.success)
-                            : (isDark
-                                ? AppColors.dangerDark
-                                : AppColors.danger),
+                    Flexible(
+                      child: Text(
+                        summary.period.kind == PeriodKind.year
+                            ? l.expensesVsLastYear(pct)
+                            : l.expensesVsLastMonth(pct),
+                        style: AppTextStyles.captionMedium
+                            .copyWith(color: changeColour),
                       ),
                     ),
                   ]),
@@ -386,7 +368,7 @@ class _SummaryCard extends StatelessWidget {
               ],
             ),
           ),
-          if (breakdown.isNotEmpty)
+          if (summary.byCategory.isNotEmpty)
             SizedBox(
               width: 80,
               height: 80,
@@ -394,15 +376,15 @@ class _SummaryCard extends StatelessWidget {
                 PieChartData(
                   sectionsSpace: 2,
                   centerSpaceRadius: 24,
-                  sections: breakdown.entries
-                      .map((e) => PieChartSectionData(
-                            color: _categoryColors[e.key] ??
-                                AppColors.textSecondary,
-                            value: e.value,
-                            radius: 20,
-                            showTitle: false,
-                          ))
-                      .toList(),
+                  sections: [
+                    for (final e in summary.byCategory.entries)
+                      PieChartSectionData(
+                        color: categoryColour(e.key),
+                        value: e.value,
+                        radius: 20,
+                        showTitle: false,
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -413,75 +395,266 @@ class _SummaryCard extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// 6-month bar chart
+// Budget bar
 // ---------------------------------------------------------------------------
-class _BarChart extends StatelessWidget {
-  final List<dynamic> trend;
-  final bool isDark;
+class _BudgetBar extends StatelessWidget {
+  final ExpensesState state;
+  final VoidCallback onEdit;
 
-  const _BarChart({required this.trend, required this.isDark});
+  const _BudgetBar({required this.state, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final maxVal =
-        trend.fold(0.0, (m, s) => s.total > m ? s.total : m);
+    final l = context.l10n;
+    final budget = state.budget;
+
+    if (budget == null) {
+      return HudPanel(
+        onTap: onEdit,
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        child: Row(
+          children: [
+            const Icon(Icons.savings_outlined, color: AppColors.accent),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(l.budgetSetPrompt,
+                  style: AppTextStyles.caption.copyWith(color: textSecondary)),
+            ),
+            TextButton(onPressed: onEdit, child: Text(l.budgetSet)),
+          ],
+        ),
+      );
+    }
+
+    final progress = BudgetProgress(state.summary.total, budget);
+    final colour = switch (progress.level) {
+      BudgetLevel.ok => AppColors.success,
+      BudgetLevel.near => AppColors.warning,
+      BudgetLevel.over => AppColors.danger,
+    };
+    return HudPanel(
+      onTap: onEdit,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.budgetOf(rupees(progress.spent), rupees(budget)),
+                  style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
+                ),
+              ),
+              Text(
+                progress.remaining >= 0
+                    ? l.budgetLeft(rupees(progress.remaining))
+                    : l.budgetOver(rupees(-progress.remaining)),
+                style: AppTextStyles.captionMedium.copyWith(color: colour),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Icon(Icons.edit_outlined, size: 16, color: textSecondary),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.full),
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: progress.ratio.clamp(0, 1)),
+              duration: AppDuration.slow,
+              builder: (_, value, _) => LinearProgressIndicator(
+                value: value,
+                minHeight: 8,
+                color: colour,
+                backgroundColor:
+                    isDark ? AppColors.borderDark : AppColors.border,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Average / cost per km / fuel per km
+// ---------------------------------------------------------------------------
+class _StatsRow extends StatelessWidget {
+  final SpendingSummary summary;
+  const _StatsRow({required this.summary});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    String perKm(double? v) => v == null ? '—' : '₹${v.toStringAsFixed(2)}';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _MiniStat(
+                    label: l.expensesAvgMonthly,
+                    value: rupees(summary.averageMonthly)),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _MiniStat(
+                    label: l.expensesCostPerKm,
+                    value: perKm(summary.costPerKm)),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _MiniStat(
+                    label: l.expensesFuelPerKm,
+                    value: perKm(summary.fuelCostPerKm)),
+              ),
+            ],
+          ),
+        ),
+        if (summary.costPerKm == null && summary.total > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.xs),
+            child: Text(l.expensesNeedOdometer,
+                style: AppTextStyles.caption.copyWith(color: textSecondary)),
+          ),
+      ],
+    );
+  }
+}
+
+class _MiniStat extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _MiniStat({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return HudPanel(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md, vertical: AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.caption.copyWith(
+                  color: isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textSecondary)),
+          const SizedBox(height: 2),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(value,
+                style: AppTextStyles.bodySemiBold.copyWith(
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimary)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Monthly bars — tap one to open that month
+// ---------------------------------------------------------------------------
+class _BarChart extends StatelessWidget {
+  final SpendingSummary summary;
+  final void Function(DateTime month) onTapMonth;
+
+  const _BarChart({required this.summary, required this.onTapMonth});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary =
+        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final l = context.l10n;
+    final chart = summary.chart;
+    final maxVal = chart.fold(0.0, (m, s) => s.total > m ? s.total : m);
+    final period = summary.period;
+    final yearView = period.kind == PeriodKind.year;
+    bool selected(DateTime m) =>
+        !yearView && m.year == period.year && m.month == period.month;
 
     return SizedBox(
-      height: 140,
+      height: 150,
       child: BarChart(
         BarChartData(
           maxY: maxVal * 1.2,
-          gridData: FlGridData(show: false),
+          gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
+          barTouchData: BarTouchData(
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipItem: (group, _, rod, _) => BarTooltipItem(
+                rupees(rod.toY),
+                AppTextStyles.captionMedium.copyWith(color: Colors.white),
+              ),
+            ),
+            touchCallback: (event, response) {
+              final index = response?.spot?.touchedBarGroupIndex;
+              if (event is FlTapUpEvent && index != null) {
+                HapticFeedback.selectionClick();
+                onTapMonth(chart[index].month);
+              }
+            },
+          ),
           titlesData: FlTitlesData(
-            leftTitles:
-                AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles:
-                AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles:
-                AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(),
+            rightTitles: const AxisTitles(),
+            topTitles: const AxisTitles(),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (val, meta) {
                   final i = val.toInt();
-                  if (i < 0 || i >= trend.length) return const SizedBox();
+                  if (i < 0 || i >= chart.length) return const SizedBox();
+                  final format = yearView ? 'MMMMM' : 'MMM';
                   return Text(
-                    DateFormat('MMM', context.l10n.localeName).format(
-                        DateTime(trend[i].year, trend[i].month)),
-                    style: AppTextStyles.label.copyWith(
-                        color: textSecondary, fontSize: 10),
+                    DateFormat(format, l.localeName).format(chart[i].month),
+                    style: AppTextStyles.label
+                        .copyWith(color: textSecondary, fontSize: 10),
                   );
                 },
               ),
             ),
           ),
-          barGroups: trend.asMap().entries.map((e) {
-            final isLast = e.key == trend.length - 1;
-            final isMax = e.value.total == maxVal && maxVal > 0;
-            return BarChartGroupData(
-              x: e.key,
-              barRods: [
-                BarChartRodData(
-                  toY: e.value.total,
-                  color: isLast
-                      ? AppColors.primary
-                      : isMax
-                          ? (isDark
-                              ? AppColors.dangerDark
-                              : AppColors.danger)
-                          : (isDark
-                              ? AppColors.borderDark
-                              : AppColors.border),
-                  width: 24,
-                  borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(4)),
-                ),
-              ],
-            );
-          }).toList(),
+          barGroups: [
+            for (final (i, m) in chart.indexed)
+              BarChartGroupData(
+                x: i,
+                barRods: [
+                  BarChartRodData(
+                    toY: m.total,
+                    color: selected(m.month) || yearView
+                        ? AppColors.primary
+                        : (isDark ? AppColors.borderDark : AppColors.border),
+                    width: yearView ? 14 : 24,
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(4)),
+                  ),
+                ],
+              ),
+          ],
         ),
       ),
     );
@@ -495,26 +668,22 @@ class _CategoryRow extends StatelessWidget {
   final String category;
   final double amount;
   final double total;
-  final bool isDark;
 
   const _CategoryRow({
     required this.category,
     required this.amount,
     required this.total,
-    required this.isDark,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final color =
-        _categoryColors[category] ?? AppColors.textSecondary;
+    final colour = categoryColour(category);
     final pct = total > 0 ? amount / total : 0.0;
-    final rupee = NumberFormat.currency(
-        locale: 'en_IN', symbol: '₹', decimalDigits: 0);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -527,24 +696,21 @@ class _CategoryRow extends StatelessWidget {
                   width: 10,
                   height: 10,
                   decoration:
-                      BoxDecoration(color: color, shape: BoxShape.circle)),
+                      BoxDecoration(color: colour, shape: BoxShape.circle)),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(context.l10n.expenseCategoryLabel(category),
                     style:
                         AppTextStyles.bodyMedium.copyWith(color: textPrimary)),
               ),
-              Text(rupee.format(amount),
-                  style: AppTextStyles.bodyMedium
-                      .copyWith(color: textPrimary)),
+              Text(rupees(amount),
+                  style: AppTextStyles.bodyMedium.copyWith(color: textPrimary)),
               const SizedBox(width: AppSpacing.sm),
               SizedBox(
                 width: 36,
-                child: Text(
-                  '${(pct * 100).round()}%',
-                  style: AppTextStyles.caption.copyWith(color: textSecondary),
-                  textAlign: TextAlign.end,
-                ),
+                child: Text('${(pct * 100).round()}%',
+                    style: AppTextStyles.caption.copyWith(color: textSecondary),
+                    textAlign: TextAlign.end),
               ),
             ],
           ),
@@ -553,7 +719,7 @@ class _CategoryRow extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.full),
             child: LinearProgressIndicator(
               value: pct,
-              color: color,
+              color: colour,
               backgroundColor:
                   isDark ? AppColors.borderDark : AppColors.border,
               minHeight: 4,
@@ -566,180 +732,71 @@ class _CategoryRow extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Add expense bottom sheet
+// One ledger entry
 // ---------------------------------------------------------------------------
-void _showAddExpense(
-    BuildContext context, WidgetRef ref, String vehicleId) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadius.large)),
-    ),
-    builder: (_) =>
-        _AddExpenseSheet(vehicleId: vehicleId, ref: ref),
-  );
-}
-
-class _AddExpenseSheet extends StatefulWidget {
-  final String vehicleId;
-  final WidgetRef ref;
-
-  const _AddExpenseSheet(
-      {required this.vehicleId, required this.ref});
-
-  @override
-  State<_AddExpenseSheet> createState() => _AddExpenseSheetState();
-}
-
-class _AddExpenseSheetState extends State<_AddExpenseSheet> {
-  String _category = ExpenseCategories.fuel;
-  final _amountCtrl = TextEditingController();
-  final _noteCtrl = TextEditingController();
-  final DateTime _date = DateTime.now();
-  bool _saving = false;
-
-  @override
-  void dispose() {
-    _amountCtrl.dispose();
-    _noteCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _save() async {
-    final amount = double.tryParse(_amountCtrl.text);
-    if (amount == null || amount <= 0) return;
-    setState(() => _saving = true);
-    try {
-      final expense = Expense(
-        id: _uuid.v4(),
-        vehicleId: widget.vehicleId,
-        date: _date,
-        category: _category,
-        amount: amount,
-        note: _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim(),
-      );
-      await widget.ref
-          .read(expensesProvider(widget.vehicleId).notifier)
-          .addExpense(expense);
-      if (mounted) Navigator.pop(context);
-    } finally {
-      if (mounted) setState(() => _saving = false);
-    }
-  }
+class _EntryTile extends StatelessWidget {
+  final LedgerEntry entry;
+  const _EntryTile({required this.entry});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final l = context.l10n;
+    final colour = categoryColour(entry.category);
+    final note = _noteFor(l, entry);
+    final source = switch (entry.source) {
+      LedgerSource.fuel => l.expensesFromFuelLog,
+      LedgerSource.service => l.expensesFromService,
+      LedgerSource.expense => null,
+    };
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-          AppSpacing.xl,
-          AppSpacing.lg,
-          AppSpacing.xl,
-          MediaQuery.of(context).viewInsets.bottom + AppSpacing.xl),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ListTile(
+      onTap: switch (entry.source) {
+        LedgerSource.fuel => () => context.go(
+            '/garage/dashboard/${entry.vehicleId}/fuel/history'),
+        LedgerSource.service => () => context.go('/service/${entry.vehicleId}'),
+        LedgerSource.expense => null,
+      },
+      leading: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: colour.withValues(alpha: 0.12),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(categoryIcon(entry.category), size: 18, color: colour),
+      ),
+      title: Text(
+        note.isNotEmpty ? note : l.expenseCategoryLabel(entry.category),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
+      ),
+      subtitle: Row(
         children: [
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
+          Text(l.expenseCategoryLabel(entry.category),
+              style: AppTextStyles.caption.copyWith(color: textSecondary)),
+          if (source != null) ...[
+            const SizedBox(width: AppSpacing.sm),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: colour.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
+              child: Text(source,
+                  style: AppTextStyles.caption
+                      .copyWith(color: colour, fontSize: 10)),
             ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(l.expensesAddTitle, style: AppTextStyles.heading2),
-          const SizedBox(height: AppSpacing.lg),
-
-          // Category grid
-          Text(l.expensesCategory,
-              style: AppTextStyles.label.copyWith(color: textSecondary)),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: ExpenseCategories.all.map((cat) {
-              final isSelected = _category == cat;
-              final color =
-                  _categoryColors[cat] ?? AppColors.textSecondary;
-              return GestureDetector(
-                onTap: () => setState(() => _category = cat),
-                child: AnimatedContainer(
-                  duration: AppDuration.fast,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? color.withValues(alpha: 0.15)
-                        : Colors.transparent,
-                    border: Border.all(
-                      color: isSelected
-                          ? color
-                          : (isDark
-                              ? AppColors.borderDark
-                              : AppColors.border),
-                    ),
-                    borderRadius: BorderRadius.circular(AppRadius.small),
-                  ),
-                  child: Text(
-                    l.expenseCategoryLabel(cat),
-                    style: AppTextStyles.captionMedium.copyWith(
-                      color: isSelected ? color : textSecondary,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-
-          Text(l.expensesAmount,
-              style: AppTextStyles.label.copyWith(color: textSecondary)),
-          const SizedBox(height: AppSpacing.sm),
-          TextFormField(
-            controller: _amountCtrl,
-            keyboardType:
-                const TextInputType.numberWithOptions(decimal: true),
-            autofocus: true,
-            decoration: const InputDecoration(
-                hintText: '0', prefixText: '₹ '),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-
-          Text(l.expensesNoteOptional,
-              style: AppTextStyles.label.copyWith(color: textSecondary)),
-          const SizedBox(height: AppSpacing.sm),
-          TextFormField(
-            controller: _noteCtrl,
-            decoration: InputDecoration(hintText: l.expensesNoteHint),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: FilledButton(
-              onPressed: _saving ? null : _save,
-              child: _saving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white))
-                  : Text(l.expensesSave),
-            ),
-          ),
+          ],
         ],
       ),
+      trailing: Text(rupees(entry.amount),
+          style: AppTextStyles.bodySemiBold.copyWith(color: textPrimary)),
     );
   }
 }

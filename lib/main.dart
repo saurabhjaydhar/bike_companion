@@ -24,6 +24,7 @@ import 'data/repositories/vehicle_repository.dart';
 import 'data/repositories/document_repository.dart';
 import 'data/repositories/expense_repository.dart';
 import 'data/repositories/fuel_repository.dart';
+import 'data/repositories/ledger_repository.dart';
 import 'data/repositories/service_repository.dart';
 import 'features/settings/settings_screen.dart';
 import 'l10n/l10n.dart';
@@ -45,6 +46,7 @@ Future<void> _setupDependencies() async {
     ..registerSingleton<ServiceRepository>(ServiceRepository(db))
     ..registerSingleton<ExpenseRepository>(ExpenseRepository(db))
     ..registerSingleton<DocumentRepository>(DocumentRepository(db))
+    ..registerSingleton<LedgerRepository>(LedgerRepository(db))
     ..registerSingleton<HealthScoreService>(HealthScoreService())
     ..registerSingleton<AuthService>(AuthService())
     ..registerSingleton<RcLookupService>(RcLookupService())
@@ -62,6 +64,7 @@ Future<void> _setupDependencies() async {
     getIt<ServiceRepository>(),
     getIt<FuelRepository>(),
     getIt<HealthScoreService>(),
+    getIt<LedgerRepository>(),
   );
   getIt.registerSingleton<ReminderService>(reminders);
 

@@ -119,7 +119,9 @@ Before this phase only documents in the Documents tab got reminders, and only af
 
 ### Phase 2 — Spending, budgets and analytics (L)
 
-Today fuel logs and service costs are stored separately and **are not counted** in expense totals, charts or exports.
+Before this phase fuel logs and service costs were stored separately and **not counted** in expense totals, charts or exports.
+
+**Status:** built and unit/widget-tested; device QA and UX review still to do.
 
 | # | Task |
 |---|---|
@@ -198,7 +200,7 @@ Code and storage already say *vehicle* (step 0.6) — see *Naming conventions*.
 - [x] RC scan: front/back capture, upright rotation, position-based OCR parsing, Gemini with on-device gap-fill
 - [x] Name decided: **Garajo**
 - [x] Phase 0 — Foundation (incl. 0.5 sync fix, 0.6 vehicle rename)
-- [ ] Phase 1 — Reminders (built; device QA pending)
-- [ ] Phase 2 — Spending, budgets and analytics
+- [ ] Phase 1 — Reminders (built and merged; device QA pending)
+- [ ] Phase 2 — Spending, budgets and analytics (built; device QA pending)
 - [ ] Phase 3 — Car support and rebrand
 - [ ] Phase 4 — Release

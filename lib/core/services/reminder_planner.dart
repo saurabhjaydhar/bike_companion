@@ -5,7 +5,17 @@ import '../constants/app_constants.dart';
 import 'notification_service.dart' show notificationId;
 
 /// What can expire or fall due.
-enum DueKind { insurance, puc, registration, licence, document, service }
+enum DueKind {
+  insurance,
+  puc,
+  registration,
+  licence,
+  document,
+  service,
+
+  /// Spending budget reached — only ever sent as a notification.
+  budget,
+}
 
 /// Something with a date the user should act on before it passes.
 class DueItem {
@@ -90,6 +100,7 @@ class ReminderPayload {
   /// App route that lets the user act on the reminder.
   String get route => switch (kind) {
     DueKind.service => '/service/$vehicleId',
+    DueKind.budget => '/expenses/$vehicleId',
     // The vehicle's own dates open the date editor on its dashboard.
     DueKind.insurance || DueKind.puc || DueKind.registration
         when targetId == null =>

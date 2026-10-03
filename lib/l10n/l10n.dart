@@ -73,6 +73,7 @@ extension L10nLabels on AppLocalizations {
     DueKind.licence => docDrivingLicence,
     DueKind.document => item.title ?? commonOther,
     DueKind.service => serviceTypeLabel(item.title ?? ''),
+    DueKind.budget => budgetTitle,
   };
 
   /// Notification title, e.g. "Insurance expires in 7 days".

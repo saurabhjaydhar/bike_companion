@@ -18,6 +18,10 @@ class Vehicle {
   final DateTime? regValidity;
   final DateTime createdAt;
 
+  /// Spending budgets in ₹; null when not set.
+  final double? monthlyBudget;
+  final double? yearlyBudget;
+
   // Registration (RC) details — all optional.
   final String? manufacturer;
   final String? fuelType;
@@ -40,6 +44,8 @@ class Vehicle {
     this.pucExpiry,
     this.regValidity,
     required this.createdAt,
+    this.monthlyBudget,
+    this.yearlyBudget,
     this.manufacturer,
     this.fuelType,
     this.vehicleClass,
@@ -80,6 +86,8 @@ class Vehicle {
             : null,
         createdAt:
             DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+        monthlyBudget: (map['monthly_budget'] as num?)?.toDouble(),
+        yearlyBudget: (map['yearly_budget'] as num?)?.toDouble(),
         manufacturer: map['manufacturer'] as String?,
         fuelType: map['fuel_type'] as String?,
         vehicleClass: map['vehicle_class'] as String?,
@@ -102,6 +110,8 @@ class Vehicle {
         'puc_expiry': pucExpiry?.millisecondsSinceEpoch,
         'reg_validity': regValidity?.millisecondsSinceEpoch,
         'created_at': createdAt.millisecondsSinceEpoch,
+        'monthly_budget': monthlyBudget,
+        'yearly_budget': yearlyBudget,
         'manufacturer': manufacturer,
         'fuel_type': fuelType,
         'vehicle_class': vehicleClass,
@@ -124,6 +134,8 @@ class Vehicle {
     DateTime? pucExpiry,
     DateTime? regValidity,
     DateTime? createdAt,
+    double? monthlyBudget,
+    double? yearlyBudget,
     String? manufacturer,
     String? fuelType,
     String? vehicleClass,
@@ -145,11 +157,39 @@ class Vehicle {
         pucExpiry: pucExpiry ?? this.pucExpiry,
         regValidity: regValidity ?? this.regValidity,
         createdAt: createdAt ?? this.createdAt,
+        monthlyBudget: monthlyBudget ?? this.monthlyBudget,
+        yearlyBudget: yearlyBudget ?? this.yearlyBudget,
         manufacturer: manufacturer ?? this.manufacturer,
         fuelType: fuelType ?? this.fuelType,
         vehicleClass: vehicleClass ?? this.vehicleClass,
         engineNumber: engineNumber ?? this.engineNumber,
         chassisNumber: chassisNumber ?? this.chassisNumber,
+      );
+
+  /// Copy with the budgets replaced — null clears them, which [copyWith]
+  /// can't do.
+  Vehicle withBudgets({double? monthly, double? yearly}) => Vehicle(
+        id: id,
+        name: name,
+        brand: brand,
+        model: model,
+        variant: variant,
+        colourHex: colourHex,
+        regNumber: regNumber,
+        purchaseDate: purchaseDate,
+        odometerCurrent: odometerCurrent,
+        odometerOfficial: odometerOfficial,
+        insuranceExpiry: insuranceExpiry,
+        pucExpiry: pucExpiry,
+        regValidity: regValidity,
+        createdAt: createdAt,
+        monthlyBudget: monthly,
+        yearlyBudget: yearly,
+        manufacturer: manufacturer,
+        fuelType: fuelType,
+        vehicleClass: vehicleClass,
+        engineNumber: engineNumber,
+        chassisNumber: chassisNumber,
       );
 
   @override

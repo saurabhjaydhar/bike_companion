@@ -1,85 +1,102 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/services/spending.dart';
 import '../../data/models/expense.dart';
+import '../../data/models/vehicle.dart';
 import '../../data/repositories/expense_repository.dart';
+import '../../data/repositories/ledger_repository.dart';
+import '../../data/repositories/vehicle_repository.dart';
 import '../../main.dart';
 
 class ExpensesState {
-  final int year;
-  final int month;
-  final List<Expense> expenses;
-  final Map<String, double> breakdown;
-  final List<MonthSummary> sixMonthTrend;
-  final double total;
-  final double? prevMonthTotal;
+  final Vehicle vehicle;
+  final SpendingSummary summary;
+
+  /// Full months before the current one, for suggesting a budget.
+  final List<MonthTotal> recentMonths;
 
   const ExpensesState({
-    required this.year,
-    required this.month,
-    required this.expenses,
-    required this.breakdown,
-    required this.sixMonthTrend,
-    required this.total,
-    this.prevMonthTotal,
+    required this.vehicle,
+    required this.summary,
+    required this.recentMonths,
   });
+
+  SpendPeriod get period => summary.period;
+
+  /// Budget for the period shown; null when not set.
+  double? get budget => period.kind == PeriodKind.month
+      ? vehicle.monthlyBudget
+      : vehicle.yearlyBudget;
 }
 
 class ExpensesNotifier extends FamilyAsyncNotifier<ExpensesState, String> {
-  int _year = DateTime.now().year;
-  int _month = DateTime.now().month;
+  SpendPeriod _period = SpendPeriod.current(PeriodKind.month, DateTime.now());
 
   @override
   Future<ExpensesState> build(String arg) => _load();
 
   Future<ExpensesState> _load() async {
-    final repo = getIt<ExpenseRepository>();
-    final expenses = await repo.getExpensesByMonth(arg, _year, _month);
-    final breakdown = await repo.getCategoryBreakdown(arg, _year, _month);
-    final trend = await repo.getSixMonthTrend(arg);
-    final total = await repo.getMonthlyTotal(arg, _year, _month);
+    final now = DateTime.now();
+    final ledger = getIt<LedgerRepository>();
+    final vehicle = await getIt<VehicleRepository>().getVehicleById(arg);
+    if (vehicle == null) throw StateError('Vehicle $arg not found');
 
-    double? prev;
-    final prevMonth = DateTime(_year, _month - 1);
-    prev = await repo.getMonthlyTotal(arg, prevMonth.year, prevMonth.month);
+    final range = ledgerRangeFor(_period);
+    final summary = summarize(
+      period: _period,
+      entries: await ledger.entries(
+          vehicleId: arg, from: range.from, to: range.to),
+      readings: await ledger.odometerReadings(arg),
+      now: now,
+    );
+
+    final recentMonths = <MonthTotal>[];
+    for (var i = 3; i >= 1; i--) {
+      final m = DateTime(now.year, now.month - i);
+      recentMonths.add(MonthTotal(
+        m,
+        await ledger.total(
+            vehicleId: arg, from: m, to: DateTime(m.year, m.month + 1)),
+      ));
+    }
 
     return ExpensesState(
-      year: _year,
-      month: _month,
-      expenses: expenses,
-      breakdown: breakdown,
-      sixMonthTrend: trend,
-      total: total,
-      prevMonthTotal: prev,
+      vehicle: vehicle,
+      summary: summary,
+      recentMonths: recentMonths,
     );
   }
 
-  Future<void> prevMonth() async {
-    final d = DateTime(_year, _month - 1);
-    _year = d.year;
-    _month = d.month;
-    state = const AsyncLoading();
+  /// Reloads, keeping the current data on screen meanwhile.
+  Future<void> reload() async {
+    state = const AsyncLoading<ExpensesState>().copyWithPrevious(state);
     state = await AsyncValue.guard(_load);
   }
 
-  Future<void> nextMonth() async {
-    final now = DateTime.now();
-    if (_year == now.year && _month == now.month) return;
-    final d = DateTime(_year, _month + 1);
-    _year = d.year;
-    _month = d.month;
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(_load);
+  Future<void> _show(SpendPeriod period) async {
+    if (period.isFuture(DateTime.now())) return;
+    _period = period;
+    await reload();
   }
+
+  Future<void> setKind(PeriodKind kind) =>
+      _show(_period.switchTo(kind, DateTime.now()));
+
+  Future<void> previous() => _show(_period.previous);
+  Future<void> next() => _show(_period.next);
+
+  /// Opens [month] in month view — from tapping a chart bar.
+  Future<void> showMonth(DateTime month) =>
+      _show(SpendPeriod.month(month.year, month.month));
 
   Future<void> addExpense(Expense expense) async {
     await getIt<ExpenseRepository>().insertExpense(expense);
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(_load);
+    await reload();
   }
 
   Future<void> deleteExpense(String id) async {
     await getIt<ExpenseRepository>().deleteExpense(id);
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(_load);
+    await reload();
   }
 }
 

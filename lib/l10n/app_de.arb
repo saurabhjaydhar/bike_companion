@@ -25,7 +25,7 @@
   "settingsDeleteAccount": "Konto löschen",
   "settingsDeleteAccountSubtitle": "Entfernt dein Konto dauerhaft (DSGVO)",
   "settingsDeleteAccountTitle": "Konto löschen?",
-  "settingsDeleteAccountBody": "Dein Firebase-Konto wird dauerhaft gelöscht. Deine lokalen Daten bleiben auf diesem Gerät. Das kann nicht rückgängig gemacht werden.",
+  "settingsDeleteAccountBody": "Dadurch werden dein Konto und alles in der Cloud Gesicherte dauerhaft gelöscht – Fahrzeuge, Einträge und Dokumentfotos. Die Daten auf diesem Telefon bleiben. Das kann nicht rückgängig gemacht werden.",
   "settingsDeleteAccountError": "Konto konnte nicht gelöscht werden. Bitte melde dich erneut an und versuche es noch einmal.",
   "appTitle": "Garajo",
   "commonContinue": "Weiter",

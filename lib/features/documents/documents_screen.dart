@@ -581,7 +581,7 @@ class _AddDocSheetState extends State<_AddDocSheet> {
         if (user != null && !user.isAnonymous) {
           try {
             finalPath = await getIt<StorageService>()
-                .uploadDocument(widget.vehicleId, docId, _imagePath!);
+                .uploadDocument(user.uid, widget.vehicleId, docId, _imagePath!);
           } catch (_) {
             // Upload failed — store local path as fallback
           }

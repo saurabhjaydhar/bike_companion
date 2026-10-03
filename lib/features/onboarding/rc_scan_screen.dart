@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/services/analytics.dart';
 import '../../core/services/rc_scan_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -119,6 +120,11 @@ class _RcScanScreenState extends ConsumerState<RcScanScreen> {
     final result = await ref
         .read(rcScanServiceProvider)
         .scan(paths, allowCloud: _useGemini);
+    Analytics.rcScan(
+      found: result.found,
+      reader: result.source.name,
+      photos: paths.length,
+    );
     if (!mounted) return;
     setState(() => _scanning = false);
 

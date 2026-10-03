@@ -25,7 +25,7 @@
   "settingsDeleteAccount": "حذف الحساب",
   "settingsDeleteAccountSubtitle": "يحذف حسابك نهائيًا (GDPR)",
   "settingsDeleteAccountTitle": "حذف الحساب؟",
-  "settingsDeleteAccountBody": "سيؤدي هذا إلى حذف حسابك على Firebase نهائيًا. تبقى بياناتك المحلية على هذا الجهاز. لا يمكن التراجع عن ذلك.",
+  "settingsDeleteAccountBody": "سيؤدي هذا إلى حذف حسابك وكل ما تم نسخه احتياطيًا في السحابة نهائيًا — المركبات والسجلات وصور المستندات. تبقى البيانات على هذا الهاتف. لا يمكن التراجع عن ذلك.",
   "settingsDeleteAccountError": "تعذّر حذف الحساب. يُرجى تسجيل الدخول مجددًا والمحاولة مرة أخرى.",
   "appTitle": "Garajo",
   "commonContinue": "متابعة",

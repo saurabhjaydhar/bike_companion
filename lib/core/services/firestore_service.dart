@@ -77,6 +77,32 @@ class FirestoreService {
     return snap.docs.map((d) => d.data()).toList();
   }
 
+  /// Deletes everything stored for [uid]: vehicles, their records and the
+  /// profile — part of deleting an account.
+  Future<void> deleteUserData(String uid) async {
+    const children = ['fuel_logs', 'service_records', 'expenses', 'documents'];
+    final vehicles = await _vehiclesRef(uid).get();
+    for (final vehicle in vehicles.docs) {
+      for (final collection in children) {
+        final docs = await vehicle.reference.collection(collection).get();
+        await _deleteInBatches(docs.docs.map((d) => d.reference).toList());
+      }
+      await vehicle.reference.delete();
+    }
+    await _db.collection('users').doc(uid).delete();
+  }
+
+  Future<void> _deleteInBatches(List<DocumentReference> refs) async {
+    const batchSize = 400; // Firestore allows 500 writes per batch.
+    for (var i = 0; i < refs.length; i += batchSize) {
+      final batch = _db.batch();
+      for (final ref in refs.skip(i).take(batchSize)) {
+        batch.delete(ref);
+      }
+      await batch.commit();
+    }
+  }
+
   Future<bool> userHasData(String uid) async {
     final snap = await _vehiclesRef(uid).limit(1).get();
     return snap.docs.isNotEmpty;

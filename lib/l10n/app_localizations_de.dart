@@ -88,7 +88,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'Dein Firebase-Konto wird dauerhaft gelöscht. Deine lokalen Daten bleiben auf diesem Gerät. Das kann nicht rückgängig gemacht werden.';
+      'Dadurch werden dein Konto und alles in der Cloud Gesicherte dauerhaft gelöscht – Fahrzeuge, Einträge und Dokumentfotos. Die Daten auf diesem Telefon bleiben. Das kann nicht rückgängig gemacht werden.';
 
   @override
   String get settingsDeleteAccountError =>

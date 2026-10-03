@@ -88,7 +88,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'This permanently deletes your Firebase account. Your local data stays on this device. This cannot be undone.';
+      'This permanently deletes your account and everything backed up in the cloud — vehicles, records and document photos. Data on this phone stays. This cannot be undone.';
 
   @override
   String get settingsDeleteAccountError =>

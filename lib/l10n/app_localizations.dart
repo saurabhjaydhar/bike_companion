@@ -263,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountBody.
   ///
   /// In en, this message translates to:
-  /// **'This permanently deletes your Firebase account. Your local data stays on this device. This cannot be undone.'**
+  /// **'This permanently deletes your account and everything backed up in the cloud — vehicles, records and document photos. Data on this phone stays. This cannot be undone.'**
   String get settingsDeleteAccountBody;
 
   /// No description provided for @settingsDeleteAccountError.

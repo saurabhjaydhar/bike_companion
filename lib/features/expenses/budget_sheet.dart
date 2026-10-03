@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/services/analytics.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/vehicle.dart';
@@ -96,6 +97,12 @@ class _BudgetSheetState extends State<_BudgetSheet> {
             yearly: yearly != null && yearly > 0 ? yearly : null,
           );
     await getIt<VehicleRepository>().updateVehicle(updated);
+    if (!remove) {
+      Analytics.budgetSet(
+        monthly: updated.monthlyBudget != null,
+        yearly: updated.yearlyBudget != null,
+      );
+    }
     HapticFeedback.lightImpact();
     final ref = widget.ref;
     ref.invalidate(expensesProvider(widget.vehicle.id));

@@ -31,12 +31,17 @@ class AuthService {
     await _auth.signOut();
   }
 
-  /// Delete the Firebase Auth account (GDPR compliance).
-  /// Note: Firebase requires recent sign-in — may throw
-  /// [FirebaseAuthException] with code 'requires-recent-login'.
-  Future<void> deleteAccount() async {
+  /// Deletes the account and everything stored for it in the cloud
+  /// (Firestore records, Storage photos), as app stores require. [eraseCloud]
+  /// does the data part; local data on this device stays.
+  /// Firebase requires a recent sign-in — may throw [FirebaseAuthException]
+  /// with code 'requires-recent-login'.
+  Future<void> deleteAccount({
+    required Future<void> Function(String uid) eraseCloud,
+  }) async {
     final user = _auth.currentUser;
     if (user == null) return;
+    await eraseCloud(user.uid);
     if (!user.isAnonymous) await _googleSignIn.signOut();
     await user.delete();
   }

@@ -25,7 +25,7 @@
   "settingsDeleteAccount": "Delete account",
   "settingsDeleteAccountSubtitle": "Permanently removes your account (GDPR)",
   "settingsDeleteAccountTitle": "Delete account?",
-  "settingsDeleteAccountBody": "This permanently deletes your Firebase account. Your local data stays on this device. This cannot be undone.",
+  "settingsDeleteAccountBody": "This permanently deletes your account and everything backed up in the cloud — vehicles, records and document photos. Data on this phone stays. This cannot be undone.",
   "settingsDeleteAccountError": "Could not delete account. Please sign in again and retry.",
   "appTitle": "Garajo",
   "commonContinue": "Continue",

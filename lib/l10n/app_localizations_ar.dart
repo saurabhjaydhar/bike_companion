@@ -87,7 +87,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'سيؤدي هذا إلى حذف حسابك على Firebase نهائيًا. تبقى بياناتك المحلية على هذا الجهاز. لا يمكن التراجع عن ذلك.';
+      'سيؤدي هذا إلى حذف حسابك وكل ما تم نسخه احتياطيًا في السحابة نهائيًا — المركبات والسجلات وصور المستندات. تبقى البيانات على هذا الهاتف. لا يمكن التراجع عن ذلك.';
 
   @override
   String get settingsDeleteAccountError =>

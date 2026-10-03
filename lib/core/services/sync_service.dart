@@ -112,6 +112,13 @@ class SyncService {
     await prefs.setBool(_backfillKey, true);
   }
 
+  /// Drops every queued upload — after deleting the account, nothing may
+  /// be re-uploaded.
+  Future<void> clearQueue() async {
+    final db = await _db.db;
+    await db.delete('pending_sync');
+  }
+
   bool _pushing = false;
   bool _pushAgain = false;
 

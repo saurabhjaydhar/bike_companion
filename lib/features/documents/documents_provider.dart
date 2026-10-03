@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/document.dart';
+import '../../core/services/storage_service.dart';
 import '../../data/repositories/document_repository.dart';
 import '../../main.dart';
 
@@ -22,7 +23,11 @@ class DocumentsNotifier
   }
 
   Future<void> deleteDocument(String id) async {
+    final doc = state.valueOrNull?.where((d) => d.id == id).firstOrNull;
     await getIt<DocumentRepository>().deleteDocument(id);
+    // Its photo goes too, if it was uploaded.
+    final file = doc?.filePath;
+    if (file != null) await getIt<StorageService>().deleteDocumentFile(file);
     await _reload();
   }
 

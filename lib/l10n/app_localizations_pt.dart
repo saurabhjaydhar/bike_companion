@@ -88,7 +88,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'Isto apaga permanentemente a sua conta Firebase. Os seus dados locais permanecem neste dispositivo. Esta ação não pode ser desfeita.';
+      'Isso exclui permanentemente sua conta e tudo o que está salvo na nuvem — veículos, registros e fotos de documentos. Os dados neste telefone permanecem. Não é possível desfazer.';
 
   @override
   String get settingsDeleteAccountError =>

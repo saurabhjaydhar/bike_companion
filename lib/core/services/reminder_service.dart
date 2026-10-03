@@ -13,6 +13,7 @@ import '../../data/repositories/ledger_repository.dart';
 import '../../data/repositories/service_repository.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../l10n/l10n.dart';
+import 'analytics.dart';
 import 'health_score_service.dart';
 import 'notification_service.dart';
 import 'reminder_planner.dart';
@@ -46,6 +47,7 @@ class ReminderService {
   static const _maxScheduled = 60;
 
   Timer? _debounce;
+  bool _countLogged = false;
   bool _running = false;
   bool _runAgain = false;
 
@@ -100,6 +102,10 @@ class ReminderService {
       ReminderPayload.prefix,
     )) {
       if (!keepIds.contains(id)) await NotificationService.cancel(id);
+    }
+    if (!_countLogged) {
+      _countLogged = true;
+      Analytics.remindersScheduled(keep.length);
     }
     for (final p in keep) {
       await NotificationService.schedule(

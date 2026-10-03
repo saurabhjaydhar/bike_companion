@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/firestore_service.dart';
+import '../../core/services/storage_service.dart';
+import '../../core/services/sync_service.dart';
 import '../../core/services/reminder_planner.dart';
 import '../../core/services/reminder_service.dart';
 import '../../data/models/vehicle.dart';
@@ -345,7 +348,13 @@ class SettingsScreen extends ConsumerWidget {
             onPressed: () async {
               Navigator.pop(context);
               try {
-                await getIt<AuthService>().deleteAccount();
+                await getIt<AuthService>().deleteAccount(
+                  eraseCloud: (uid) async {
+                    await getIt<SyncService>().clearQueue();
+                    await getIt<FirestoreService>().deleteUserData(uid);
+                    await getIt<StorageService>().deleteUserFiles(uid);
+                  },
+                );
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(

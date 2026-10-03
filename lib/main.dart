@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -35,6 +39,32 @@ final getIt = GetIt.instance;
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+}
+
+/// App Check (only the genuine app may call Firebase and Gemini), crash
+/// reporting and analytics. Debug builds use App Check's debug provider and
+/// send no crashes or analytics.
+Future<void> _setupMonitoring() async {
+  try {
+    await FirebaseAppCheck.instance.activate(
+      androidProvider:
+          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+      appleProvider: kDebugMode
+          ? AppleProvider.debug
+          : AppleProvider.appAttestWithDeviceCheckFallback,
+    );
+  } catch (e) {
+    debugPrint('App Check not active: $e');
+  }
+
+  final crashlytics = FirebaseCrashlytics.instance;
+  await crashlytics.setCrashlyticsCollectionEnabled(!kDebugMode);
+  FlutterError.onError = crashlytics.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    crashlytics.recordError(error, stack, fatal: true);
+    return true;
+  };
+  await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(!kDebugMode);
 }
 
 Future<void> _setupDependencies() async {
@@ -80,6 +110,7 @@ Future<void> _setupDependencies() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await _setupMonitoring();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await _setupDependencies();
   await NotificationService.initialize();

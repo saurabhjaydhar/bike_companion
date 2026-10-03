@@ -20,6 +20,7 @@ import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/colour_picker.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../core/services/analytics.dart';
 import '../../shared/widgets/reminder_permission.dart';
 import '../../shared/widgets/vehicle_type_picker.dart';
 
@@ -211,6 +212,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
       );
 
       await getIt<VehicleRepository>().insertVehicle(vehicle);
+      Analytics.vehicleAdded(type: _type.name, source: widget.source.name);
 
       // First vehicle completes onboarding; otherwise the router would send
       // the user back to the welcome screen.

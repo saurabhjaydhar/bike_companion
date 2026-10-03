@@ -25,7 +25,7 @@
   "settingsDeleteAccount": "Supprimer le compte",
   "settingsDeleteAccountSubtitle": "Supprime définitivement votre compte (RGPD)",
   "settingsDeleteAccountTitle": "Supprimer le compte ?",
-  "settingsDeleteAccountBody": "Votre compte Firebase sera définitivement supprimé. Vos données locales restent sur cet appareil. Cette action est irréversible.",
+  "settingsDeleteAccountBody": "Cela supprime définitivement votre compte et tout ce qui est sauvegardé dans le cloud : véhicules, historiques et photos de documents. Les données de ce téléphone restent. Action irréversible.",
   "settingsDeleteAccountError": "Impossible de supprimer le compte. Veuillez vous reconnecter et réessayer.",
   "appTitle": "Garajo",
   "commonContinue": "Continuer",

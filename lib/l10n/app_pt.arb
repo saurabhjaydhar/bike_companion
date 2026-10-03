@@ -25,7 +25,7 @@
   "settingsDeleteAccount": "Apagar conta",
   "settingsDeleteAccountSubtitle": "Remove a sua conta permanentemente (GDPR)",
   "settingsDeleteAccountTitle": "Apagar conta?",
-  "settingsDeleteAccountBody": "Isto apaga permanentemente a sua conta Firebase. Os seus dados locais permanecem neste dispositivo. Esta ação não pode ser desfeita.",
+  "settingsDeleteAccountBody": "Isso exclui permanentemente sua conta e tudo o que está salvo na nuvem — veículos, registros e fotos de documentos. Os dados neste telefone permanecem. Não é possível desfazer.",
   "settingsDeleteAccountError": "Não foi possível apagar a conta. Entre novamente e tente outra vez.",
   "appTitle": "Garajo",
   "commonContinue": "Continuar",

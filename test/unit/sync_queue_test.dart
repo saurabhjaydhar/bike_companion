@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bike_companion/core/services/sync_service.dart';
-import 'package:bike_companion/data/database/app_database.dart';
-import 'package:bike_companion/data/models/vehicle.dart';
-import 'package:bike_companion/data/models/expense.dart';
-import 'package:bike_companion/data/models/fuel_log.dart';
-import 'package:bike_companion/data/repositories/vehicle_repository.dart';
-import 'package:bike_companion/data/repositories/expense_repository.dart';
-import 'package:bike_companion/data/repositories/fuel_repository.dart';
+import 'package:garajo/core/services/sync_service.dart';
+import 'package:garajo/data/database/app_database.dart';
+import 'package:garajo/data/models/vehicle.dart';
+import 'package:garajo/data/models/expense.dart';
+import 'package:garajo/data/models/fuel_log.dart';
+import 'package:garajo/data/repositories/vehicle_repository.dart';
+import 'package:garajo/data/repositories/expense_repository.dart';
+import 'package:garajo/data/repositories/fuel_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' show join;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';

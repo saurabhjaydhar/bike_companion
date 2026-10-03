@@ -1,8 +1,8 @@
-import 'package:bike_companion/data/models/vehicle.dart';
-import 'package:bike_companion/data/models/document.dart';
-import 'package:bike_companion/data/models/expense.dart';
-import 'package:bike_companion/data/models/fuel_log.dart';
-import 'package:bike_companion/data/models/service_record.dart';
+import 'package:garajo/data/models/vehicle.dart';
+import 'package:garajo/data/models/document.dart';
+import 'package:garajo/data/models/expense.dart';
+import 'package:garajo/data/models/fuel_log.dart';
+import 'package:garajo/data/models/service_record.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,8 +1,8 @@
-import 'package:bike_companion/core/constants/app_constants.dart';
-import 'package:bike_companion/core/services/reminder_planner.dart';
-import 'package:bike_companion/data/models/document.dart';
-import 'package:bike_companion/data/models/service_record.dart';
-import 'package:bike_companion/data/models/vehicle.dart';
+import 'package:garajo/core/constants/app_constants.dart';
+import 'package:garajo/core/services/reminder_planner.dart';
+import 'package:garajo/data/models/document.dart';
+import 'package:garajo/data/models/service_record.dart';
+import 'package:garajo/data/models/vehicle.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Vehicle vehicle(

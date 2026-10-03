@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/painting.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -22,7 +23,7 @@ int notificationId(String key) {
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
 
-  static const _channelId = 'bike_companion';
+  static const _channelId = 'reminders';
   static const _channelName = 'Reminders';
   static const _channelDesc = 'Expiry and service reminders';
 
@@ -60,7 +61,7 @@ class NotificationService {
     );
     await _plugin.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings('@drawable/ic_notification'),
         iOS: iosSettings,
       ),
       onDidReceiveNotificationResponse: (response) {
@@ -128,7 +129,9 @@ class NotificationService {
       channelDescription: _channelDesc,
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
+      // White silhouette: Android tints it for the status bar.
+      icon: '@drawable/ic_notification',
+      color: Color(0xFFFF5A1F),
     ),
     iOS: DarwinNotificationDetails(),
   );

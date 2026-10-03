@@ -1,9 +1,9 @@
-import 'package:bike_companion/core/constants/app_constants.dart';
-import 'package:bike_companion/core/services/health_score_service.dart';
-import 'package:bike_companion/data/models/vehicle.dart';
-import 'package:bike_companion/data/models/fuel_log.dart';
-import 'package:bike_companion/data/models/health_score.dart';
-import 'package:bike_companion/data/models/service_record.dart';
+import 'package:garajo/core/constants/app_constants.dart';
+import 'package:garajo/core/services/health_score_service.dart';
+import 'package:garajo/data/models/vehicle.dart';
+import 'package:garajo/data/models/fuel_log.dart';
+import 'package:garajo/data/models/health_score.dart';
+import 'package:garajo/data/models/service_record.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // A freshly-serviced vehicle at 10,000 km

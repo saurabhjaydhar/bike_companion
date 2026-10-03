@@ -1,5 +1,5 @@
-import 'package:bike_companion/core/services/rc_scan_service.dart';
-import 'package:bike_companion/data/models/rc_details.dart';
+import 'package:garajo/core/services/rc_scan_service.dart';
+import 'package:garajo/data/models/rc_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

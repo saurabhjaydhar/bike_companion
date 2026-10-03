@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:bike_companion/core/services/spending.dart';
-import 'package:bike_companion/data/database/app_database.dart';
-import 'package:bike_companion/data/models/ledger_entry.dart';
-import 'package:bike_companion/data/repositories/ledger_repository.dart';
+import 'package:garajo/core/services/spending.dart';
+import 'package:garajo/data/database/app_database.dart';
+import 'package:garajo/data/models/ledger_entry.dart';
+import 'package:garajo/data/repositories/ledger_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' show join;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';

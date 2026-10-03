@@ -3,6 +3,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/services/health_score_service.dart';
 import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
+import '../../data/models/vehicle.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
@@ -35,7 +36,14 @@ class ServiceState {
   final List<ServiceItem> dueItems;
   final List<ServiceRecord> history;
 
-  const ServiceState({required this.dueItems, required this.history});
+  /// Decides which service types are offered and tracked.
+  final VehicleType vehicleType;
+
+  const ServiceState({
+    required this.dueItems,
+    required this.history,
+    required this.vehicleType,
+  });
 }
 
 class ServiceNotifier extends FamilyAsyncNotifier<ServiceState, String> {
@@ -73,18 +81,8 @@ class ServiceNotifier extends FamilyAsyncNotifier<ServiceState, String> {
 
     final latestPerType = await serviceRepo.getLatestPerType(vehicleId);
 
-    final trackableTypes = [
-      ServiceTypes.oilChange,
-      ServiceTypes.airFilter,
-      ServiceTypes.chainClean,
-      ServiceTypes.brakePads,
-      ServiceTypes.tyres,
-      ServiceTypes.battery,
-      ServiceTypes.coolant,
-      ServiceTypes.other,
-    ];
-
-    final dueItems = trackableTypes.map((type) {
+    // Cars and scooters have no chain; cars add alignment, AC and wipers.
+    final dueItems = vehicle.type.maintenance.trackedTypes.map((type) {
       final factorLabel = typeToFactorLabel[type];
       final factor = factorLabel != null ? factorMap[factorLabel] : null;
       return ServiceItem(
@@ -95,7 +93,11 @@ class ServiceNotifier extends FamilyAsyncNotifier<ServiceState, String> {
     }).toList()
       ..sort((a, b) => a.status.index.compareTo(b.status.index));
 
-    return ServiceState(dueItems: dueItems, history: history);
+    return ServiceState(
+      dueItems: dueItems,
+      history: history,
+      vehicleType: vehicle.type,
+    );
   }
 
   Future<void> refresh() async {

@@ -71,7 +71,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'سيؤدي هذا إلى حذف جميع الدراجات وسجلات الوقود وسجلات الصيانة والمصروفات والمستندات نهائيًا. لا يمكن التراجع عن ذلك.';
+      'سيؤدي هذا إلى حذف جميع المركبات وسجلات الوقود والصيانة والمصروفات والمستندات نهائيًا. لا يمكن التراجع عن ذلك.';
 
   @override
   String get settingsDataCleared => 'تم مسح كل البيانات';
@@ -94,7 +94,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّر حذف الحساب. يُرجى تسجيل الدخول مجددًا والمحاولة مرة أخرى.';
 
   @override
-  String get appTitle => 'Bike Companion';
+  String get appTitle => 'Garajo';
 
   @override
   String get commonContinue => 'متابعة';
@@ -116,7 +116,8 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّر بدء جلسة بدون اتصال. يُرجى المحاولة مرة أخرى.';
 
   @override
-  String get authTagline => 'تتبّع الوقود والصيانة والمصروفات\nلدراجتك النارية';
+  String get authTagline =>
+      'تتبّع الوقود والصيانة والمصروفات\nلدراجتك أو سكوترك أو سيارتك';
 
   @override
   String get authContinueWithGoogle => 'المتابعة باستخدام Google';
@@ -128,17 +129,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authTerms => 'بالمتابعة، فإنك توافق على الشروط وسياسة الخصوصية.';
 
   @override
-  String get onboardingWelcomeTitle => 'دراجتك،\nبحالة ممتازة دائمًا';
+  String get onboardingWelcomeTitle => 'مرحبًا بك في Garajo';
 
   @override
-  String get onboardingWelcomeBody =>
-      'تتبّع الوقود والصيانة والمصروفات والمستندات — كلها في مكان واحد. واعرف بالضبط متى تحتاج دراجتك إلى عناية.';
-
-  @override
-  String get onboardingGetStarted => 'ابدأ الآن';
-
-  @override
-  String get onboardingAddMyVehicle => 'أضف دراجتي';
+  String get onboardingAddMyVehicle => 'إضافة مركبتي';
 
   @override
   String get fieldBrand => 'العلامة التجارية';
@@ -195,7 +189,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addVehicleFetchFailed => 'تعذّر جلب تفاصيل المركبة.';
 
   @override
-  String get addVehicleTitle => 'أضف دراجتك';
+  String get addVehicleTitle => 'أضف مركبتك';
 
   @override
   String get addVehicleSubtitle =>
@@ -217,7 +211,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleModelRequired => 'الطراز مطلوب';
 
   @override
-  String get vehicleSaveFailed => 'تعذّر حفظ الدراجة. يُرجى المحاولة مرة أخرى.';
+  String get vehicleSaveFailed => 'تعذّر حفظ المركبة. حاول مرة أخرى.';
 
   @override
   String get vehicleDetailsTitle => 'تفاصيل المركبة';
@@ -256,7 +250,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleChassisNumber => 'رقم الهيكل';
 
   @override
-  String get vehicleSaveVehicle => 'حفظ الدراجة';
+  String get vehicleSaveVehicle => 'حفظ المركبة';
 
   @override
   String get vehicleFetchSuccess => 'تم جلب تفاصيل المركبة. راجعها وأكّدها.';
@@ -277,20 +271,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get garageTitle => 'مرآبي';
 
   @override
-  String get garageEmptyTitle => 'لا توجد دراجات بعد';
+  String get garageEmptyTitle => 'لا توجد مركبات بعد';
 
   @override
   String get garageEmptyBody =>
-      'أضف دراجتك الأولى لبدء تتبّع الوقود والصيانة والمصروفات.';
+      'أضف أول دراجة أو سكوتر أو سيارة لبدء تتبّع الوقود والصيانة والمصروفات.';
 
   @override
-  String get garageYourVehicles => 'دراجاتك';
+  String get garageYourVehicles => 'مركباتك';
 
   @override
-  String get garageAddAnother => 'إضافة دراجة أخرى';
+  String get garageAddAnother => 'إضافة مركبة أخرى';
 
   @override
-  String get garageStatVehicles => 'دراجات';
+  String get garageStatVehicles => 'مركبات';
 
   @override
   String get garageStatAlerts => 'تنبيهات';
@@ -705,7 +699,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ridesComingSoon => 'تتبّع الرحلات عبر GPS\nقريبًا';
 
   @override
-  String get noVehicleSelected => 'اختر دراجة من تبويب الرئيسية أولًا.';
+  String get noVehicleSelected => 'اختر مركبة من تبويب الرئيسية أولًا.';
 
   @override
   String get offlineBanner => 'لا يوجد إنترنت — العمل بدون اتصال';
@@ -869,7 +863,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addVehicleManualTitle => 'إدخال يدوي';
 
   @override
-  String get addVehicleManualBody => 'اكتب بيانات دراجتك بنفسك.';
+  String get addVehicleManualBody => 'أدخل تفاصيل مركبتك بنفسك.';
 
   @override
   String get addVehicleLookupTitle => 'البحث برقم اللوحة';
@@ -931,7 +925,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّرت قراءة بطاقة RC بوضوح. يُرجى إدخال البيانات أدناه.';
 
   @override
-  String get vehicleSectionYourVehicle => 'دراجتك';
+  String get vehicleSectionYourVehicle => 'مركبتك';
 
   @override
   String get vahanSmsButton => 'التحقق عبر VAHAN برسالة SMS';
@@ -1162,4 +1156,49 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get garageThisYear => 'هذا العام';
+
+  @override
+  String get vehicleTypeTitle => 'نوع المركبة';
+
+  @override
+  String get vehicleTypeDetected =>
+      'تم التعرّف عليه من بطاقة RC — غيّره إن كان خاطئًا.';
+
+  @override
+  String get vehicleTypeBike => 'دراجة نارية';
+
+  @override
+  String get vehicleTypeScooter => 'سكوتر';
+
+  @override
+  String get vehicleTypeCar => 'سيارة';
+
+  @override
+  String get serviceWheelAlignment => 'ضبط الزوايا';
+
+  @override
+  String get serviceAcService => 'صيانة المكيّف';
+
+  @override
+  String get serviceWipers => 'المسّاحات';
+
+  @override
+  String get onboardingSlideTrackTitle => 'تتبّع كل روبية';
+
+  @override
+  String get onboardingSlideTrackBody =>
+      'الوقود والصيانة والمصروفات في مكان واحد، مع ميزانيات وتكلفة لكل كم لكل مركبة.';
+
+  @override
+  String get onboardingSlideRemindTitle => 'لا تفوّت أي موعد';
+
+  @override
+  String get onboardingSlideRemindBody =>
+      'تذكيرات قبل مواعيد التأمين وشهادة PUC والصيانة — في التاسعة صباحًا، وليس ليلًا أبدًا.';
+
+  @override
+  String get onboardingSlideScanTitle => 'امسح ولا تكتب';
+
+  @override
+  String get onboardingSlideScanBody => 'صوّر بطاقة RC وسنملأ تفاصيل مركبتك.';
 }

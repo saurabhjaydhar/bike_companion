@@ -1,7 +1,7 @@
-import 'package:bike_companion/data/models/health_score.dart';
-import 'package:bike_companion/shared/widgets/empty_state.dart';
-import 'package:bike_companion/shared/widgets/health_ring.dart';
-import 'package:bike_companion/shared/widgets/shimmer_box.dart';
+import 'package:garajo/data/models/health_score.dart';
+import 'package:garajo/shared/widgets/empty_state.dart';
+import 'package:garajo/shared/widgets/health_ring.dart';
+import 'package:garajo/shared/widgets/shimmer_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

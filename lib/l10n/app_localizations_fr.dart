@@ -71,7 +71,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Toutes les motos, pleins, entretiens, dépenses et documents seront définitivement supprimés. Cette action est irréversible.';
+      'Cela supprimera définitivement tous les véhicules, pleins, entretiens, dépenses et documents. Action irréversible.';
 
   @override
   String get settingsDataCleared => 'Toutes les données ont été effacées';
@@ -95,7 +95,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de supprimer le compte. Veuillez vous reconnecter et réessayer.';
 
   @override
-  String get appTitle => 'Bike Companion';
+  String get appTitle => 'Garajo';
 
   @override
   String get commonContinue => 'Continuer';
@@ -118,7 +118,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get authTagline =>
-      'Suivez carburant, entretien et dépenses\nde votre moto';
+      'Suivez carburant, entretien et dépenses\nde votre moto, scooter ou voiture';
 
   @override
   String get authContinueWithGoogle => 'Continuer avec Google';
@@ -131,17 +131,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'En continuant, vous acceptez nos Conditions d’utilisation et notre Politique de confidentialité.';
 
   @override
-  String get onboardingWelcomeTitle => 'Votre moto,\ntoujours en forme';
+  String get onboardingWelcomeTitle => 'Bienvenue sur Garajo';
 
   @override
-  String get onboardingWelcomeBody =>
-      'Suivez carburant, entretien, dépenses et documents — tout au même endroit. Sachez exactement quand votre moto a besoin d’attention.';
-
-  @override
-  String get onboardingGetStarted => 'Commencer';
-
-  @override
-  String get onboardingAddMyVehicle => 'Ajouter ma moto';
+  String get onboardingAddMyVehicle => 'Ajouter mon véhicule';
 
   @override
   String get fieldBrand => 'Marque';
@@ -199,7 +192,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de récupérer les informations du véhicule.';
 
   @override
-  String get addVehicleTitle => 'Ajoutez votre moto';
+  String get addVehicleTitle => 'Ajoutez votre véhicule';
 
   @override
   String get addVehicleSubtitle =>
@@ -222,7 +215,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get vehicleSaveFailed =>
-      'Échec de l’enregistrement de la moto. Veuillez réessayer.';
+      'Impossible d\'enregistrer le véhicule. Réessayez.';
 
   @override
   String get vehicleDetailsTitle => 'Détails du véhicule';
@@ -261,7 +254,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get vehicleChassisNumber => 'Numéro de châssis';
 
   @override
-  String get vehicleSaveVehicle => 'Enregistrer la moto';
+  String get vehicleSaveVehicle => 'Enregistrer le véhicule';
 
   @override
   String get vehicleFetchSuccess =>
@@ -283,20 +276,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get garageTitle => 'Mon garage';
 
   @override
-  String get garageEmptyTitle => 'Aucune moto';
+  String get garageEmptyTitle => 'Aucun véhicule';
 
   @override
   String get garageEmptyBody =>
-      'Ajoutez votre première moto pour suivre carburant, entretien et dépenses.';
+      'Ajoutez votre première moto, scooter ou voiture pour suivre carburant, entretien et dépenses.';
 
   @override
-  String get garageYourVehicles => 'Vos motos';
+  String get garageYourVehicles => 'Vos véhicules';
 
   @override
-  String get garageAddAnother => 'Ajouter une moto';
+  String get garageAddAnother => 'Ajouter un autre véhicule';
 
   @override
-  String get garageStatVehicles => 'motos';
+  String get garageStatVehicles => 'véhicules';
 
   @override
   String get garageStatAlerts => 'alertes';
@@ -703,7 +696,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noVehicleSelected =>
-      'Sélectionnez d’abord une moto dans l’onglet Accueil.';
+      'Choisissez d\'abord un véhicule dans l\'onglet Accueil.';
 
   @override
   String get offlineBanner => 'Pas d’Internet — mode hors ligne';
@@ -861,7 +854,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addVehicleManualBody =>
-      'Saisissez vous-même les informations de votre moto.';
+      'Saisissez vous-même les détails de votre véhicule.';
 
   @override
   String get addVehicleLookupTitle => 'Rechercher par numéro';
@@ -924,7 +917,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de lire clairement votre RC. Remplissez les informations ci-dessous.';
 
   @override
-  String get vehicleSectionYourVehicle => 'VOTRE MOTO';
+  String get vehicleSectionYourVehicle => 'VOTRE VÉHICULE';
 
   @override
   String get vahanSmsButton => 'Vérifier sur VAHAN par SMS';
@@ -1157,4 +1150,50 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get garageThisYear => 'Cette année';
+
+  @override
+  String get vehicleTypeTitle => 'TYPE DE VÉHICULE';
+
+  @override
+  String get vehicleTypeDetected =>
+      'Détecté sur votre RC — modifiez-le s\'il est faux.';
+
+  @override
+  String get vehicleTypeBike => 'Moto';
+
+  @override
+  String get vehicleTypeScooter => 'Scooter';
+
+  @override
+  String get vehicleTypeCar => 'Voiture';
+
+  @override
+  String get serviceWheelAlignment => 'Parallélisme';
+
+  @override
+  String get serviceAcService => 'Entretien clim';
+
+  @override
+  String get serviceWipers => 'Essuie-glaces';
+
+  @override
+  String get onboardingSlideTrackTitle => 'Suivez chaque roupie';
+
+  @override
+  String get onboardingSlideTrackBody =>
+      'Carburant, entretien et dépenses au même endroit, avec budgets et coût au km pour chaque véhicule.';
+
+  @override
+  String get onboardingSlideRemindTitle => 'Ne ratez aucune date';
+
+  @override
+  String get onboardingSlideRemindBody =>
+      'Des rappels avant l\'échéance de l\'assurance, du PUC et des entretiens — à 9 h, jamais la nuit.';
+
+  @override
+  String get onboardingSlideScanTitle => 'Scannez, ne tapez pas';
+
+  @override
+  String get onboardingSlideScanBody =>
+      'Photographiez votre RC et nous remplirons les détails de votre véhicule.';
 }

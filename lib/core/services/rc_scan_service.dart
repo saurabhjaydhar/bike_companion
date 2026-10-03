@@ -310,7 +310,8 @@ String? canonicalBrand(String? raw) {
   final upper = raw.toUpperCase();
   bool has(String word) =>
       RegExp('\\b${RegExp.escape(word.toUpperCase())}\\b').hasMatch(upper);
-  for (final brand in kIndianBrands) {
+  // Car makers first: "MARUTI SUZUKI" is a car, not a Suzuki two-wheeler.
+  for (final brand in [...kCarBrands, ...kIndianBrands]) {
     if (brand == 'Other') continue;
     if (has(brand)) return brand;
   }

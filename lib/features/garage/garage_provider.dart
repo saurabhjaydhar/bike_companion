@@ -3,6 +3,8 @@ import '../../data/models/vehicle.dart';
 import '../../data/models/health_score.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/ledger_repository.dart';
+import '../../data/repositories/document_repository.dart';
+import '../../core/services/reminder_planner.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../data/repositories/service_repository.dart';
 import '../../core/services/health_score_service.dart';
@@ -15,11 +17,15 @@ class GarageItem {
   final double monthTotal;
   final double yearTotal;
 
+  /// The soonest expiry or service date — shown on the card.
+  final DueItem? nextDue;
+
   const GarageItem({
     required this.vehicle,
     required this.healthScore,
     required this.monthTotal,
     required this.yearTotal,
+    this.nextDue,
   });
 
   bool get hasAlerts => healthScore.alerts.isNotEmpty;
@@ -53,11 +59,17 @@ class GarageNotifier extends AsyncNotifier<List<GarageItem>> {
         services: services,
         fuelLogs: fuelLogs,
       );
+      final due = dueItems(
+        vehicles: [vehicle],
+        documents: await getIt<DocumentRepository>().getDocuments(vehicle.id),
+        services: services,
+      );
       return GarageItem(
         vehicle: vehicle,
         healthScore: health,
         monthTotal: monthTotal,
         yearTotal: yearTotal,
+        nextDue: due.firstOrNull,
       );
     }));
   }

@@ -43,7 +43,7 @@ class GarageScreen extends ConsumerWidget {
         data: (items) {
           if (items.isEmpty) {
             return EmptyState(
-              icon: Icons.two_wheeler_rounded,
+              icon: Icons.garage_rounded,
               heading: l.garageEmptyTitle,
               body: l.garageEmptyBody,
               ctaLabel: l.onboardingAddMyVehicle,

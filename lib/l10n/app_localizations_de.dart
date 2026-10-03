@@ -71,7 +71,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Alle Bikes, Tankeinträge, Wartungen, Ausgaben und Dokumente werden dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.';
+      'Dadurch werden alle Fahrzeuge, Tankstopps, Wartungen, Ausgaben und Dokumente dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.';
 
   @override
   String get settingsDataCleared => 'Alle Daten gelöscht';
@@ -95,7 +95,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Konto konnte nicht gelöscht werden. Bitte melde dich erneut an und versuche es noch einmal.';
 
   @override
-  String get appTitle => 'Bike Companion';
+  String get appTitle => 'Garajo';
 
   @override
   String get commonContinue => 'Weiter';
@@ -118,7 +118,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get authTagline =>
-      'Tanken, Wartung & Ausgaben\nfür dein Motorrad im Blick';
+      'Kraftstoff, Wartung & Ausgaben\nfür Motorrad, Roller oder Auto';
 
   @override
   String get authContinueWithGoogle => 'Weiter mit Google';
@@ -131,17 +131,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Mit dem Fortfahren stimmst du unseren AGB & der Datenschutzerklärung zu.';
 
   @override
-  String get onboardingWelcomeTitle => 'Dein Bike,\nimmer in Topform';
+  String get onboardingWelcomeTitle => 'Willkommen bei Garajo';
 
   @override
-  String get onboardingWelcomeBody =>
-      'Tanken, Wartung, Ausgaben und Dokumente – alles an einem Ort. Wisse genau, wann dein Bike Aufmerksamkeit braucht.';
-
-  @override
-  String get onboardingGetStarted => 'Los geht\'s';
-
-  @override
-  String get onboardingAddMyVehicle => 'Bike hinzufügen';
+  String get onboardingAddMyVehicle => 'Mein Fahrzeug hinzufügen';
 
   @override
   String get fieldBrand => 'Marke';
@@ -199,7 +192,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fahrzeugdaten konnten nicht abgerufen werden.';
 
   @override
-  String get addVehicleTitle => 'Bike hinzufügen';
+  String get addVehicleTitle => 'Fahrzeug hinzufügen';
 
   @override
   String get addVehicleSubtitle =>
@@ -222,7 +215,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get vehicleSaveFailed =>
-      'Bike konnte nicht gespeichert werden. Bitte versuche es erneut.';
+      'Fahrzeug konnte nicht gespeichert werden. Bitte erneut versuchen.';
 
   @override
   String get vehicleDetailsTitle => 'Fahrzeugdaten';
@@ -261,7 +254,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get vehicleChassisNumber => 'Fahrgestellnummer';
 
   @override
-  String get vehicleSaveVehicle => 'Bike speichern';
+  String get vehicleSaveVehicle => 'Fahrzeug speichern';
 
   @override
   String get vehicleFetchSuccess =>
@@ -283,20 +276,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get garageTitle => 'Meine Garage';
 
   @override
-  String get garageEmptyTitle => 'Noch keine Bikes';
+  String get garageEmptyTitle => 'Noch keine Fahrzeuge';
 
   @override
   String get garageEmptyBody =>
-      'Füge dein erstes Bike hinzu, um Tanken, Wartung und Ausgaben zu erfassen.';
+      'Füge dein erstes Motorrad, deinen Roller oder dein Auto hinzu, um Kraftstoff, Wartung und Ausgaben zu erfassen.';
 
   @override
-  String get garageYourVehicles => 'Deine Bikes';
+  String get garageYourVehicles => 'Deine Fahrzeuge';
 
   @override
-  String get garageAddAnother => 'Weiteres Bike hinzufügen';
+  String get garageAddAnother => 'Weiteres Fahrzeug hinzufügen';
 
   @override
-  String get garageStatVehicles => 'Bikes';
+  String get garageStatVehicles => 'Fahrzeuge';
 
   @override
   String get garageStatAlerts => 'Hinweise';
@@ -702,7 +695,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get ridesComingSoon => 'GPS-Fahrtaufzeichnung\nkommt bald';
 
   @override
-  String get noVehicleSelected => 'Wähle zuerst ein Bike im Tab „Start“.';
+  String get noVehicleSelected =>
+      'Wähle zuerst auf dem Start-Tab ein Fahrzeug.';
 
   @override
   String get offlineBanner => 'Kein Internet – Offline-Modus';
@@ -859,7 +853,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addVehicleManualTitle => 'Manuell eingeben';
 
   @override
-  String get addVehicleManualBody => 'Gib die Daten deines Bikes selbst ein.';
+  String get addVehicleManualBody => 'Gib die Fahrzeugdaten selbst ein.';
 
   @override
   String get addVehicleLookupTitle => 'Per Kennzeichen suchen';
@@ -921,7 +915,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Deine RC konnte nicht klar gelesen werden. Bitte trag die Daten unten ein.';
 
   @override
-  String get vehicleSectionYourVehicle => 'DEIN BIKE';
+  String get vehicleSectionYourVehicle => 'DEIN FAHRZEUG';
 
   @override
   String get vahanSmsButton => 'Per SMS bei VAHAN prüfen';
@@ -1153,4 +1147,50 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get garageThisYear => 'Dieses Jahr';
+
+  @override
+  String get vehicleTypeTitle => 'FAHRZEUGTYP';
+
+  @override
+  String get vehicleTypeDetected =>
+      'Aus deiner RC erkannt – ändere ihn, falls er falsch ist.';
+
+  @override
+  String get vehicleTypeBike => 'Motorrad';
+
+  @override
+  String get vehicleTypeScooter => 'Roller';
+
+  @override
+  String get vehicleTypeCar => 'Auto';
+
+  @override
+  String get serviceWheelAlignment => 'Achsvermessung';
+
+  @override
+  String get serviceAcService => 'Klimaservice';
+
+  @override
+  String get serviceWipers => 'Scheibenwischer';
+
+  @override
+  String get onboardingSlideTrackTitle => 'Jede Rupie im Blick';
+
+  @override
+  String get onboardingSlideTrackBody =>
+      'Kraftstoff, Wartung und Ausgaben an einem Ort – mit Budgets und Kosten pro km für jedes Fahrzeug.';
+
+  @override
+  String get onboardingSlideRemindTitle => 'Kein Termin geht verloren';
+
+  @override
+  String get onboardingSlideRemindBody =>
+      'Erinnerungen vor Ablauf von Versicherung, PUC und Wartung – um 9 Uhr, nie nachts.';
+
+  @override
+  String get onboardingSlideScanTitle => 'Scannen statt tippen';
+
+  @override
+  String get onboardingSlideScanBody =>
+      'Fotografiere deine RC und wir füllen die Fahrzeugdaten aus.';
 }

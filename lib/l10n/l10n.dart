@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
 import '../core/services/reminder_planner.dart';
 import '../data/models/health_score.dart';
+import '../data/models/vehicle_type.dart';
 import 'app_localizations.dart';
 
 export 'app_localizations.dart';
@@ -36,6 +37,9 @@ extension L10nLabels on AppLocalizations {
       case ServiceTypes.tyres: return serviceTyres;
       case ServiceTypes.battery: return serviceBattery;
       case ServiceTypes.coolant: return serviceCoolant;
+      case ServiceTypes.wheelAlignment: return serviceWheelAlignment;
+      case ServiceTypes.acService: return serviceAcService;
+      case ServiceTypes.wipers: return serviceWipers;
       default: return commonOther;
     }
   }
@@ -87,6 +91,12 @@ extension L10nLabels on AppLocalizations {
     final days = item.daysLeft(now);
     return days < 0 ? dueOverdue(-days) : dueInDays(days);
   }
+
+  String vehicleTypeLabel(VehicleType type) => switch (type) {
+    VehicleType.bike => vehicleTypeBike,
+    VehicleType.scooter => vehicleTypeScooter,
+    VehicleType.car => vehicleTypeCar,
+  };
 
   String healthGradeLabel(HealthGrade grade) {
     switch (grade) {

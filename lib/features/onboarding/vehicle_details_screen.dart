@@ -21,6 +21,7 @@ import '../../main.dart';
 import '../../shared/widgets/colour_picker.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/reminder_permission.dart';
+import '../../shared/widgets/vehicle_type_picker.dart';
 
 const _uuid = Uuid();
 
@@ -58,6 +59,10 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   late final TextEditingController _chassisCtrl;
 
   String _colourHex = '#1A56DB';
+  VehicleType _type = VehicleType.bike;
+
+  /// Whether [_type] came from the RC (shown so the user can confirm it).
+  bool _typeDetected = false;
   DateTime? _registrationDate;
   DateTime? _insuranceExpiry;
   DateTime? _pucExpiry;
@@ -87,6 +92,10 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     _registrationDate = v.registrationDate;
     _regValidity = v.regValidity;
     _colourHex = ColourPicker.hexForName(v.colour) ?? _colourHex;
+    final detected =
+        vehicleTypeFromRc(vehicleClass: v.vehicleClass, model: v.model);
+    _type = detected ?? VehicleType.bike;
+    _typeDetected = detected != null;
     _insuranceExpiry = v.insuranceExpiry;
   }
 
@@ -183,6 +192,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
         name: _text(_nameCtrl) ?? '$brand $model',
         brand: brand,
         model: model,
+        type: _type,
         variant: widget.details.variant,
         colourHex: _colourHex,
         regNumber: rc,
@@ -259,6 +269,22 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xl),
                     ],
+
+                    // ── TYPE ─────────────────────────────────────────────
+                    _SectionLabel(l.vehicleTypeTitle),
+                    const SizedBox(height: AppSpacing.md),
+                    VehicleTypePicker(
+                      selected: _type,
+                      onChanged: (t) => setState(() {
+                        _type = t;
+                        _typeDetected = false;
+                      }),
+                    ),
+                    if (_typeDetected) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      _FieldLabel(l.vehicleTypeDetected, isDark: isDark),
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
 
                     // ── REGISTRATION ─────────────────────────────────────
                     _SectionLabel(l.vehicleSectionRegistration),

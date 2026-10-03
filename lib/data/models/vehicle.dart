@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'vehicle_type.dart';
+
+export 'vehicle_type.dart';
+
 class Vehicle {
   final String id;
   final String name;
   final String brand;
   final String model;
+  final VehicleType type;
   final String? variant;
   final String colourHex;
   final String regNumber;
@@ -34,6 +39,7 @@ class Vehicle {
     required this.name,
     required this.brand,
     required this.model,
+    this.type = VehicleType.bike,
     this.variant,
     required this.colourHex,
     required this.regNumber,
@@ -67,6 +73,7 @@ class Vehicle {
         name: map['name'] as String,
         brand: map['brand'] as String,
         model: map['model'] as String,
+        type: VehicleType.fromName(map['vehicle_type'] as String?),
         variant: map['variant'] as String?,
         colourHex: map['colour_hex'] as String? ?? '#1A56DB',
         regNumber: map['reg_number'] as String,
@@ -100,6 +107,7 @@ class Vehicle {
         'name': name,
         'brand': brand,
         'model': model,
+        'vehicle_type': type.name,
         'variant': variant,
         'colour_hex': colourHex,
         'reg_number': regNumber,
@@ -124,6 +132,7 @@ class Vehicle {
     String? name,
     String? brand,
     String? model,
+    VehicleType? type,
     String? variant,
     String? colourHex,
     String? regNumber,
@@ -147,6 +156,7 @@ class Vehicle {
         name: name ?? this.name,
         brand: brand ?? this.brand,
         model: model ?? this.model,
+        type: type ?? this.type,
         variant: variant ?? this.variant,
         colourHex: colourHex ?? this.colourHex,
         regNumber: regNumber ?? this.regNumber,
@@ -173,6 +183,7 @@ class Vehicle {
         name: name,
         brand: brand,
         model: model,
+        type: type,
         variant: variant,
         colourHex: colourHex,
         regNumber: regNumber,

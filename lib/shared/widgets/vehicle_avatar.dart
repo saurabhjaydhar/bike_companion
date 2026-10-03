@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../data/models/vehicle_type.dart';
 
 /// Glowing tile with a vehicle icon, tinted with the vehicle's colour.
 class VehicleAvatar extends StatelessWidget {
@@ -8,11 +9,15 @@ class VehicleAvatar extends StatelessWidget {
   final double size;
   final String? initials;
 
+  /// Picks the icon: two-wheeler, moped or car.
+  final VehicleType type;
+
   const VehicleAvatar({
     super.key,
     required this.colour,
     this.size = 48,
     this.initials,
+    this.type = VehicleType.bike,
   });
 
   @override
@@ -50,7 +55,7 @@ class VehicleAvatar extends StatelessWidget {
               ),
             )
           : Icon(
-              Icons.two_wheeler_rounded,
+              type.icon,
               color: Color.lerp(colour, Colors.white, 0.35),
               size: size * 0.55,
             ),

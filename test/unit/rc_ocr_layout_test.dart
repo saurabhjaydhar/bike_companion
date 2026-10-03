@@ -1,8 +1,8 @@
 import 'dart:ui' show Rect;
 
-import 'package:bike_companion/core/services/rc_ocr_layout.dart';
-import 'package:bike_companion/core/services/rc_scan_service.dart';
-import 'package:bike_companion/shared/widgets/colour_picker.dart';
+import 'package:garajo/core/services/rc_ocr_layout.dart';
+import 'package:garajo/core/services/rc_scan_service.dart';
+import 'package:garajo/shared/widgets/colour_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// One OCR line: words 10px per character, 20px tall, 6px apart.

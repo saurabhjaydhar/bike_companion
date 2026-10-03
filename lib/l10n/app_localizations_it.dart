@@ -71,7 +71,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Verranno eliminati definitivamente tutte le moto, i rifornimenti, gli interventi, le spese e i documenti. L’operazione non può essere annullata.';
+      'Verranno eliminati definitivamente tutti i veicoli, rifornimenti, tagliandi, spese e documenti. L\'operazione è irreversibile.';
 
   @override
   String get settingsDataCleared => 'Tutti i dati sono stati cancellati';
@@ -95,7 +95,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Impossibile eliminare l’account. Accedi di nuovo e riprova.';
 
   @override
-  String get appTitle => 'Bike Companion';
+  String get appTitle => 'Garajo';
 
   @override
   String get commonContinue => 'Continua';
@@ -118,7 +118,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get authTagline =>
-      'Tieni traccia di carburante, tagliandi e spese\ndella tua moto';
+      'Tieni traccia di carburante, tagliandi e spese\nper moto, scooter o auto';
 
   @override
   String get authContinueWithGoogle => 'Continua con Google';
@@ -131,17 +131,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Continuando accetti i nostri Termini e l’Informativa sulla privacy.';
 
   @override
-  String get onboardingWelcomeTitle => 'La tua moto,\nsempre in forma';
+  String get onboardingWelcomeTitle => 'Benvenuto in Garajo';
 
   @override
-  String get onboardingWelcomeBody =>
-      'Tieni traccia di carburante, tagliandi, spese e documenti, tutto in un unico posto. Sappi sempre quando la tua moto ha bisogno di attenzione.';
-
-  @override
-  String get onboardingGetStarted => 'Inizia';
-
-  @override
-  String get onboardingAddMyVehicle => 'Aggiungi la mia moto';
+  String get onboardingAddMyVehicle => 'Aggiungi il mio veicolo';
 
   @override
   String get fieldBrand => 'Marca';
@@ -156,7 +149,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fieldNickname => 'Soprannome';
 
   @override
-  String get fieldNicknameHint => 'Come la chiami?';
+  String get fieldNicknameHint => 'Come lo chiami?';
 
   @override
   String get fieldColour => 'Colore';
@@ -198,7 +191,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Impossibile recuperare i dati del veicolo.';
 
   @override
-  String get addVehicleTitle => 'Aggiungi la tua moto';
+  String get addVehicleTitle => 'Aggiungi il tuo veicolo';
 
   @override
   String get addVehicleSubtitle =>
@@ -220,7 +213,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get vehicleModelRequired => 'Il modello è obbligatorio';
 
   @override
-  String get vehicleSaveFailed => 'Impossibile salvare la moto. Riprova.';
+  String get vehicleSaveFailed => 'Impossibile salvare il veicolo. Riprova.';
 
   @override
   String get vehicleDetailsTitle => 'Dati del veicolo';
@@ -259,7 +252,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get vehicleChassisNumber => 'Numero di telaio';
 
   @override
-  String get vehicleSaveVehicle => 'Salva moto';
+  String get vehicleSaveVehicle => 'Salva veicolo';
 
   @override
   String get vehicleFetchSuccess =>
@@ -281,20 +274,20 @@ class AppLocalizationsIt extends AppLocalizations {
   String get garageTitle => 'Il mio garage';
 
   @override
-  String get garageEmptyTitle => 'Ancora nessuna moto';
+  String get garageEmptyTitle => 'Ancora nessun veicolo';
 
   @override
   String get garageEmptyBody =>
-      'Aggiungi la tua prima moto per tenere traccia di carburante, tagliandi e spese.';
+      'Aggiungi la tua prima moto, scooter o auto per tenere traccia di carburante, tagliandi e spese.';
 
   @override
-  String get garageYourVehicles => 'Le tue moto';
+  String get garageYourVehicles => 'I tuoi veicoli';
 
   @override
-  String get garageAddAnother => 'Aggiungi un’altra moto';
+  String get garageAddAnother => 'Aggiungi un altro veicolo';
 
   @override
-  String get garageStatVehicles => 'moto';
+  String get garageStatVehicles => 'veicoli';
 
   @override
   String get garageStatAlerts => 'avvisi';
@@ -700,7 +693,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get ridesComingSoon => 'Tracciamento GPS dei giri\nin arrivo';
 
   @override
-  String get noVehicleSelected => 'Seleziona prima una moto dalla scheda Home.';
+  String get noVehicleSelected =>
+      'Prima seleziona un veicolo dalla scheda Home.';
 
   @override
   String get offlineBanner => 'Nessuna connessione — modalità offline';
@@ -857,7 +851,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get addVehicleManualTitle => 'Inserisci manualmente';
 
   @override
-  String get addVehicleManualBody => 'Scrivi tu i dati della tua moto.';
+  String get addVehicleManualBody => 'Inserisci tu i dati del tuo veicolo.';
 
   @override
   String get addVehicleLookupTitle => 'Cerca per targa';
@@ -919,7 +913,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Non è stato possibile leggere bene la RC. Compila i dati qui sotto.';
 
   @override
-  String get vehicleSectionYourVehicle => 'LA TUA MOTO';
+  String get vehicleSectionYourVehicle => 'IL TUO VEICOLO';
 
   @override
   String get vahanSmsButton => 'Verifica su VAHAN via SMS';
@@ -1152,4 +1146,50 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get garageThisYear => 'Quest\'anno';
+
+  @override
+  String get vehicleTypeTitle => 'TIPO DI VEICOLO';
+
+  @override
+  String get vehicleTypeDetected =>
+      'Rilevato dalla tua RC: cambialo se è sbagliato.';
+
+  @override
+  String get vehicleTypeBike => 'Moto';
+
+  @override
+  String get vehicleTypeScooter => 'Scooter';
+
+  @override
+  String get vehicleTypeCar => 'Auto';
+
+  @override
+  String get serviceWheelAlignment => 'Convergenza';
+
+  @override
+  String get serviceAcService => 'Manutenzione clima';
+
+  @override
+  String get serviceWipers => 'Tergicristalli';
+
+  @override
+  String get onboardingSlideTrackTitle => 'Ogni rupia sotto controllo';
+
+  @override
+  String get onboardingSlideTrackBody =>
+      'Carburante, tagliandi e spese in un unico posto, con budget e costo al km per ogni veicolo.';
+
+  @override
+  String get onboardingSlideRemindTitle => 'Non perdere nessuna scadenza';
+
+  @override
+  String get onboardingSlideRemindBody =>
+      'Promemoria prima della scadenza di assicurazione, PUC e tagliandi, alle 9 del mattino, mai di notte.';
+
+  @override
+  String get onboardingSlideScanTitle => 'Scansiona, non digitare';
+
+  @override
+  String get onboardingSlideScanBody =>
+      'Fotografa la tua RC e compileremo i dati del tuo veicolo.';
 }

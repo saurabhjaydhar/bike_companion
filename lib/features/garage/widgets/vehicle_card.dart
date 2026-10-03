@@ -8,6 +8,7 @@ import '../../../shared/widgets/vehicle_avatar.dart';
 import '../../../shared/widgets/health_ring.dart';
 import '../../../shared/widgets/hud_panel.dart';
 import '../../../shared/widgets/plate_badge.dart';
+import '../../../core/services/reminder_planner.dart';
 import '../garage_provider.dart';
 
 class VehicleCard extends StatelessWidget {
@@ -45,7 +46,11 @@ class VehicleCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              VehicleAvatar(colour: item.vehicle.colour, size: 52),
+              VehicleAvatar(
+                colour: item.vehicle.colour,
+                size: 52,
+                type: item.vehicle.type,
+              ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
@@ -163,6 +168,10 @@ class VehicleCard extends StatelessWidget {
               ),
             ],
           ),
+          if (item.nextDue case final due?) ...[
+            const SizedBox(height: AppSpacing.sm),
+            _NextDue(item: due),
+          ],
         ],
       ),
     );
@@ -226,6 +235,43 @@ class VehicleCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The soonest date to act on, colour-coded like the dashboard's
+/// "Coming up" card.
+class _NextDue extends StatelessWidget {
+  final DueItem item;
+  const _NextDue({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final now = DateTime.now();
+    final days = item.daysLeft(now);
+    final colour = days <= 7
+        ? AppColors.danger
+        : days <= 30
+            ? AppColors.warning
+            : AppColors.success;
+    final when = days > 60
+        ? DateFormat.yMMMd(l.localeName).format(item.due)
+        : l.dueWhen(item, now);
+
+    return Row(
+      children: [
+        Icon(Icons.event_note_rounded, size: 14, color: colour),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            '${l.dueItemLabel(item)} · $when',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.label.copyWith(color: colour),
+          ),
+        ),
+      ],
     );
   }
 }

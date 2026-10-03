@@ -86,17 +86,17 @@ void main() async {
   await FcmService.initialize();
   // Covers reinstalls, restores and anything scheduled by older versions.
   getIt<ReminderService>().refresh();
-  runApp(const ProviderScope(child: BikeCompanionApp()));
+  runApp(const ProviderScope(child: GarajoApp()));
 }
 
-class BikeCompanionApp extends ConsumerStatefulWidget {
-  const BikeCompanionApp({super.key});
+class GarajoApp extends ConsumerStatefulWidget {
+  const GarajoApp({super.key});
 
   @override
-  ConsumerState<BikeCompanionApp> createState() => _BikeCompanionAppState();
+  ConsumerState<GarajoApp> createState() => _GarajoAppState();
 }
 
-class _BikeCompanionAppState extends ConsumerState<BikeCompanionApp> {
+class _GarajoAppState extends ConsumerState<GarajoApp> {
   StreamSubscription<String>? _taps;
 
   @override

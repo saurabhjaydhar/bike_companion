@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bike_companion/core/constants/app_constants.dart';
-import 'package:bike_companion/core/services/health_score_service.dart';
-import 'package:bike_companion/data/models/vehicle.dart';
-import 'package:bike_companion/data/models/health_score.dart';
-import 'package:bike_companion/data/models/service_record.dart';
-import 'package:bike_companion/l10n/l10n.dart';
+import 'package:garajo/core/constants/app_constants.dart';
+import 'package:garajo/core/services/health_score_service.dart';
+import 'package:garajo/data/models/vehicle.dart';
+import 'package:garajo/data/models/health_score.dart';
+import 'package:garajo/data/models/service_record.dart';
+import 'package:garajo/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';

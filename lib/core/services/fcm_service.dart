@@ -7,7 +7,7 @@ class FcmService {
   static const _androidChannel = AndroidNotificationChannel(
     'fcm_high_importance',
     'Push Notifications',
-    description: 'Bike Companion push notifications',
+    description: 'Garajo push notifications',
     importance: Importance.high,
   );
 
@@ -33,7 +33,7 @@ class FcmService {
     final plugin = FlutterLocalNotificationsPlugin();
     await plugin.show(
       message.hashCode,
-      notification.title ?? 'Bike Companion',
+      notification.title ?? 'Garajo',
       notification.body,
       NotificationDetails(
         android: AndroidNotificationDetails(
@@ -41,7 +41,7 @@ class FcmService {
           _androidChannel.name,
           channelDescription: _androidChannel.description,
           importance: _androidChannel.importance,
-          icon: '@mipmap/ic_launcher',
+          icon: '@drawable/ic_notification',
         ),
       ),
     );

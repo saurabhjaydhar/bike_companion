@@ -129,7 +129,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     ),
                   ],
                 ),
-                child: Icon(Icons.two_wheeler_rounded,
+                child: Icon(Icons.garage_rounded,
                     size: 72, color: cs.primary),
               ),
               const SizedBox(height: 24),

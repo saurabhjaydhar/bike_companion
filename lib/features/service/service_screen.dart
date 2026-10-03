@@ -326,6 +326,9 @@ class _LogServiceSheet extends StatefulWidget {
 
 class _LogServiceSheetState extends State<_LogServiceSheet> {
   late String _type;
+
+  /// Service types for this vehicle: no chain items for cars and scooters.
+  late final List<String> _types;
   final DateTime _date = DateTime.now();
   final _odometerCtrl = TextEditingController();
   final _costCtrl = TextEditingController();
@@ -336,7 +339,16 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
   @override
   void initState() {
     super.initState();
-    _type = widget.preselectedType;
+    _types = widget.ref
+            .read(serviceProvider(widget.vehicleId))
+            .valueOrNull
+            ?.vehicleType
+            .maintenance
+            .serviceTypes ??
+        ServiceTypes.all;
+    _type = _types.contains(widget.preselectedType)
+        ? widget.preselectedType
+        : _types.first;
   }
 
   @override
@@ -406,7 +418,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
           DropdownButtonFormField<String>(
             initialValue: _type,
             decoration: const InputDecoration(),
-            items: ServiceTypes.all
+            items: _types
                 .map((t) => DropdownMenuItem(
                     value: t, child: Text(l.serviceTypeLabel(t))))
                 .toList(),

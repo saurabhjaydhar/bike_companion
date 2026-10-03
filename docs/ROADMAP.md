@@ -145,6 +145,8 @@ Before this phase fuel logs and service costs were stored separately and **not c
 
 ### Phase 3 — Car support and rebrand to Garajo (L)
 
+**Status:** 3.1–3.7 built and unit/widget-tested. 3.8 (new app IDs) waits for the Firebase steps below.
+
 Done together because both rewrite the same "bike" wording.
 
 | # | Task |
@@ -184,6 +186,15 @@ Code and storage already say *vehicle* (step 0.6) — see *Naming conventions*.
 | 4.8 | UX review: walk every main flow (add vehicle, log fuel, add expense, set budget, renew insurance) against the UX principles; fix anything over 3 taps or with a dead end |
 | 4.9 | Usability test with 5 people who haven't seen the app; fix the top 3 points of confusion before production |
 
+### Firebase steps for 3.8 (owner)
+
+New app IDs need new Firebase apps; the project, its data and its settings stay the same.
+
+1. Firebase console → Project settings → **Add app → Android**, package name `app.garajo`. Add the SHA-1 and SHA-256 of the debug and release signing keys (Google Sign-In and phone auth need them). Download `google-services.json`.
+2. **Add app → iOS**, bundle ID `app.garajo`. Download `GoogleService-Info.plist`.
+3. Hand both files over. The code change then: Android `applicationId`/`namespace` and Kotlin package, iOS bundle ID, the two config files — followed by a check that sign-in, sync and RC scan work on the new IDs.
+4. Delete the old `com.app.bike_companion` Firebase app once the new one is verified.
+
 ## 4. Risks
 
 | Risk | Mitigation |
@@ -202,5 +213,5 @@ Code and storage already say *vehicle* (step 0.6) — see *Naming conventions*.
 - [x] Phase 0 — Foundation (incl. 0.5 sync fix, 0.6 vehicle rename)
 - [ ] Phase 1 — Reminders (built and merged; device QA pending)
 - [ ] Phase 2 — Spending, budgets and analytics (built; device QA pending)
-- [ ] Phase 3 — Car support and rebrand
+- [ ] Phase 3 — Car support and rebrand (built except new app IDs; device QA pending)
 - [ ] Phase 4 — Release

@@ -233,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsClearBody.
   ///
   /// In en, this message translates to:
-  /// **'This will permanently delete all bikes, fuel logs, service records, expenses, and documents. This cannot be undone.'**
+  /// **'This will permanently delete all vehicles, fuel logs, service records, expenses, and documents. This cannot be undone.'**
   String get settingsClearBody;
 
   /// No description provided for @settingsDataCleared.
@@ -275,7 +275,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Bike Companion'**
+  /// **'Garajo'**
   String get appTitle;
 
   /// No description provided for @commonContinue.
@@ -311,7 +311,7 @@ abstract class AppLocalizations {
   /// No description provided for @authTagline.
   ///
   /// In en, this message translates to:
-  /// **'Track fuel, service & expenses\nfor your motorcycle'**
+  /// **'Track fuel, service & expenses\nfor your bike, scooter or car'**
   String get authTagline;
 
   /// No description provided for @authContinueWithGoogle.
@@ -335,25 +335,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your bike,\nalways healthy'**
+  /// **'Welcome to Garajo'**
   String get onboardingWelcomeTitle;
-
-  /// No description provided for @onboardingWelcomeBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Track fuel, service, expenses and documents — all in one place. Know exactly when your bike needs attention.'**
-  String get onboardingWelcomeBody;
-
-  /// No description provided for @onboardingGetStarted.
-  ///
-  /// In en, this message translates to:
-  /// **'Get started'**
-  String get onboardingGetStarted;
 
   /// No description provided for @onboardingAddMyVehicle.
   ///
   /// In en, this message translates to:
-  /// **'Add my bike'**
+  /// **'Add my vehicle'**
   String get onboardingAddMyVehicle;
 
   /// No description provided for @fieldBrand.
@@ -461,7 +449,7 @@ abstract class AppLocalizations {
   /// No description provided for @addVehicleTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add Your Bike'**
+  /// **'Add Your Vehicle'**
   String get addVehicleTitle;
 
   /// No description provided for @addVehicleSubtitle.
@@ -503,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @vehicleSaveFailed.
   ///
   /// In en, this message translates to:
-  /// **'Failed to save bike. Please try again.'**
+  /// **'Failed to save vehicle. Please try again.'**
   String get vehicleSaveFailed;
 
   /// No description provided for @vehicleDetailsTitle.
@@ -581,7 +569,7 @@ abstract class AppLocalizations {
   /// No description provided for @vehicleSaveVehicle.
   ///
   /// In en, this message translates to:
-  /// **'Save Bike'**
+  /// **'Save Vehicle'**
   String get vehicleSaveVehicle;
 
   /// No description provided for @vehicleFetchSuccess.
@@ -617,31 +605,31 @@ abstract class AppLocalizations {
   /// No description provided for @garageEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No bikes yet'**
+  /// **'No vehicles yet'**
   String get garageEmptyTitle;
 
   /// No description provided for @garageEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Add your first bike to start tracking fuel, service and expenses.'**
+  /// **'Add your first bike, scooter or car to start tracking fuel, service and expenses.'**
   String get garageEmptyBody;
 
   /// No description provided for @garageYourVehicles.
   ///
   /// In en, this message translates to:
-  /// **'Your bikes'**
+  /// **'Your vehicles'**
   String get garageYourVehicles;
 
   /// No description provided for @garageAddAnother.
   ///
   /// In en, this message translates to:
-  /// **'Add another bike'**
+  /// **'Add another vehicle'**
   String get garageAddAnother;
 
   /// No description provided for @garageStatVehicles.
   ///
   /// In en, this message translates to:
-  /// **'bikes'**
+  /// **'vehicles'**
   String get garageStatVehicles;
 
   /// No description provided for @garageStatAlerts.
@@ -1355,7 +1343,7 @@ abstract class AppLocalizations {
   /// No description provided for @noVehicleSelected.
   ///
   /// In en, this message translates to:
-  /// **'Select a bike from the Home tab first.'**
+  /// **'Select a vehicle from the Home tab first.'**
   String get noVehicleSelected;
 
   /// No description provided for @offlineBanner.
@@ -1565,7 +1553,7 @@ abstract class AppLocalizations {
   /// No description provided for @addVehicleManualBody.
   ///
   /// In en, this message translates to:
-  /// **'Type in your bike\'s details yourself.'**
+  /// **'Type in your vehicle\'s details yourself.'**
   String get addVehicleManualBody;
 
   /// No description provided for @addVehicleLookupTitle.
@@ -1679,7 +1667,7 @@ abstract class AppLocalizations {
   /// No description provided for @vehicleSectionYourVehicle.
   ///
   /// In en, this message translates to:
-  /// **'YOUR BIKE'**
+  /// **'YOUR VEHICLE'**
   String get vehicleSectionYourVehicle;
 
   /// No description provided for @vahanSmsButton.
@@ -2017,6 +2005,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This year'**
   String get garageThisYear;
+
+  /// No description provided for @vehicleTypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'VEHICLE TYPE'**
+  String get vehicleTypeTitle;
+
+  /// No description provided for @vehicleTypeDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected from your RC — change it if it\'s wrong.'**
+  String get vehicleTypeDetected;
+
+  /// No description provided for @vehicleTypeBike.
+  ///
+  /// In en, this message translates to:
+  /// **'Bike'**
+  String get vehicleTypeBike;
+
+  /// No description provided for @vehicleTypeScooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Scooter'**
+  String get vehicleTypeScooter;
+
+  /// No description provided for @vehicleTypeCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get vehicleTypeCar;
+
+  /// No description provided for @serviceWheelAlignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Wheel Alignment'**
+  String get serviceWheelAlignment;
+
+  /// No description provided for @serviceAcService.
+  ///
+  /// In en, this message translates to:
+  /// **'AC Service'**
+  String get serviceAcService;
+
+  /// No description provided for @serviceWipers.
+  ///
+  /// In en, this message translates to:
+  /// **'Wipers'**
+  String get serviceWipers;
+
+  /// No description provided for @onboardingSlideTrackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track every rupee'**
+  String get onboardingSlideTrackTitle;
+
+  /// No description provided for @onboardingSlideTrackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel, service and expenses in one place — with budgets and cost per km for each vehicle.'**
+  String get onboardingSlideTrackBody;
+
+  /// No description provided for @onboardingSlideRemindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Never miss a date'**
+  String get onboardingSlideRemindTitle;
+
+  /// No description provided for @onboardingSlideRemindBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders before insurance, PUC and services are due — at 9 AM, never at night.'**
+  String get onboardingSlideRemindBody;
+
+  /// No description provided for @onboardingSlideScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan, don\'t type'**
+  String get onboardingSlideScanTitle;
+
+  /// No description provided for @onboardingSlideScanBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Photograph your RC and we\'ll fill in your vehicle\'s details.'**
+  String get onboardingSlideScanBody;
 }
 
 class _AppLocalizationsDelegate

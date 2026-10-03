@@ -1,12 +1,12 @@
-import 'package:bike_companion/core/services/health_score_service.dart';
-import 'package:bike_companion/data/database/app_database.dart';
-import 'package:bike_companion/data/repositories/vehicle_repository.dart';
-import 'package:bike_companion/data/repositories/document_repository.dart';
-import 'package:bike_companion/data/repositories/expense_repository.dart';
-import 'package:bike_companion/data/repositories/fuel_repository.dart';
-import 'package:bike_companion/data/repositories/service_repository.dart';
-import 'package:bike_companion/features/settings/settings_screen.dart';
-import 'package:bike_companion/main.dart';
+import 'package:garajo/core/services/health_score_service.dart';
+import 'package:garajo/data/database/app_database.dart';
+import 'package:garajo/data/repositories/vehicle_repository.dart';
+import 'package:garajo/data/repositories/document_repository.dart';
+import 'package:garajo/data/repositories/expense_repository.dart';
+import 'package:garajo/data/repositories/fuel_repository.dart';
+import 'package:garajo/data/repositories/service_repository.dart';
+import 'package:garajo/features/settings/settings_screen.dart';
+import 'package:garajo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +38,7 @@ void main() {
 
   testWidgets('App renders a MaterialApp without crashing', (tester) async {
     await tester.pumpWidget(
-      const ProviderScope(child: BikeCompanionApp()),
+      const ProviderScope(child: GarajoApp()),
     );
     await tester.pump(const Duration(seconds: 1));
 

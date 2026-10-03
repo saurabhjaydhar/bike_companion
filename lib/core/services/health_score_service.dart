@@ -41,13 +41,18 @@ class HealthScoreService {
       return HealthStatus.danger;
     }
 
+    // Intervals depend on the vehicle: a car's oil lasts ~10,000 km, a
+    // bike's 3,000–5,000; cars and scooters have no chain.
+    final p = vehicle.type.maintenance;
+
     // 1. Engine oil — 20 pts
     final lastOil = lastOf(ServiceTypes.oilChange);
     final kmOil = lastOil != null
         ? (vehicle.odometerCurrent - lastOil.odometer).toDouble()
         : double.maxFinite;
     final oilPts =
-        linearScore(current: kmOil, full: 3000, zero: 5000, maxPts: 20);
+        linearScore(
+            current: kmOil, full: p.oilKm.good, zero: p.oilKm.due, maxPts: 20);
     factors.add(HealthFactor(
       label: 'Engine Oil',
       serviceType: lastOil == null ? null : ServiceTypes.oilChange,
@@ -56,33 +61,35 @@ class HealthScoreService {
       status: statusFor(oilPts, 20),
       message: (l) => lastOil == null
           ? l.healthOilNone
-          : kmOil < 3000
+          : kmOil < p.oilKm.good
               ? l.healthOilGood(kmOil.round())
               : oilPts == 0
                   ? l.healthOilOverdue
-                  : l.healthOilDue((5000 - kmOil).round()),
+                  : l.healthOilDue((p.oilKm.due - kmOil).round()),
     ));
 
-    // 2. Chain maintenance — 15 pts
-    final lastChain =
-        lastOf(ServiceTypes.chainClean) ?? lastOf(ServiceTypes.chainLube);
-    final kmChain = lastChain != null
-        ? (vehicle.odometerCurrent - lastChain.odometer).toDouble()
-        : double.maxFinite;
-    final chainPts =
-        linearScore(current: kmChain, full: 800, zero: 1500, maxPts: 15);
-    factors.add(HealthFactor(
-      label: 'Chain',
-      serviceType: lastChain?.serviceType,
-      points: chainPts,
-      maxPoints: 15,
-      status: statusFor(chainPts, 15),
-      message: (l) => lastChain == null
-          ? l.healthChainNone
-          : kmChain < 800
-              ? l.healthChainGood(kmChain.round())
-              : l.healthChainDue((1500 - kmChain).round()),
-    ));
+    // 2. Chain maintenance — 15 pts (vehicles with a chain only)
+    if (p.chainKm case final chain?) {
+      final lastChain =
+          lastOf(ServiceTypes.chainClean) ?? lastOf(ServiceTypes.chainLube);
+      final kmChain = lastChain != null
+          ? (vehicle.odometerCurrent - lastChain.odometer).toDouble()
+          : double.maxFinite;
+      final chainPts = linearScore(
+          current: kmChain, full: chain.good, zero: chain.due, maxPts: 15);
+      factors.add(HealthFactor(
+        label: 'Chain',
+        serviceType: lastChain?.serviceType,
+        points: chainPts,
+        maxPoints: 15,
+        status: statusFor(chainPts, 15),
+        message: (l) => lastChain == null
+            ? l.healthChainNone
+            : kmChain < chain.good
+                ? l.healthChainGood(kmChain.round())
+                : l.healthChainDue((chain.due - kmChain).round()),
+      ));
+    }
 
     // 3. Air filter — 10 pts
     final lastAir = lastOf(ServiceTypes.airFilter);
@@ -90,7 +97,11 @@ class HealthScoreService {
         ? (vehicle.odometerCurrent - lastAir.odometer).toDouble()
         : double.maxFinite;
     final airPts =
-        linearScore(current: kmAir, full: 8000, zero: 12000, maxPts: 10);
+        linearScore(
+        current: kmAir,
+        full: p.airFilterKm.good,
+        zero: p.airFilterKm.due,
+        maxPts: 10);
     factors.add(HealthFactor(
       label: 'Air Filter',
       serviceType: lastAir == null ? null : ServiceTypes.airFilter,
@@ -99,7 +110,7 @@ class HealthScoreService {
       status: statusFor(airPts, 10),
       message: (l) => lastAir == null
           ? l.healthAirNone
-          : kmAir < 8000
+          : kmAir < p.airFilterKm.good
               ? l.healthAirGood((kmAir / 1000).toStringAsFixed(1))
               : l.healthAirDue,
     ));
@@ -110,7 +121,11 @@ class HealthScoreService {
         ? (vehicle.odometerCurrent - lastBrakes.odometer).toDouble()
         : double.maxFinite;
     final brakesPts =
-        linearScore(current: kmBrakes, full: 8000, zero: 15000, maxPts: 15);
+        linearScore(
+        current: kmBrakes,
+        full: p.brakePadsKm.good,
+        zero: p.brakePadsKm.due,
+        maxPts: 15);
     factors.add(HealthFactor(
       label: 'Brake Pads',
       serviceType: lastBrakes == null ? null : ServiceTypes.brakePads,
@@ -119,7 +134,7 @@ class HealthScoreService {
       status: statusFor(brakesPts, 15),
       message: (l) => lastBrakes == null
           ? l.healthBrakesNone
-          : kmBrakes < 8000
+          : kmBrakes < p.brakePadsKm.good
               ? l.healthBrakesGood((kmBrakes / 1000).toStringAsFixed(1))
               : l.healthBrakesDue,
     ));
@@ -128,9 +143,13 @@ class HealthScoreService {
     final lastTyre = lastOf(ServiceTypes.tyres);
     final tyreYears = lastTyre != null
         ? now.difference(lastTyre.date).inDays / 365.0
-        : 4.0;
+        : p.tyreYears.due;
     final tyrePts =
-        linearScore(current: tyreYears, full: 2, zero: 4, maxPts: 10);
+        linearScore(
+        current: tyreYears,
+        full: p.tyreYears.good,
+        zero: p.tyreYears.due,
+        maxPts: 10);
     factors.add(HealthFactor(
       label: 'Tyres',
       serviceType: lastTyre == null ? null : ServiceTypes.tyres,
@@ -139,7 +158,7 @@ class HealthScoreService {
       status: statusFor(tyrePts, 10),
       message: (l) => lastTyre == null
           ? l.healthTyresNone
-          : tyreYears < 2
+          : tyreYears < p.tyreYears.good
               ? l.healthTyresGood((tyreYears * 12).round())
               : l.healthTyresDue,
     ));
@@ -148,9 +167,13 @@ class HealthScoreService {
     final lastBattery = lastOf(ServiceTypes.battery);
     final batteryYears = lastBattery != null
         ? now.difference(lastBattery.date).inDays / 365.0
-        : 4.0;
+        : p.batteryYears.due;
     final batteryPts =
-        linearScore(current: batteryYears, full: 2, zero: 4, maxPts: 10);
+        linearScore(
+        current: batteryYears,
+        full: p.batteryYears.good,
+        zero: p.batteryYears.due,
+        maxPts: 10);
     factors.add(HealthFactor(
       label: 'Battery',
       serviceType: lastBattery == null ? null : ServiceTypes.battery,
@@ -159,7 +182,7 @@ class HealthScoreService {
       status: statusFor(batteryPts, 10),
       message: (l) => lastBattery == null
           ? l.healthBatteryNone
-          : batteryYears < 2
+          : batteryYears < p.batteryYears.good
               ? l.healthBatteryGood((batteryYears * 12).round())
               : l.healthBatteryDue,
     ));
@@ -194,7 +217,8 @@ class HealthScoreService {
     // 8. Fuel economy trend — 10 pts
     final double economyPts;
     final String Function(AppLocalizations l) economyMsg;
-    final withMileage = (fuelLogs
+    // Sort a copy: callers keep their own order (e.g. newest first).
+    final withMileage = ([...fuelLogs]
           ..sort((a, b) => a.date.compareTo(b.date)))
         .where((f) => f.mileageCalculated != null)
         .toList();
@@ -237,8 +261,12 @@ class HealthScoreService {
       message: economyMsg,
     ));
 
-    final total =
-        factors.fold(0.0, (sum, f) => sum + f.points).round().clamp(0, 100);
+    // Out of 100 whichever factors apply (cars have no chain factor).
+    final points = factors.fold(0.0, (sum, f) => sum + f.points);
+    final maxPoints = factors.fold(0.0, (sum, f) => sum + f.maxPoints);
+    final total = maxPoints > 0
+        ? (points / maxPoints * 100).round().clamp(0, 100)
+        : 0;
 
     return HealthScore(
       score: total,

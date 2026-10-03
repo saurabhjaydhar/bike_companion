@@ -33,11 +33,15 @@ class ServiceTypes {
   static const String tyres = 'tyres';
   static const String battery = 'battery';
   static const String coolant = 'coolant';
+  static const String wheelAlignment = 'wheel_alignment';
+  static const String acService = 'ac_service';
+  static const String wipers = 'wipers';
   static const String other = 'other';
 
   static const List<String> all = [
     oilChange, oilFilter, airFilter, chainClean, chainLube,
-    brakePads, tyres, battery, coolant, other,
+    brakePads, tyres, battery, coolant, wheelAlignment, acService, wipers,
+    other,
   ];
 }
 
@@ -81,4 +85,12 @@ class SharedPrefKeys {
 const List<String> kIndianBrands = [
   'Royal Enfield', 'Honda', 'Bajaj', 'TVS', 'Hero',
   'Yamaha', 'Suzuki', 'KTM', 'Kawasaki', 'BMW', 'Other',
+];
+
+/// Car makers sold in India. Checked before [kIndianBrands] when matching an
+/// RC maker, so "MARUTI SUZUKI" isn't taken for the Suzuki two-wheeler brand.
+const List<String> kCarBrands = [
+  'Maruti Suzuki', 'Hyundai', 'Tata', 'Mahindra', 'Kia', 'Toyota', 'Honda',
+  'MG', 'Skoda', 'Volkswagen', 'Renault', 'Nissan', 'Citroen', 'Jeep',
+  'Mercedes-Benz', 'BMW', 'Audi', 'Volvo', 'BYD',
 ];

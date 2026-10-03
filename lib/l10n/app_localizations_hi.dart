@@ -71,7 +71,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'इससे सभी बाइक, फ्यूल लॉग, सर्विस रिकॉर्ड, खर्च और दस्तावेज़ हमेशा के लिए हट जाएंगे। इसे वापस नहीं किया जा सकता।';
+      'इससे सभी वाहन, ईंधन लॉग, सर्विस रिकॉर्ड, खर्च और दस्तावेज़ स्थायी रूप से हट जाएंगे। इसे पूर्ववत नहीं किया जा सकता।';
 
   @override
   String get settingsDataCleared => 'सारा डेटा मिटा दिया गया';
@@ -95,7 +95,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'खाता नहीं हटाया जा सका। कृपया फिर से साइन इन करके दोबारा कोशिश करें।';
 
   @override
-  String get appTitle => 'बाइक कंपेनियन';
+  String get appTitle => 'Garajo';
 
   @override
   String get commonContinue => 'जारी रखें';
@@ -118,7 +118,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get authTagline =>
-      'अपनी मोटरसाइकिल का फ्यूल, सर्विस\nऔर खर्च ट्रैक करें';
+      'अपनी बाइक, स्कूटर या कार के\nईंधन, सर्विस और खर्च ट्रैक करें';
 
   @override
   String get authContinueWithGoogle => 'Google से जारी रखें';
@@ -131,17 +131,10 @@ class AppLocalizationsHi extends AppLocalizations {
       'जारी रखकर आप हमारी शर्तों और गोपनीयता नीति से सहमत होते हैं।';
 
   @override
-  String get onboardingWelcomeTitle => 'आपकी बाइक,\nहमेशा फिट';
+  String get onboardingWelcomeTitle => 'Garajo में आपका स्वागत है';
 
   @override
-  String get onboardingWelcomeBody =>
-      'फ्यूल, सर्विस, खर्च और दस्तावेज़ — सब एक ही जगह ट्रैक करें। जानें कि आपकी बाइक को कब देखभाल की ज़रूरत है।';
-
-  @override
-  String get onboardingGetStarted => 'शुरू करें';
-
-  @override
-  String get onboardingAddMyVehicle => 'मेरी बाइक जोड़ें';
+  String get onboardingAddMyVehicle => 'मेरा वाहन जोड़ें';
 
   @override
   String get fieldBrand => 'ब्रांड';
@@ -198,7 +191,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get addVehicleFetchFailed => 'वाहन की जानकारी नहीं मिल सकी।';
 
   @override
-  String get addVehicleTitle => 'अपनी बाइक जोड़ें';
+  String get addVehicleTitle => 'अपना वाहन जोड़ें';
 
   @override
   String get addVehicleSubtitle =>
@@ -221,7 +214,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get vehicleSaveFailed =>
-      'बाइक सेव नहीं हो सकी। कृपया दोबारा कोशिश करें।';
+      'वाहन सहेजा नहीं जा सका। कृपया फिर से कोशिश करें।';
 
   @override
   String get vehicleDetailsTitle => 'वाहन की जानकारी';
@@ -260,7 +253,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get vehicleChassisNumber => 'चेसिस नंबर';
 
   @override
-  String get vehicleSaveVehicle => 'बाइक सेव करें';
+  String get vehicleSaveVehicle => 'वाहन सहेजें';
 
   @override
   String get vehicleFetchSuccess =>
@@ -282,20 +275,20 @@ class AppLocalizationsHi extends AppLocalizations {
   String get garageTitle => 'मेरा गैराज';
 
   @override
-  String get garageEmptyTitle => 'अभी कोई बाइक नहीं है';
+  String get garageEmptyTitle => 'अभी कोई वाहन नहीं';
 
   @override
   String get garageEmptyBody =>
-      'फ्यूल, सर्विस और खर्च ट्रैक करने के लिए अपनी पहली बाइक जोड़ें।';
+      'ईंधन, सर्विस और खर्च ट्रैक करना शुरू करने के लिए अपनी पहली बाइक, स्कूटर या कार जोड़ें।';
 
   @override
-  String get garageYourVehicles => 'आपकी बाइकें';
+  String get garageYourVehicles => 'आपके वाहन';
 
   @override
-  String get garageAddAnother => 'एक और बाइक जोड़ें';
+  String get garageAddAnother => 'एक और वाहन जोड़ें';
 
   @override
-  String get garageStatVehicles => 'बाइकें';
+  String get garageStatVehicles => 'वाहन';
 
   @override
   String get garageStatAlerts => 'अलर्ट';
@@ -683,7 +676,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ridesComingSoon => 'GPS राइड ट्रैकिंग\nजल्द आ रही है';
 
   @override
-  String get noVehicleSelected => 'पहले होम टैब से कोई बाइक चुनें।';
+  String get noVehicleSelected => 'पहले होम टैब से एक वाहन चुनें।';
 
   @override
   String get offlineBanner => 'इंटरनेट नहीं है — ऑफ़लाइन काम कर रहे हैं';
@@ -819,7 +812,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get addVehicleManualTitle => 'खुद दर्ज करें';
 
   @override
-  String get addVehicleManualBody => 'अपनी बाइक की जानकारी खुद लिखें।';
+  String get addVehicleManualBody => 'अपने वाहन का विवरण खुद भरें।';
 
   @override
   String get addVehicleLookupTitle => 'नंबर से खोजें';
@@ -881,7 +874,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'आपका RC साफ़ नहीं पढ़ा जा सका। कृपया नीचे जानकारी भरें।';
 
   @override
-  String get vehicleSectionYourVehicle => 'आपकी बाइक';
+  String get vehicleSectionYourVehicle => 'आपका वाहन';
 
   @override
   String get vahanSmsButton => 'VAHAN पर SMS से जांचें';
@@ -1112,4 +1105,50 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get garageThisYear => 'इस वर्ष';
+
+  @override
+  String get vehicleTypeTitle => 'वाहन का प्रकार';
+
+  @override
+  String get vehicleTypeDetected =>
+      'आपके RC से पहचाना गया — गलत हो तो बदल दें।';
+
+  @override
+  String get vehicleTypeBike => 'बाइक';
+
+  @override
+  String get vehicleTypeScooter => 'स्कूटर';
+
+  @override
+  String get vehicleTypeCar => 'कार';
+
+  @override
+  String get serviceWheelAlignment => 'व्हील अलाइनमेंट';
+
+  @override
+  String get serviceAcService => 'AC सर्विस';
+
+  @override
+  String get serviceWipers => 'वाइपर';
+
+  @override
+  String get onboardingSlideTrackTitle => 'हर रुपये का हिसाब';
+
+  @override
+  String get onboardingSlideTrackBody =>
+      'ईंधन, सर्विस और खर्च एक ही जगह — हर वाहन के लिए बजट और प्रति किमी लागत के साथ।';
+
+  @override
+  String get onboardingSlideRemindTitle => 'कोई तारीख न छूटे';
+
+  @override
+  String get onboardingSlideRemindBody =>
+      'बीमा, PUC और सर्विस की तारीख से पहले रिमाइंडर — सुबह 9 बजे, रात में कभी नहीं।';
+
+  @override
+  String get onboardingSlideScanTitle => 'टाइप नहीं, स्कैन करें';
+
+  @override
+  String get onboardingSlideScanBody =>
+      'अपने RC की फ़ोटो लें और हम आपके वाहन का विवरण भर देंगे।';
 }

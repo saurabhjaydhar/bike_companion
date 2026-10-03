@@ -42,32 +42,6 @@ class _AuthRefreshNotifier extends ChangeNotifier {
 }
 
 // ---------------------------------------------------------------------------
-// Rides placeholder (future phase)
-// ---------------------------------------------------------------------------
-class _RidesPlaceholder extends StatelessWidget {
-  const _RidesPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.navRides)),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.route_rounded, size: 48, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(context.l10n.ridesComingSoon,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
 // No-vehicle selected placeholder (shown when tab tapped before any vehicle is active)
 // ---------------------------------------------------------------------------
 class _NoVehiclePlaceholder extends StatelessWidget {
@@ -95,7 +69,6 @@ class _NavShell extends ConsumerWidget {
         (icon: Icons.dashboard_rounded, label: l.navHome),
         (icon: Icons.receipt_long_rounded, label: l.expensesTitle),
         (icon: Icons.build_rounded, label: l.expenseService),
-        (icon: Icons.route_rounded, label: l.navRides),
         (icon: Icons.folder_rounded, label: l.navDocs),
       ];
 
@@ -118,12 +91,10 @@ class _NavShell extends ConsumerWidget {
           shell.goBranch(2, initialLocation: index == shell.currentIndex);
         }
       case 3:
-        shell.goBranch(3, initialLocation: index == shell.currentIndex);
-      case 4:
         if (vehicleId != null) {
           context.go('/documents/$vehicleId');
         } else {
-          shell.goBranch(4, initialLocation: index == shell.currentIndex);
+          shell.goBranch(3, initialLocation: index == shell.currentIndex);
         }
     }
   }
@@ -297,15 +268,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 state,
                 ServiceScreen(vehicleId: state.pathParameters['vehicleId']!),
               ),
-            ),
-          ]),
-
-          // Rides tab (future)
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/rides',
-              pageBuilder: (context, state) =>
-                  _fade(state, const _RidesPlaceholder()),
             ),
           ]),
 

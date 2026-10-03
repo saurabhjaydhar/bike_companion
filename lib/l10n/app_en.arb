@@ -199,8 +199,6 @@
   "fuelAmountPaid": "Amount paid",
   "fuelStationOptional": "Fuel station (optional)",
   "fuelStationHint": "HP, Indian Oil, Bharat...",
-  "fuelReceiptSoon": "Receipt scan coming soon!",
-  "fuelScanReceipt": "Scan receipt",
   "fuelSave": "Save fuel stop",
   "fuelHistoryTitle": "Fuel history",
   "fuelHistoryEmptyTitle": "No fuel logs yet",
@@ -310,9 +308,7 @@
   "documentsAttachPhoto": "Attach photo",
   "documentsSave": "Save document",
   "navHome": "Home",
-  "navRides": "Rides",
   "navDocs": "Docs",
-  "ridesComingSoon": "GPS ride tracking\ncoming soon",
   "noVehicleSelected": "Select a vehicle from the Home tab first.",
   "offlineBanner": "No internet — working offline",
   "notifServiceOverdueTitle": "Service overdue — {vehicle}",
@@ -658,5 +654,16 @@
   "onboardingSlideRemindTitle": "Never miss a date",
   "onboardingSlideRemindBody": "Reminders before insurance, PUC and services are due — at 9 AM, never at night.",
   "onboardingSlideScanTitle": "Scan, don't type",
-  "onboardingSlideScanBody": "Photograph your RC and we'll fill in your vehicle's details."
+  "onboardingSlideScanBody": "Photograph your RC and we'll fill in your vehicle's details.",
+  "fuelLitresFromPrice": "≈ {litres} L at ₹{price}/L (your last fill-up)",
+  "@fuelLitresFromPrice": {
+    "placeholders": {
+      "litres": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

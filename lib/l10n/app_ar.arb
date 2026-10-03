@@ -119,8 +119,6 @@
   "fuelAmountPaid": "المبلغ المدفوع",
   "fuelStationOptional": "محطة الوقود (اختياري)",
   "fuelStationHint": "HP، Indian Oil، Bharat...",
-  "fuelReceiptSoon": "مسح الإيصالات قريبًا!",
-  "fuelScanReceipt": "مسح الإيصال",
   "fuelSave": "حفظ التعبئة",
   "fuelHistoryTitle": "سجل الوقود",
   "fuelHistoryEmptyTitle": "لا توجد سجلات وقود بعد",
@@ -202,9 +200,7 @@
   "documentsAttachPhoto": "إرفاق صورة",
   "documentsSave": "حفظ المستند",
   "navHome": "الرئيسية",
-  "navRides": "الرحلات",
   "navDocs": "المستندات",
-  "ridesComingSoon": "تتبّع الرحلات عبر GPS\nقريبًا",
   "noVehicleSelected": "اختر مركبة من تبويب الرئيسية أولًا.",
   "offlineBanner": "لا يوجد إنترنت — العمل بدون اتصال",
   "notifServiceOverdueTitle": "صيانة متأخرة — {vehicle}",
@@ -329,5 +325,6 @@
   "onboardingSlideRemindTitle": "لا تفوّت أي موعد",
   "onboardingSlideRemindBody": "تذكيرات قبل مواعيد التأمين وشهادة PUC والصيانة — في التاسعة صباحًا، وليس ليلًا أبدًا.",
   "onboardingSlideScanTitle": "امسح ولا تكتب",
-  "onboardingSlideScanBody": "صوّر بطاقة RC وسنملأ تفاصيل مركبتك."
+  "onboardingSlideScanBody": "صوّر بطاقة RC وسنملأ تفاصيل مركبتك.",
+  "fuelLitresFromPrice": "≈ {litres} لتر بسعر ₹{price}/لتر (آخر تعبئة)"
 }

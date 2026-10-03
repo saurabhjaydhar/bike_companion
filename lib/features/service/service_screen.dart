@@ -9,6 +9,7 @@ import '../../data/models/health_score.dart';
 import '../../data/models/service_record.dart';
 import '../../features/dashboard/dashboard_provider.dart';
 import '../../features/garage/garage_provider.dart';
+import '../expenses/expenses_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import 'service_provider.dart';
@@ -378,6 +379,8 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
           .addService(record);
       widget.ref.invalidate(dashboardProvider(widget.vehicleId));
       widget.ref.invalidate(garageProvider);
+      // Service costs count in spending.
+      widget.ref.invalidate(expensesProvider(widget.vehicleId));
       if (mounted) Navigator.pop(context);
     } finally {
       if (mounted) setState(() => _saving = false);

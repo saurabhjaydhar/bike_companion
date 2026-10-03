@@ -824,18 +824,6 @@ abstract class AppLocalizations {
   /// **'HP, Indian Oil, Bharat...'**
   String get fuelStationHint;
 
-  /// No description provided for @fuelReceiptSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Receipt scan coming soon!'**
-  String get fuelReceiptSoon;
-
-  /// No description provided for @fuelScanReceipt.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan receipt'**
-  String get fuelScanReceipt;
-
   /// No description provided for @fuelSave.
   ///
   /// In en, this message translates to:
@@ -1322,23 +1310,11 @@ abstract class AppLocalizations {
   /// **'Home'**
   String get navHome;
 
-  /// No description provided for @navRides.
-  ///
-  /// In en, this message translates to:
-  /// **'Rides'**
-  String get navRides;
-
   /// No description provided for @navDocs.
   ///
   /// In en, this message translates to:
   /// **'Docs'**
   String get navDocs;
-
-  /// No description provided for @ridesComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'GPS ride tracking\ncoming soon'**
-  String get ridesComingSoon;
 
   /// No description provided for @noVehicleSelected.
   ///
@@ -2089,6 +2065,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photograph your RC and we\'ll fill in your vehicle\'s details.'**
   String get onboardingSlideScanBody;
+
+  /// No description provided for @fuelLitresFromPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {litres} L at ₹{price}/L (your last fill-up)'**
+  String fuelLitresFromPrice(String litres, String price);
 }
 
 class _AppLocalizationsDelegate

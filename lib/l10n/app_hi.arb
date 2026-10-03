@@ -119,8 +119,6 @@
   "fuelAmountPaid": "भुगतान की गई राशि",
   "fuelStationOptional": "पेट्रोल पंप (वैकल्पिक)",
   "fuelStationHint": "HP, Indian Oil, Bharat...",
-  "fuelReceiptSoon": "रसीद स्कैन जल्द आ रहा है!",
-  "fuelScanReceipt": "रसीद स्कैन करें",
   "fuelSave": "फ्यूल स्टॉप सेव करें",
   "fuelHistoryTitle": "फ्यूल इतिहास",
   "fuelHistoryEmptyTitle": "अभी कोई फ्यूल लॉग नहीं है",
@@ -202,9 +200,7 @@
   "documentsAttachPhoto": "फ़ोटो जोड़ें",
   "documentsSave": "दस्तावेज़ सेव करें",
   "navHome": "होम",
-  "navRides": "राइड्स",
   "navDocs": "दस्तावेज़",
-  "ridesComingSoon": "GPS राइड ट्रैकिंग\nजल्द आ रही है",
   "noVehicleSelected": "पहले होम टैब से एक वाहन चुनें।",
   "offlineBanner": "इंटरनेट नहीं है — ऑफ़लाइन काम कर रहे हैं",
   "notifServiceOverdueTitle": "सर्विस का समय निकल गया — {vehicle}",
@@ -329,5 +325,6 @@
   "onboardingSlideRemindTitle": "कोई तारीख न छूटे",
   "onboardingSlideRemindBody": "बीमा, PUC और सर्विस की तारीख से पहले रिमाइंडर — सुबह 9 बजे, रात में कभी नहीं।",
   "onboardingSlideScanTitle": "टाइप नहीं, स्कैन करें",
-  "onboardingSlideScanBody": "अपने RC की फ़ोटो लें और हम आपके वाहन का विवरण भर देंगे।"
+  "onboardingSlideScanBody": "अपने RC की फ़ोटो लें और हम आपके वाहन का विवरण भर देंगे।",
+  "fuelLitresFromPrice": "≈ {litres} L, ₹{price}/L पर (आपकी पिछली फ़िलिंग)"
 }

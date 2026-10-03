@@ -406,12 +406,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get fuelStationHint => 'HP, Indian Oil, Bharat...';
 
   @override
-  String get fuelReceiptSoon => 'रसीद स्कैन जल्द आ रहा है!';
-
-  @override
-  String get fuelScanReceipt => 'रसीद स्कैन करें';
-
-  @override
   String get fuelSave => 'फ्यूल स्टॉप सेव करें';
 
   @override
@@ -667,13 +661,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get navHome => 'होम';
 
   @override
-  String get navRides => 'राइड्स';
-
-  @override
   String get navDocs => 'दस्तावेज़';
-
-  @override
-  String get ridesComingSoon => 'GPS राइड ट्रैकिंग\nजल्द आ रही है';
 
   @override
   String get noVehicleSelected => 'पहले होम टैब से एक वाहन चुनें।';
@@ -1151,4 +1139,9 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get onboardingSlideScanBody =>
       'अपने RC की फ़ोटो लें और हम आपके वाहन का विवरण भर देंगे।';
+
+  @override
+  String fuelLitresFromPrice(String litres, String price) {
+    return '≈ $litres L, ₹$price/L पर (आपकी पिछली फ़िलिंग)';
+  }
 }

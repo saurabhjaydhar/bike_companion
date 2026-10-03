@@ -11,6 +11,7 @@ import '../../data/models/fuel_log.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../features/dashboard/dashboard_provider.dart';
+import '../../features/expenses/expenses_provider.dart';
 import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
@@ -67,6 +68,22 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
           ? _kmSinceLast! / _avgMileage!
           : null;
 
+  /// Price per litre at the last fill-up, to work out litres from the
+  /// amount paid when the user doesn't type them.
+  double? get _lastPrice {
+    final last = _lastLog;
+    if (last?.amount == null || (last?.litres ?? 0) <= 0) return null;
+    return last!.amount! / last.litres!;
+  }
+
+  double? get _litresFromAmount {
+    final amount = double.tryParse(_amountCtrl.text);
+    final price = _lastPrice;
+    return amount != null && amount > 0 && price != null
+        ? amount / price
+        : null;
+  }
+
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
@@ -81,7 +98,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
     setState(() => _saving = true);
     try {
-      final litres = double.tryParse(_litresCtrl.text);
+      final litres = double.tryParse(_litresCtrl.text) ?? _litresFromAmount;
       final amount = double.tryParse(_amountCtrl.text);
       final kmSinceLast = _kmSinceLast;
       final mileage =
@@ -109,6 +126,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
       ref.invalidate(dashboardProvider(widget.vehicleId));
       ref.invalidate(garageProvider);
       ref.invalidate(fuelHistoryProvider(widget.vehicleId));
+      ref.invalidate(expensesProvider(widget.vehicleId));
 
       HapticFeedback.mediumImpact();
       if (mounted) {
@@ -141,7 +159,6 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
     final l = context.l10n;
 
     return Scaffold(
@@ -178,6 +195,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: _odometerCtrl,
+              autofocus: true,
               keyboardType: TextInputType.number,
               style: AppTextStyles.display
                   .copyWith(fontSize: 40, color: textPrimary),
@@ -246,6 +264,27 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
             const SizedBox(height: AppSpacing.xl),
 
+            // Amount paid — what spending tracking needs
+            _FieldLabel(l.fuelAmountPaid, textSecondary),
+            TextFormField(
+              controller: _amountCtrl,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: '0',
+                prefixText: '₹ ',
+                helperText: _litresFromAmount != null &&
+                        _litresCtrl.text.isEmpty
+                    ? l.fuelLitresFromPrice(
+                        _litresFromAmount!.toStringAsFixed(1),
+                        _lastPrice!.toStringAsFixed(1))
+                    : null,
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.xl),
+
             // Optional fields toggle
             GestureDetector(
               onTap: () =>
@@ -277,15 +316,6 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                     const InputDecoration(hintText: '0.0', suffixText: 'L'),
               ),
               const SizedBox(height: AppSpacing.lg),
-              _FieldLabel(l.fuelAmountPaid, textSecondary),
-              TextFormField(
-                controller: _amountCtrl,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(
-                    hintText: '0', prefixText: '₹ '),
-              ),
-              const SizedBox(height: AppSpacing.lg),
               _FieldLabel(l.fuelStationOptional, textSecondary),
               TextFormField(
                 controller: _stationCtrl,
@@ -293,23 +323,6 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
               ),
             ],
 
-            const SizedBox(height: AppSpacing.xl),
-
-            // Receipt scan placeholder
-            OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l.fuelReceiptSoon)),
-                );
-              },
-              icon: const Icon(Icons.camera_alt_outlined, size: 18),
-              label: Text(l.fuelScanReceipt),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 44),
-                side: BorderSide(color: border),
-                foregroundColor: textSecondary,
-              ),
-            ),
 
             const SizedBox(height: AppSpacing.xl),
             PrimaryButton(

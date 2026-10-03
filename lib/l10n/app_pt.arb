@@ -119,8 +119,6 @@
   "fuelAmountPaid": "Valor pago",
   "fuelStationOptional": "Posto de abastecimento (opcional)",
   "fuelStationHint": "HP, Indian Oil, Bharat...",
-  "fuelReceiptSoon": "Leitura de recibos em breve!",
-  "fuelScanReceipt": "Digitalizar recibo",
   "fuelSave": "Guardar abastecimento",
   "fuelHistoryTitle": "Histórico de combustível",
   "fuelHistoryEmptyTitle": "Ainda sem abastecimentos",
@@ -202,9 +200,7 @@
   "documentsAttachPhoto": "Anexar foto",
   "documentsSave": "Guardar documento",
   "navHome": "Início",
-  "navRides": "Passeios",
   "navDocs": "Docs",
-  "ridesComingSoon": "Monitorização de passeios por GPS\nem breve",
   "noVehicleSelected": "Primeiro escolha um veículo na aba Início.",
   "offlineBanner": "Sem internet — modo offline",
   "notifServiceOverdueTitle": "Revisão atrasada — {vehicle}",
@@ -329,5 +325,6 @@
   "onboardingSlideRemindTitle": "Nunca perca uma data",
   "onboardingSlideRemindBody": "Lembretes antes de vencerem o seguro, o PUC e as revisões — às 9h, nunca à noite.",
   "onboardingSlideScanTitle": "Digitalize, não digite",
-  "onboardingSlideScanBody": "Fotografe seu RC e preencheremos os dados do seu veículo."
+  "onboardingSlideScanBody": "Fotografe seu RC e preencheremos os dados do seu veículo.",
+  "fuelLitresFromPrice": "≈ {litres} L a ₹{price}/L (seu último abastecimento)"
 }

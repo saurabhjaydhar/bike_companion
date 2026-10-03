@@ -119,8 +119,6 @@
   "fuelAmountPaid": "Bezahlter Betrag",
   "fuelStationOptional": "Tankstelle (optional)",
   "fuelStationHint": "HP, Indian Oil, Bharat...",
-  "fuelReceiptSoon": "Beleg-Scan kommt bald!",
-  "fuelScanReceipt": "Beleg scannen",
   "fuelSave": "Tankstopp speichern",
   "fuelHistoryTitle": "Tankverlauf",
   "fuelHistoryEmptyTitle": "Noch keine Tankeinträge",
@@ -202,9 +200,7 @@
   "documentsAttachPhoto": "Foto anhängen",
   "documentsSave": "Dokument speichern",
   "navHome": "Start",
-  "navRides": "Fahrten",
   "navDocs": "Doku",
-  "ridesComingSoon": "GPS-Fahrtaufzeichnung\nkommt bald",
   "noVehicleSelected": "Wähle zuerst auf dem Start-Tab ein Fahrzeug.",
   "offlineBanner": "Kein Internet – Offline-Modus",
   "notifServiceOverdueTitle": "Wartung überfällig – {vehicle}",
@@ -329,5 +325,6 @@
   "onboardingSlideRemindTitle": "Kein Termin geht verloren",
   "onboardingSlideRemindBody": "Erinnerungen vor Ablauf von Versicherung, PUC und Wartung – um 9 Uhr, nie nachts.",
   "onboardingSlideScanTitle": "Scannen statt tippen",
-  "onboardingSlideScanBody": "Fotografiere deine RC und wir füllen die Fahrzeugdaten aus."
+  "onboardingSlideScanBody": "Fotografiere deine RC und wir füllen die Fahrzeugdaten aus.",
+  "fuelLitresFromPrice": "≈ {litres} L zu ₹{price}/L (dein letzter Tankstopp)"
 }

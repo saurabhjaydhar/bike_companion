@@ -179,7 +179,7 @@ The internal `Bike` class and `bikes` table keep their names — renaming them i
 
 - [x] RC scan: front/back capture, upright rotation, position-based OCR parsing, Gemini with on-device gap-fill
 - [x] Name decided: **Garajo**
-- [ ] Phase 0 — Foundation
+- [x] Phase 0 — Foundation
 - [ ] Phase 1 — Reminders
 - [ ] Phase 2 — Spending, budgets and analytics
 - [ ] Phase 3 — Car support and rebrand

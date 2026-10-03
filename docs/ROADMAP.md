@@ -42,6 +42,21 @@ Both need new Firebase app registrations and new `google-services.json` / `Googl
 - Data the user entered is never lost or silently changed by an upgrade.
 - All user-facing text goes through l10n in all 8 languages (en, hi, es, fr, de, it, pt, ar).
 
+### Naming conventions (apply to all code)
+
+The app manages **vehicles** — bikes, scooters and cars — so code is named for vehicles, never for one type.
+
+| Layer | Rule | Examples |
+|---|---|---|
+| **Dart code** — classes, files, variables, parameters, providers, routes | Use *vehicle* | `Vehicle`, `VehicleRepository`, `vehicle_repository.dart`, `vehicleId`, `vehiclesProvider`, `/garage/vehicle/:vehicleId` |
+| **Type-specific code** | Name the type only where behaviour really differs | `bikeServiceTypes`, `carServiceTypes`, `if (vehicle.type == VehicleType.car)` |
+| **Stored names** — SQLite tables/columns, Firestore paths and fields | Keep as they are: `bikes`, `bike_id`, `users/{uid}/bikes/...` | Renaming would mean migrating every user's phone database and cloud data |
+| **Mapping** | Stored names appear **only** in the data layer (`lib/data/`, sync and restore), as named constants — nowhere else | `VehicleRepository` reads table `bikes`; `Vehicle.fromMap` reads `bike_id` |
+| **RC scan result** | Called `RcDetails` — it's what the RC says, not a saved vehicle | `RcDetails`, `rcDetailsFromJson` |
+| **User-facing text** | "vehicle" on shared screens; "bike" / "car" only where the screen is about that type | l10n keys follow the same rule: `vehicleAdd`, not `bikeAdd` |
+
+New code follows these rules from the start; the existing code is renamed in step 0.6.
+
 ### UX principles (apply to every feature)
 
 Every feature must be quick to use, obvious without explanation, and look polished. A feature isn't done until it meets these:
@@ -72,8 +87,10 @@ Effort: **S** ≈ days, **M** ≈ 1 week, **L** ≈ 2+ weeks.
 | 0.2 | Cloud restore copies only known columns | Restore inserts raw Firestore rows into SQLite; any new column breaks restore across versions |
 | 0.3 | Migration test harness (create v2 DB → upgrade → verify) | Every later phase adds a case |
 | 0.4 | Stable notification IDs (fixed hash instead of `String.hashCode`) | IDs must stay the same across app versions to cancel/reschedule |
+| 0.5 | Fix cloud sync: every repository write queues an upload; uploads run after each change and on sign-in; one-time backfill of existing data; deleting a vehicle deletes its records in the cloud | Nothing ever called the sync queue, so no data had ever reached the cloud and restore had nothing to restore |
+| 0.6 | Rename `Bike` → `Vehicle` in code (classes, files, variables, routes, l10n keys); RC-scan `Vehicle` → `RcDetails`; stored names unchanged, mapped in the data layer | Code matches the product before car support; see *Naming conventions* |
 
-**Done when:** tests green; restore of an older backup into the current schema works.
+**Done when:** tests green; restore of an older backup into the current schema works; a change made on one phone appears after restore on another; no `bike` identifiers left in Dart code outside the data-layer mapping.
 
 ### Phase 1 — Reminders (M)
 
@@ -138,7 +155,7 @@ Done together because both rewrite the same "bike" wording.
 | 3.7 | Rebrand: app name, icon, splash, store text |
 | 3.8 | New identifiers (`app.garajo`) + new Firebase apps and config files |
 
-The internal `Bike` class and `bikes` table keep their names — renaming them is risk without user benefit.
+Code already says *vehicle* (step 0.6); stored names stay `bikes` / `bike_id` — see *Naming conventions*.
 
 **UX:**
 - **Vehicle type picker**: large illustrated cards (Bike · Scooter · Car) as the first step of adding a vehicle — or skipped entirely when the RC scan already detected the type ("Looks like a car — correct?").
@@ -179,7 +196,7 @@ The internal `Bike` class and `bikes` table keep their names — renaming them i
 
 - [x] RC scan: front/back capture, upright rotation, position-based OCR parsing, Gemini with on-device gap-fill
 - [x] Name decided: **Garajo**
-- [x] Phase 0 — Foundation
+- [ ] Phase 0 — Foundation (0.1–0.4 done; 0.5 sync fix and 0.6 rename in progress)
 - [ ] Phase 1 — Reminders
 - [ ] Phase 2 — Spending, budgets and analytics
 - [ ] Phase 3 — Car support and rebrand

@@ -237,9 +237,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get vehicleManufacturer => 'Costruttore';
 
   @override
-  String get vehicleVariant => 'Versione';
-
-  @override
   String get vehicleFuelType => 'Alimentazione';
 
   @override
@@ -902,6 +899,38 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get scanReading => 'Lettura della RC…';
+
+  @override
+  String get scanTitle => 'Scansiona la tua RC';
+
+  @override
+  String get scanSubtitle =>
+      'Aggiungi le foto di entrambi i lati della carta RC: ogni lato ha dati diversi. Per un libretto RC o una RC digitale basta una foto.';
+
+  @override
+  String get scanFront => 'Fronte';
+
+  @override
+  String get scanFrontHint => 'Targa, numero di telaio e di motore';
+
+  @override
+  String get scanBack => 'Retro';
+
+  @override
+  String get scanBackHint => 'Costruttore, modello e classe del veicolo';
+
+  @override
+  String get scanAddPhoto => 'Tocca per aggiungere una foto';
+
+  @override
+  String get scanRemovePhoto => 'Rimuovi foto';
+
+  @override
+  String get scanReadDetails => 'Leggi i dati';
+
+  @override
+  String get scanPickerError =>
+      'Impossibile aprire la fotocamera o la galleria. Controlla i permessi dell\'app nelle Impostazioni.';
 
   @override
   String get vehicleScanSuccess =>

@@ -22,6 +22,7 @@ import '../features/fuel/fuel_log_screen.dart';
 import '../features/garage/garage_screen.dart';
 import '../features/onboarding/add_bike_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/onboarding/rc_scan_screen.dart';
 import '../features/onboarding/vehicle_details_screen.dart';
 import '../features/service/service_screen.dart';
 import '../data/models/vehicle.dart';
@@ -200,6 +201,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/onboarding/add-bike',
         pageBuilder: (context, state) =>
             _slide(state, const AddBikeScreen()),
+      ),
+      GoRoute(
+        path: '/onboarding/scan-rc',
+        pageBuilder: (context, state) =>
+            _slide(state, const RcScanScreen()),
       ),
       GoRoute(
         path: '/onboarding/vehicle-details',

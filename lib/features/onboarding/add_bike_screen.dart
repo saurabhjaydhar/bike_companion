@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/services/rc_lookup_service.dart';
@@ -30,19 +28,6 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
   final _rcCtrl = TextEditingController();
   String? _error;
   bool _fetching = false;
-  bool _scanning = false;
-  bool _useGemini = false;
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then((prefs) {
-      if (mounted) {
-        setState(() => _useGemini =
-            prefs.getBool(SharedPrefKeys.rcScanUseGemini) ?? false);
-      }
-    });
-  }
 
   @override
   void dispose() {
@@ -58,90 +43,6 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
       'prefillSuccess': prefillSuccess,
       'failureReason': failureReason,
     });
-  }
-
-  Future<void> _setUseGemini(bool value) async {
-    setState(() => _useGemini = value);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(SharedPrefKeys.rcScanUseGemini, value);
-  }
-
-  Future<void> _scan(ImageSource source) async {
-    final file = await ImagePicker().pickImage(
-      source: source,
-      maxWidth: 2048,
-      imageQuality: 85,
-    );
-    if (file == null || !mounted) return;
-
-    HapticFeedback.lightImpact();
-    setState(() => _scanning = true);
-    final result = await ref
-        .read(rcScanServiceProvider)
-        .scan(file.path, allowCloud: _useGemini);
-    if (!mounted) return;
-    setState(() => _scanning = false);
-
-    _openDetails(
-      result.vehicle ?? const Vehicle(rcNumber: ''),
-      VehiclePrefill.scan,
-      prefillSuccess: result.found,
-    );
-  }
-
-  void _showScanSheet() {
-    final l = context.l10n;
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(AppRadius.large)),
-      ),
-      builder: (sheetContext) => StatefulBuilder(
-        builder: (sheetContext, setSheetState) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.photo_camera_rounded,
-                      color: AppColors.primary),
-                  title: Text(l.scanTakePhoto),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    _scan(ImageSource.camera);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.photo_library_rounded,
-                      color: AppColors.primary),
-                  title: Text(l.scanChooseGallery),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    _scan(ImageSource.gallery);
-                  },
-                ),
-                const Divider(),
-                SwitchListTile(
-                  value: _useGemini,
-                  activeThumbColor: AppColors.primary,
-                  secondary: const Icon(Icons.auto_awesome_rounded,
-                      color: AppColors.accent),
-                  title: Text(l.scanUseGemini),
-                  subtitle: Text(l.scanUseGeminiBody),
-                  isThreeLine: true,
-                  onChanged: (v) {
-                    _setUseGemini(v);
-                    setSheetState(() {});
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Future<void> _lookup() async {
@@ -198,125 +99,117 @@ class _AddBikeScreenState extends ConsumerState<AddBikeScreen> {
         ),
       ),
       body: SafeArea(
-        child: _scanning
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: _LoadingPill(
-                      label: l.scanReading, isDark: isDark),
+        child: ListView(
+              padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.xl),
+              children: [
+                Text(
+                  l.addBikeTitle,
+                  style: AppTextStyles.heading1.copyWith(color: textPrimary),
                 ),
-              )
-            : ListView(
-                padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.xl),
-                children: [
-                  Text(
-                    l.addBikeTitle,
-                    style: AppTextStyles.heading1.copyWith(color: textPrimary),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    l.addBikeHubSubtitle,
-                    style: AppTextStyles.body.copyWith(color: textSecondary),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l.addBikeHubSubtitle,
+                  style: AppTextStyles.body.copyWith(color: textSecondary),
+                ),
+                const SizedBox(height: AppSpacing.xl),
 
-                  _OptionCard(
-                    icon: Icons.document_scanner_rounded,
-                    title: l.addBikeScanTitle,
-                    body: l.addBikeScanBody,
-                    highlighted: true,
-                    onTap: _showScanSheet,
+                _OptionCard(
+                  icon: Icons.document_scanner_rounded,
+                  title: l.addBikeScanTitle,
+                  body: l.addBikeScanBody,
+                  highlighted: true,
+                  onTap: () => context.push('/onboarding/scan-rc'),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _OptionCard(
+                  icon: Icons.edit_note_rounded,
+                  title: l.addBikeManualTitle,
+                  body: l.addBikeManualBody,
+                  onTap: () => _openDetails(
+                      const Vehicle(rcNumber: ''), VehiclePrefill.manual,
+                      prefillSuccess: false),
+                ),
+
+                if (RcLookupService.isConfigured) ...[
+                  const SizedBox(height: AppSpacing.xxl),
+                  Text(
+                    l.addBikeLookupTitle.toUpperCase(),
+                    style: AppTextStyles.label.copyWith(
+                      color: AppColors.primary,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    l.addBikeSubtitle,
+                    style:
+                        AppTextStyles.caption.copyWith(color: textSecondary),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  _OptionCard(
-                    icon: Icons.edit_note_rounded,
-                    title: l.addBikeManualTitle,
-                    body: l.addBikeManualBody,
-                    onTap: () => _openDetails(
-                        const Vehicle(rcNumber: ''), VehiclePrefill.manual,
-                        prefillSuccess: false),
-                  ),
-
-                  if (RcLookupService.isConfigured) ...[
-                    const SizedBox(height: AppSpacing.xxl),
-                    Text(
-                      l.addBikeLookupTitle.toUpperCase(),
-                      style: AppTextStyles.label.copyWith(
-                        color: AppColors.primary,
-                        letterSpacing: 1.2,
-                      ),
+                  TextField(
+                    controller: _rcCtrl,
+                    enabled: !_fetching,
+                    // Registration numbers are Latin, even in RTL languages.
+                    textDirection: TextDirection.ltr,
+                    inputFormatters: [
+                      TextInputFormatter.withFunction((oldValue, newValue) {
+                        final text = normalizeRegNumber(newValue.text);
+                        return TextEditingValue(
+                          text: text,
+                          selection:
+                              TextSelection.collapsed(offset: text.length),
+                        );
+                      }),
+                    ],
+                    style: GoogleFonts.chakraPetch(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                      color: textPrimary,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      l.addBikeSubtitle,
-                      style:
-                          AppTextStyles.caption.copyWith(color: textSecondary),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    TextField(
-                      controller: _rcCtrl,
-                      enabled: !_fetching,
-                      // Registration numbers are Latin, even in RTL languages.
-                      textDirection: TextDirection.ltr,
-                      inputFormatters: [
-                        TextInputFormatter.withFunction((oldValue, newValue) {
-                          final text = normalizeRegNumber(newValue.text);
-                          return TextEditingValue(
-                            text: text,
-                            selection:
-                                TextSelection.collapsed(offset: text.length),
-                          );
-                        }),
-                      ],
-                      style: GoogleFonts.chakraPetch(
+                    decoration: InputDecoration(
+                      hintText: 'MH12DE1234',
+                      hintStyle: GoogleFonts.chakraPetch(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 2,
-                        color: textPrimary,
+                        color: textTertiary,
                       ),
-                      decoration: InputDecoration(
-                        hintText: 'MH12DE1234',
-                        hintStyle: GoogleFonts.chakraPetch(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 2,
-                          color: textTertiary,
-                        ),
-                        errorText: _error,
-                      ),
-                      onChanged: (_) {
-                        if (_error != null) setState(() => _error = null);
-                      },
-                      onSubmitted: (_) {
-                        if (!_fetching) _lookup();
-                      },
+                      errorText: _error,
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      l.addBikeExamples,
-                      style:
-                          AppTextStyles.caption.copyWith(color: textTertiary),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    AnimatedSwitcher(
-                      duration: AppDuration.normal,
-                      child: _fetching
-                          ? _LoadingPill(
-                              key: const ValueKey('pill'),
-                              label: l.addBikeFetching,
-                              isDark: isDark)
-                          : PrimaryButton(
-                              key: const ValueKey('btn'),
-                              label: l.addBikeContinue,
-                              isOutlined: true,
-                              onPressed: _lookup,
-                            ),
-                    ),
-                  ],
+                    onChanged: (_) {
+                      if (_error != null) setState(() => _error = null);
+                    },
+                    onSubmitted: (_) {
+                      if (!_fetching) _lookup();
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    l.addBikeExamples,
+                    style:
+                        AppTextStyles.caption.copyWith(color: textTertiary),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  AnimatedSwitcher(
+                    duration: AppDuration.normal,
+                    child: _fetching
+                        ? _LoadingPill(
+                            key: const ValueKey('pill'),
+                            label: l.addBikeFetching,
+                            isDark: isDark)
+                        : PrimaryButton(
+                            key: const ValueKey('btn'),
+                            label: l.addBikeContinue,
+                            isOutlined: true,
+                            onPressed: _lookup,
+                          ),
+                  ),
                 ],
-              ),
-      ),
+              ],
+            ),
+    ),
     );
   }
 }

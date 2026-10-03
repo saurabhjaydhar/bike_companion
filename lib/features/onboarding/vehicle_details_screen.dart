@@ -51,7 +51,6 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   late final TextEditingController _manufacturerCtrl;
   late final TextEditingController _brandCtrl;
   late final TextEditingController _modelCtrl;
-  late final TextEditingController _variantCtrl;
   late final TextEditingController _fuelTypeCtrl;
   late final TextEditingController _vehicleClassCtrl;
   late final TextEditingController _engineCtrl;
@@ -79,12 +78,12 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
     _manufacturerCtrl = TextEditingController(text: v.manufacturer ?? '');
     _brandCtrl = TextEditingController(text: v.brand ?? '');
     _modelCtrl = TextEditingController(text: v.model ?? '');
-    _variantCtrl = TextEditingController(text: v.variant ?? '');
     _fuelTypeCtrl = TextEditingController(text: v.fuelType ?? '');
     _vehicleClassCtrl = TextEditingController(text: v.vehicleClass ?? '');
     _engineCtrl = TextEditingController(text: v.engineNumber ?? '');
     _chassisCtrl = TextEditingController(text: v.chassisNumber ?? '');
     _registrationDate = v.registrationDate;
+    _colourHex = ColourPicker.hexForName(v.colour) ?? _colourHex;
     _insuranceExpiry = v.insuranceExpiry;
   }
 
@@ -92,7 +91,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
   void dispose() {
     for (final c in [
       _rcCtrl, _nameCtrl, _odometerCtrl, _manufacturerCtrl, _brandCtrl,
-      _modelCtrl, _variantCtrl, _fuelTypeCtrl, _vehicleClassCtrl,
+      _modelCtrl, _fuelTypeCtrl, _vehicleClassCtrl,
       _engineCtrl, _chassisCtrl,
     ]) {
       c.dispose();
@@ -181,7 +180,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
         name: _text(_nameCtrl) ?? '$brand $model',
         brand: brand,
         model: model,
-        variant: _text(_variantCtrl),
+        variant: widget.vehicle.variant,
         colourHex: _colourHex,
         regNumber: rc,
         purchaseDate: _registrationDate,
@@ -352,12 +351,6 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
                           setState(() => _modelError = null);
                         }
                       },
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    _FormField(
-                      label: l.vehicleVariant,
-                      controller: _variantCtrl,
-                      isDark: isDark,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _FormField(

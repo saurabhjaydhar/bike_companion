@@ -20,6 +20,34 @@ class ColourPicker extends StatelessWidget {
     ('#111827', Color(0xFF111827)),
   ];
 
+  /// The swatch closest to a colour name as printed on an RC ("LTNG BLACK",
+  /// "ROYAL BLUE"), or null when none is close (e.g. white, silver).
+  static String? hexForName(String? name) {
+    if (name == null) return null;
+    final upper = name.toUpperCase();
+    const words = {
+      'BLACK': '#111827',
+      'RED': '#EF4444',
+      'MAROON': '#EF4444',
+      'BLUE': '#1A56DB',
+      'NAVY': '#1A56DB',
+      'GREEN': '#0E9F6E',
+      'YELLOW': '#F59E0B',
+      'ORANGE': '#F59E0B',
+      'GOLD': '#F59E0B',
+      'PURPLE': '#8B5CF6',
+      'VIOLET': '#8B5CF6',
+      'PINK': '#EC4899',
+      'CYAN': '#06B6D4',
+      'TEAL': '#06B6D4',
+      'TURQUOISE': '#06B6D4',
+    };
+    for (final MapEntry(:key, :value) in words.entries) {
+      if (RegExp('\\b$key\\b').hasMatch(upper)) return value;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(

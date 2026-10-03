@@ -235,9 +235,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vehicleManufacturer => 'الشركة المصنّعة';
 
   @override
-  String get vehicleVariant => 'الفئة';
-
-  @override
   String get vehicleFuelType => 'نوع الوقود';
 
   @override
@@ -919,6 +916,38 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scanReading => 'جارٍ قراءة بطاقة RC…';
+
+  @override
+  String get scanTitle => 'امسح بطاقة RC';
+
+  @override
+  String get scanSubtitle =>
+      'أضف صورًا لوجهي بطاقة RC، فلكل وجه بيانات مختلفة. لدفتر RC أو بطاقة RC رقمية تكفي صورة واحدة.';
+
+  @override
+  String get scanFront => 'الوجه الأمامي';
+
+  @override
+  String get scanFrontHint => 'رقم التسجيل ورقم الشاسيه ورقم المحرك';
+
+  @override
+  String get scanBack => 'الوجه الخلفي';
+
+  @override
+  String get scanBackHint => 'الشركة المصنّعة والطراز وفئة المركبة';
+
+  @override
+  String get scanAddPhoto => 'انقر لإضافة صورة';
+
+  @override
+  String get scanRemovePhoto => 'إزالة الصورة';
+
+  @override
+  String get scanReadDetails => 'قراءة البيانات';
+
+  @override
+  String get scanPickerError =>
+      'تعذّر فتح الكاميرا أو المعرض. تحقّق من أذونات التطبيق في الإعدادات.';
 
   @override
   String get vehicleScanSuccess =>

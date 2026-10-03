@@ -9,6 +9,8 @@ class Vehicle {
   final String? vehicleClass;
   final String? engineNumber;
   final String? chassisNumber;
+  /// Colour as printed on the RC, e.g. "LTNG BLACK".
+  final String? colour;
   final DateTime? insuranceExpiry;
 
   const Vehicle({
@@ -22,6 +24,7 @@ class Vehicle {
     this.vehicleClass,
     this.engineNumber,
     this.chassisNumber,
+    this.colour,
     this.insuranceExpiry,
   });
 
@@ -54,6 +57,7 @@ class Vehicle {
       vehicleClass: pick('vehicle_class', 'vehicleClass'),
       engineNumber: pick('engine_number', 'engineNumber'),
       chassisNumber: pick('chassis_number', 'chassisNumber'),
+      colour: pick('colour', 'color'),
       insuranceExpiry: parseDate('insurance_expiry', 'insuranceExpiry'),
     );
   }
@@ -69,6 +73,7 @@ class Vehicle {
     String? vehicleClass,
     String? engineNumber,
     String? chassisNumber,
+    String? colour,
     DateTime? insuranceExpiry,
   }) =>
       Vehicle(
@@ -82,6 +87,7 @@ class Vehicle {
         vehicleClass: vehicleClass ?? this.vehicleClass,
         engineNumber: engineNumber ?? this.engineNumber,
         chassisNumber: chassisNumber ?? this.chassisNumber,
+        colour: colour ?? this.colour,
         insuranceExpiry: insuranceExpiry ?? this.insuranceExpiry,
       );
 
@@ -96,6 +102,7 @@ class Vehicle {
         'vehicle_class': vehicleClass,
         'engine_number': engineNumber,
         'chassis_number': chassisNumber,
+        'colour': colour,
         'insurance_expiry': insuranceExpiry?.millisecondsSinceEpoch,
       };
 
@@ -114,6 +121,7 @@ class Vehicle {
       vehicleClass: map['vehicle_class'] as String?,
       engineNumber: map['engine_number'] as String?,
       chassisNumber: map['chassis_number'] as String?,
+      colour: map['colour'] as String?,
       insuranceExpiry: ms(map['insurance_expiry']),
     );
   }

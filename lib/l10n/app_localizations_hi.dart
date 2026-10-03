@@ -239,9 +239,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get vehicleManufacturer => 'निर्माता';
 
   @override
-  String get vehicleVariant => 'वेरिएंट';
-
-  @override
   String get vehicleFuelType => 'फ्यूल का प्रकार';
 
   @override
@@ -866,6 +863,38 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get scanReading => 'आपका RC पढ़ा जा रहा है…';
+
+  @override
+  String get scanTitle => 'अपना RC स्कैन करें';
+
+  @override
+  String get scanSubtitle =>
+      'अपने RC कार्ड के दोनों तरफ़ की फ़ोटो जोड़ें — हर तरफ़ अलग जानकारी होती है। RC बुक या डिजिटल RC के लिए एक फ़ोटो काफ़ी है।';
+
+  @override
+  String get scanFront => 'सामने की तरफ़';
+
+  @override
+  String get scanFrontHint => 'रजिस्ट्रेशन नंबर, चेसिस और इंजन नंबर';
+
+  @override
+  String get scanBack => 'पीछे की तरफ़';
+
+  @override
+  String get scanBackHint => 'निर्माता, मॉडल और वाहन श्रेणी';
+
+  @override
+  String get scanAddPhoto => 'फ़ोटो जोड़ने के लिए टैप करें';
+
+  @override
+  String get scanRemovePhoto => 'फ़ोटो हटाएँ';
+
+  @override
+  String get scanReadDetails => 'जानकारी पढ़ें';
+
+  @override
+  String get scanPickerError =>
+      'कैमरा या गैलरी नहीं खुल सकी। सेटिंग्स में ऐप की अनुमतियाँ जाँचें।';
 
   @override
   String get vehicleScanSuccess =>

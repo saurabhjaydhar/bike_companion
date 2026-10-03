@@ -47,6 +47,7 @@ dependencies:
   image_picker: ^1.1.2
   local_auth: ^2.3.0
   google_mlkit_text_recognition: ^0.17.1 # on-device RC scan fallback
+  image: ^4.8.0 # turns sideways RC photos upright before reading
 
   # Notifications
   flutter_local_notifications: ^18.0.1

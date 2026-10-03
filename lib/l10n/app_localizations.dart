@@ -536,12 +536,6 @@ abstract class AppLocalizations {
   /// **'Manufacturer'**
   String get vehicleManufacturer;
 
-  /// No description provided for @vehicleVariant.
-  ///
-  /// In en, this message translates to:
-  /// **'Variant'**
-  String get vehicleVariant;
-
   /// No description provided for @vehicleFuelType.
   ///
   /// In en, this message translates to:
@@ -1633,6 +1627,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reading your RC…'**
   String get scanReading;
+
+  /// No description provided for @scanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan your RC'**
+  String get scanTitle;
+
+  /// No description provided for @scanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos of both sides of your RC card — each side has different details. For an RC book or digital RC, one photo is enough.'**
+  String get scanSubtitle;
+
+  /// No description provided for @scanFront.
+  ///
+  /// In en, this message translates to:
+  /// **'Front side'**
+  String get scanFront;
+
+  /// No description provided for @scanFrontHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration number, chassis and engine number'**
+  String get scanFrontHint;
+
+  /// No description provided for @scanBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back side'**
+  String get scanBack;
+
+  /// No description provided for @scanBackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Maker, model and vehicle class'**
+  String get scanBackHint;
+
+  /// No description provided for @scanAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add a photo'**
+  String get scanAddPhoto;
+
+  /// No description provided for @scanRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get scanRemovePhoto;
+
+  /// No description provided for @scanReadDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Read details'**
+  String get scanReadDetails;
+
+  /// No description provided for @scanPickerError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the camera or gallery. Check the app\'s permissions in Settings.'**
+  String get scanPickerError;
 
   /// No description provided for @vehicleScanSuccess.
   ///

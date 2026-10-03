@@ -240,9 +240,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get vehicleManufacturer => 'Constructeur';
 
   @override
-  String get vehicleVariant => 'Version';
-
-  @override
   String get vehicleFuelType => 'Carburant';
 
   @override
@@ -908,6 +905,39 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get scanReading => 'Lecture de votre RC…';
+
+  @override
+  String get scanTitle => 'Scanner votre RC';
+
+  @override
+  String get scanSubtitle =>
+      'Ajoutez des photos des deux faces de votre carte RC : chaque face contient des informations différentes. Pour un carnet RC ou un RC numérique, une photo suffit.';
+
+  @override
+  String get scanFront => 'Recto';
+
+  @override
+  String get scanFrontHint =>
+      'Immatriculation, numéros de châssis et de moteur';
+
+  @override
+  String get scanBack => 'Verso';
+
+  @override
+  String get scanBackHint => 'Constructeur, modèle et catégorie du véhicule';
+
+  @override
+  String get scanAddPhoto => 'Touchez pour ajouter une photo';
+
+  @override
+  String get scanRemovePhoto => 'Supprimer la photo';
+
+  @override
+  String get scanReadDetails => 'Lire les informations';
+
+  @override
+  String get scanPickerError =>
+      'Impossible d\'ouvrir l\'appareil photo ou la galerie. Vérifiez les autorisations de l\'app dans les Réglages.';
 
   @override
   String get vehicleScanSuccess =>

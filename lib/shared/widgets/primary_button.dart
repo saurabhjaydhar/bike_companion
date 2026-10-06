@@ -3,9 +3,11 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_theme.dart';
+import 'energy_sweep.dart';
 
-/// Full-width cut-corner button with the ignition gradient and a soft glow.
-/// Has a loading state and an outlined variant.
+/// Full-width cut-corner button with the ignition gradient, a glossy top
+/// highlight, a soft glow and a periodic glint of light. Has a loading state
+/// and an outlined variant.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -95,7 +97,34 @@ class PrimaryButton extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: enabled ? onPressed : null,
-            child: Center(child: child),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Clay gloss over the top half.
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: FractionallySizedBox(
+                    heightFactor: 0.5,
+                    widthFactor: 1,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.22),
+                            Colors.white.withValues(alpha: 0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                if (enabled)
+                  const EnergySweep(period: Duration(milliseconds: 4200)),
+                Center(child: child),
+              ],
+            ),
           ),
         ),
       ),

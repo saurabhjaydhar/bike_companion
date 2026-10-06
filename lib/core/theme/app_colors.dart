@@ -11,6 +11,13 @@ class AppColors {
   // HUD accent — used for data highlights and glows
   static const Color accent = Color(0xFF2CE5FF);
 
+  /// The accent darkened for text and icons on light surfaces, where the
+  /// neon cyan is too pale to read.
+  static const Color accentInk = Color(0xFF0891B2);
+
+  /// Picks [accent] or [accentInk] for the current brightness.
+  static Color accentFor(bool isDark) => isDark ? accent : accentInk;
+
   // Semantic — light mode
   static const Color success = Color(0xFF00B377);
   static const Color warning = Color(0xFFF29D00);
@@ -21,11 +28,20 @@ class AppColors {
   static const Color warningDark = Color(0xFFFFC233);
   static const Color dangerDark = Color(0xFFFF4D6A);
 
-  // Surface — light
+  // Surface — light. Cards are white on a cool grey page and get their
+  // depth from shadows (see AppShadows), so the hairline border stays faint.
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF5F6F9);
-  static const Color background = Color(0xFFEDEFF3);
-  static const Color border = Color(0xFFDFE2EA);
+  static const Color surfaceVariant = Color(0xFFF4F6FA);
+  static const Color background = Color(0xFFE9EDF3);
+  static const Color border = Color(0xFFE3E7EF);
+
+  /// Unfilled tracks (progress bars, gauge segments, idle chart bars) —
+  /// a step darker than [border] so they read against white.
+  static const Color track = Color(0xFFD9DEE8);
+
+  /// Navy used to tint light-mode shadows, so they look cool rather than
+  /// muddy grey.
+  static const Color shadow = Color(0xFF1A2340);
   static const Color textPrimary = Color(0xFF0B0E14);
   static const Color textSecondary = Color(0xFF5A6273);
   static const Color textTertiary = Color(0xFF949CAD);
@@ -35,6 +51,7 @@ class AppColors {
   static const Color surfaceVariantDark = Color(0xFF181C25);
   static const Color backgroundDark = Color(0xFF07080C);
   static const Color borderDark = Color(0xFF242936);
+  static const Color trackDark = Color(0xFF242936);
   static const Color textPrimaryDark = Color(0xFFF3F5F9);
   static const Color textSecondaryDark = Color(0xFF9AA3B5);
   static const Color textTertiaryDark = Color(0xFF5E6678);
@@ -44,6 +61,12 @@ class AppColors {
     Color(0xFFFF7A2F),
     Color(0xFFFF3D3D),
   ];
+
+  // Stat tile tints — one per quick stat so a grid of them isn't uniform
+  static const Color statFuel = Color(0xFFFF5A1F);
+  static const Color statService = Color(0xFF00B377);
+  static const Color statCost = Color(0xFF7C5CFF);
+  static const Color statOdometer = Color(0xFF0891B2);
 
   // Vehicle avatar colour presets
   static const List<Color> vehicleColors = [

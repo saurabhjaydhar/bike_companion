@@ -19,6 +19,7 @@ import 'budget_sheet.dart';
 import 'expense_style.dart';
 import 'expenses_provider.dart';
 import 'quick_add_sheet.dart';
+import '../../shared/widgets/clay_icon.dart';
 
 class ExpensesScreen extends ConsumerWidget {
   final String vehicleId;
@@ -122,13 +123,26 @@ class ExpensesScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.lg),
                 if (s.summary.byCategory.isNotEmpty) ...[
                   _SectionTitle(l.expensesByCategory),
-                  for (final e in (s.summary.byCategory.entries.toList()
-                    ..sort((a, b) => b.value.compareTo(a.value))))
-                    _CategoryRow(
-                      category: e.key,
-                      amount: e.value,
-                      total: s.summary.total,
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    child: HudPanel(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                      child: Column(
+                        children: [
+                          for (final e in (s.summary.byCategory.entries
+                                  .toList()
+                                ..sort((a, b) => b.value.compareTo(a.value))))
+                            _CategoryRow(
+                              category: e.key,
+                              amount: e.value,
+                              total: s.summary.total,
+                            ),
+                        ],
+                      ),
                     ),
+                  ),
                   const SizedBox(height: AppSpacing.xl),
                 ],
                 _SectionTitle(l.expensesTransactions),
@@ -157,19 +171,12 @@ class ExpensesScreen extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final tiles = <Widget>[];
-    DateTime? day;
+    // One card per day, under a date heading.
+    final days = <(DateTime, List<Widget>)>[];
     for (final e in entries) {
       final d = DateUtils.dateOnly(e.date);
-      if (d != day) {
-        day = d;
-        tiles.add(Padding(
-          padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm),
-          child: Text(DateFormat('d MMMM', l.localeName).format(d),
-              style: AppTextStyles.captionMedium.copyWith(color: textSecondary)),
-        ));
-      }
+      if (days.isEmpty || days.last.$1 != d) days.add((d, []));
+      final tiles = days.last.$2;
       final tile = _EntryTile(entry: e);
       if (e.source != LedgerSource.expense) {
         tiles.add(tile);
@@ -188,7 +195,20 @@ class ExpensesScreen extends ConsumerWidget {
         child: tile,
       ));
     }
-    return tiles;
+    return [
+      for (final (d, tiles) in days) ...[
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.sm),
+          child: Text(DateFormat('d MMMM', l.localeName).format(d),
+              style: AppTextStyles.captionMedium.copyWith(color: textSecondary)),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          child: HudGroup(dividerIndent: 68, children: tiles),
+        ),
+      ],
+    ];
   }
 
   Future<void> _deleteWithUndo(
@@ -420,7 +440,7 @@ class _BudgetBar extends StatelessWidget {
             horizontal: AppSpacing.lg, vertical: AppSpacing.md),
         child: Row(
           children: [
-            const Icon(Icons.savings_outlined, color: AppColors.accent),
+            Icon(Icons.savings_outlined, color: AppColors.accentFor(isDark)),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(l.budgetSetPrompt,
@@ -473,7 +493,7 @@ class _BudgetBar extends StatelessWidget {
                 minHeight: 8,
                 color: colour,
                 backgroundColor:
-                    isDark ? AppColors.borderDark : AppColors.border,
+                    isDark ? AppColors.trackDark : AppColors.track,
               ),
             ),
           ),
@@ -596,7 +616,10 @@ class _BarChart extends StatelessWidget {
     bool selected(DateTime m) =>
         !yearView && m.year == period.year && m.month == period.month;
 
-    return SizedBox(
+    return HudPanel(
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md, AppSpacing.lg, AppSpacing.md, AppSpacing.sm),
+      child: SizedBox(
       height: 150,
       child: BarChart(
         BarChartData(
@@ -647,7 +670,8 @@ class _BarChart extends StatelessWidget {
                     toY: m.total,
                     color: selected(m.month) || yearView
                         ? AppColors.primary
-                        : (isDark ? AppColors.borderDark : AppColors.border),
+                        : AppColors.primary
+                            .withValues(alpha: isDark ? 0.25 : 0.22),
                     width: yearView ? 14 : 24,
                     borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(4)),
@@ -656,6 +680,7 @@ class _BarChart extends StatelessWidget {
               ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -721,8 +746,8 @@ class _CategoryRow extends StatelessWidget {
               value: pct,
               color: colour,
               backgroundColor:
-                  isDark ? AppColors.borderDark : AppColors.border,
-              minHeight: 4,
+                  isDark ? AppColors.trackDark : AppColors.track,
+              minHeight: 6,
             ),
           ),
         ],
@@ -761,15 +786,7 @@ class _EntryTile extends StatelessWidget {
         LedgerSource.service => () => context.go('/service/${entry.vehicleId}'),
         LedgerSource.expense => null,
       },
-      leading: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: colour.withValues(alpha: 0.12),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(categoryIcon(entry.category), size: 18, color: colour),
-      ),
+      leading: ClayIcon(icon: categoryIcon(entry.category), color: colour, size: 38),
       title: Text(
         note.isNotEmpty ? note : l.expenseCategoryLabel(entry.category),
         maxLines: 1,

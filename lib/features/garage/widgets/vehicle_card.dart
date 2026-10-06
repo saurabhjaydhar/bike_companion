@@ -28,7 +28,7 @@ class VehicleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
+    final track = isDark ? AppColors.trackDark : AppColors.track;
     final textPrimary = isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
@@ -153,7 +153,7 @@ class VehicleCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(1.5),
                             color: i < (score / 10).round()
                                 ? scoreColor
-                                : border,
+                                : track,
                             boxShadow: [
                               if (i < (score / 10).round())
                                 BoxShadow(
@@ -192,7 +192,9 @@ class VehicleCard extends StatelessWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.borderDark
+                    : AppColors.track,
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
             ),

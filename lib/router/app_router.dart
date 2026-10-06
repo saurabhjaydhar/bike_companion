@@ -10,8 +10,10 @@ import '../core/constants/app_constants.dart';
 import '../core/providers/active_vehicle_provider.dart';
 import '../core/services/auth_service.dart';
 import '../core/theme/app_colors.dart';
+import '../core/theme/app_shadows.dart';
 import '../l10n/l10n.dart';
 import '../main.dart';
+import '../shared/widgets/aurora_backdrop.dart';
 import '../shared/widgets/offline_banner.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/dashboard/dashboard_screen.dart';
@@ -102,23 +104,57 @@ class _NavShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
-      body: Column(
-        children: [
-          const OfflineBanner(),
-          Expanded(child: shell),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: shell.currentIndex,
-        onDestinationSelected: (i) => _onTap(context, ref, i),
-        backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surface,
-        destinations: _tabs(context.l10n)
-            .map((t) => NavigationDestination(
-                  icon: Icon(t.icon),
-                  label: t.label,
-                ))
-            .toList(),
+    final shape = BorderRadius.circular(28);
+    return AuroraBackdrop(
+      child: Scaffold(
+        body: Column(
+          children: [
+            const OfflineBanner(),
+            Expanded(child: shell),
+          ],
+        ),
+        // A floating clay pill over the aurora.
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg, AppSpacing.xs, AppSpacing.lg, AppSpacing.md),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: shape,
+                border: Border.all(
+                  color: isDark ? AppColors.borderDark : Colors.white,
+                  width: isDark ? 1 : 1.5,
+                ),
+                boxShadow: isDark
+                    ? [AppShadows.glow(AppColors.primary, true)]
+                    : AppShadows.clay(false),
+              ),
+              child: ClipRRect(
+                borderRadius: shape,
+                // The SafeArea above already clears the system bar.
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeBottom: true,
+                  child: NavigationBar(
+                    height: 64,
+                    selectedIndex: shell.currentIndex,
+                    onDestinationSelected: (i) => _onTap(context, ref, i),
+                    backgroundColor: isDark
+                        ? AppColors.surfaceDark
+                        : AppColors.surface.withValues(alpha: 0.94),
+                    destinations: _tabs(context.l10n)
+                        .map((t) => NavigationDestination(
+                              icon: Icon(t.icon),
+                              label: t.label,
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -303,29 +339,58 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 // ---------------------------------------------------------------------------
 // Page transition helpers
 // ---------------------------------------------------------------------------
+// Every page sits on its own aurora backdrop, so pages never show through
+// each other mid-transition.
+
+/// Tab switches and top-level screens: fade in while settling from a hair
+/// smaller.
 CustomTransitionPage<void> _fade(GoRouterState state, Widget child) =>
     CustomTransitionPage<void>(
       key: state.pageKey,
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          FadeTransition(opacity: animation, child: child),
-      transitionDuration: const Duration(milliseconds: 200),
+      child: AuroraBackdrop(child: child),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final curved =
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        return FadeTransition(
+          opacity: curved,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.985, end: 1).animate(curved),
+            child: child,
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 260),
     );
 
+/// Drill-down screens: slide in from the side while the page underneath
+/// eases away in parallax.
 CustomTransitionPage<void> _slide(GoRouterState state, Widget child) =>
     CustomTransitionPage<void>(
       key: state.pageKey,
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(1, 0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOut,
-        )),
-        child: child,
-      ),
-      transitionDuration: const Duration(milliseconds: 250),
+      child: AuroraBackdrop(child: child),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final dir = Directionality.of(context) == TextDirection.rtl ? -1.0 : 1.0;
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(dir, 0),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInCubic,
+          )),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset.zero,
+              end: Offset(-0.25 * dir, 0),
+            ).animate(CurvedAnimation(
+              parent: secondaryAnimation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: child,
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 320),
+      reverseTransitionDuration: const Duration(milliseconds: 260),
     );

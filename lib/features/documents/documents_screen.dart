@@ -14,8 +14,10 @@ import '../../l10n/l10n.dart';
 import '../../data/models/document.dart';
 import '../../main.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/reminder_permission.dart';
 import 'documents_provider.dart';
+import '../../shared/widgets/clay_icon.dart';
 
 const _uuid = Uuid();
 
@@ -206,8 +208,6 @@ class _DocCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
     final textPrimary =
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final statusColor = _statusColor();
@@ -215,7 +215,9 @@ class _DocCard extends StatelessWidget {
         doc.expiryDate != null &&
         (doc.isExpired || (doc.daysUntilExpiry ?? 999) <= 30);
 
-    return GestureDetector(
+    return HudPanel(
+      glow: showAlert ? statusColor : null,
+      padding: const EdgeInsets.all(AppSpacing.md),
       onTap: onTap,
       onLongPress: () {
         showModalBottomSheet(
@@ -233,21 +235,12 @@ class _DocCard extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: BorderRadius.circular(AppRadius.medium),
-          border: Border.all(
-              color:
-                  showAlert ? statusColor.withValues(alpha: 0.4) : border),
-        ),
-        child: Column(
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(_icon(), size: 20, color: statusColor),
+                ClayIcon(icon: _icon(), color: statusColor, size: 36),
                 const Spacer(),
                 Container(
                   width: 8,
@@ -275,7 +268,6 @@ class _DocCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
@@ -328,7 +320,7 @@ class _DocDetailSheet extends StatelessWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: isDark ? AppColors.borderDark : AppColors.track,
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
             ),
@@ -631,7 +623,7 @@ class _AddDocSheetState extends State<_AddDocSheet> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: isDark ? AppColors.borderDark : AppColors.track,
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
             ),
@@ -680,8 +672,11 @@ class _AddDocSheetState extends State<_AddDocSheet> {
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md, vertical: AppSpacing.md),
               decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.surfaceVariantDark
+                    : AppColors.surfaceVariant,
                 border: Border.all(color: border),
-                borderRadius: BorderRadius.circular(AppRadius.small),
+                borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
               child: Row(
                 children: [

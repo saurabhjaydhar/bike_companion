@@ -12,7 +12,9 @@ import '../../features/garage/garage_provider.dart';
 import '../expenses/expenses_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hud_panel.dart';
 import 'service_provider.dart';
+import '../../shared/widgets/clay_icon.dart';
 
 const _uuid = Uuid();
 
@@ -91,17 +93,20 @@ class _DueSoonTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-      itemCount: items.length,
-      separatorBuilder: (_, i) => const Divider(height: 1),
-      itemBuilder: (context, i) {
-        final item = items[i];
-        return _ServiceRow(
-          item: item,
-          onTap: () => _showLogSheet(context, ref, vehicleId, item.type),
-        );
-      },
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      children: [
+        HudGroup(
+          dividerIndent: 72,
+          children: [
+            for (final item in items)
+              _ServiceRow(
+                item: item,
+                onTap: () => _showLogSheet(context, ref, vehicleId, item.type),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -154,15 +159,7 @@ class _ServiceRow extends StatelessWidget {
     };
 
     return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: statusColor.withValues(alpha: 0.12),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(_icon(item.type), size: 20, color: statusColor),
-      ),
+      leading: ClayIcon(icon: _icon(item.type), color: statusColor, size: 40),
       title: Text(l.serviceTypeLabel(item.type),
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary)),
       subtitle: Text(
@@ -219,10 +216,11 @@ class _HistoryTab extends StatelessWidget {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
+    final serviceColour = isDark ? AppColors.successDark : AppColors.success;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -237,23 +235,20 @@ class _HistoryTab extends StatelessWidget {
                       style: AppTextStyles.heading3
                           .copyWith(color: textSecondary)),
                 ),
-                ...entry.value.map((r) => Container(
-                      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      decoration: BoxDecoration(
-                        color: surface,
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.medium),
-                        border: Border.all(color: border),
-                      ),
+                ...entry.value.map((r) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: HudPanel(
                       child: Row(
                         children: [
+                          ClayIcon(icon: Icons.build_rounded, color: serviceColour, size: 38),
+                          const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(l.serviceTypeLabel(r.serviceType),
-                                    style: AppTextStyles.bodyMedium),
+                                    style: AppTextStyles.bodySemiBold
+                                        .copyWith(color: textPrimary)),
                                 Text(
                                   DateFormat('d MMM y', l.localeName).format(r.date),
                                   style: AppTextStyles.caption
@@ -271,7 +266,8 @@ class _HistoryTab extends StatelessWidget {
                             children: [
                               Text(
                                 '${NumberFormat('#,##,###').format(r.odometer)} km',
-                                style: AppTextStyles.captionMedium,
+                                style: AppTextStyles.captionMedium
+                                    .copyWith(color: textPrimary),
                               ),
                               if (r.cost != null)
                                 Text(
@@ -283,6 +279,7 @@ class _HistoryTab extends StatelessWidget {
                           ),
                         ],
                       ),
+                    ),
                     )),
               ])
           .toList(),
@@ -406,7 +403,7 @@ class _LogServiceSheetState extends State<_LogServiceSheet> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: isDark ? AppColors.borderDark : AppColors.track,
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
             ),

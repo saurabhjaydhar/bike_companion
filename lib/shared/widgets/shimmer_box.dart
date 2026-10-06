@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 class ShimmerBox extends StatefulWidget {
   final double width;
@@ -38,10 +39,9 @@ class _ShimmerBoxState extends State<ShimmerBox>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final base =
-        isDark ? const Color(0xFF2C2C2C) : const Color(0xFFE8E8E8);
+    final base = isDark ? AppColors.surfaceVariantDark : AppColors.track;
     final highlight =
-        isDark ? const Color(0xFF3D3D3D) : const Color(0xFFF4F4F4);
+        isDark ? AppColors.borderDark : AppColors.surfaceVariant;
 
     return AnimatedBuilder(
       animation: _ctrl,

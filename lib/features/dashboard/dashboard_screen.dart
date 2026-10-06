@@ -6,15 +6,18 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_shadows.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/health_ring.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/plate_badge.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/reveal.dart';
 import '../../shared/widgets/section_header.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import '../../shared/widgets/stat_card.dart';
+import '../../shared/widgets/vehicle_avatar.dart';
 import '../../core/services/reminder_planner.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../main.dart';
@@ -25,6 +28,7 @@ import '../expenses/budget_sheet.dart';
 import '../expenses/quick_add_sheet.dart';
 import 'widgets/coming_up_card.dart';
 import 'widgets/spending_card.dart';
+import '../../shared/widgets/clay_icon.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   final String vehicleId;
@@ -153,56 +157,67 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
             children: [
               // Vehicle switcher chips
-              _VehicleSwitcherRow(
-                vehicles: dash.allVehicles,
-                activeVehicleId: widget.vehicleId,
+              Reveal(
+                child: _VehicleSwitcherRow(
+                  vehicles: dash.allVehicles,
+                  activeVehicleId: widget.vehicleId,
+                ),
               ),
 
               const SizedBox(height: AppSpacing.lg),
 
               // Health hero
-              _HealthHero(dash: dash),
+              Reveal(index: 1, child: _HealthHero(dash: dash)),
 
               const SizedBox(height: AppSpacing.lg),
 
               // What to act on next
-              ComingUpCard(
-                dash: dash,
-                onEditDate: _editDate,
-                onTurnOnReminders: _turnOnReminders,
+              Reveal(
+                index: 2,
+                child: ComingUpCard(
+                  dash: dash,
+                  onEditDate: _editDate,
+                  onTurnOnReminders: _turnOnReminders,
+                ),
               ),
 
               const SizedBox(height: AppSpacing.lg),
 
               // This month's spending against the budget
-              SpendingCard(
-                spent: dash.monthTotal,
-                budget: dash.vehicle.monthlyBudget,
-                onOpen: () => context.go('/expenses/${widget.vehicleId}'),
-                onSetBudget: () => showBudgetSheet(
-                  context,
-                  ref,
-                  vehicle: dash.vehicle,
-                  suggestion: dash.budgetSuggestion,
+              Reveal(
+                index: 3,
+                child: SpendingCard(
+                  spent: dash.monthTotal,
+                  budget: dash.vehicle.monthlyBudget,
+                  onOpen: () => context.go('/expenses/${widget.vehicleId}'),
+                  onSetBudget: () => showBudgetSheet(
+                    context,
+                    ref,
+                    vehicle: dash.vehicle,
+                    suggestion: dash.budgetSuggestion,
+                  ),
                 ),
               ),
 
               const SizedBox(height: AppSpacing.lg),
 
               // Quick stats 2×2
-              _QuickStats(dash: dash),
+              Reveal(index: 4, child: _QuickStats(dash: dash)),
 
               const SizedBox(height: AppSpacing.xl),
 
               // Fuel log button
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg),
-                child: PrimaryButton(
-                  label: l.dashboardLogFuel,
-                  icon: Icons.local_gas_station_rounded,
-                  onPressed: () =>
-                      context.push('/garage/dashboard/${widget.vehicleId}/fuel/log'),
+              Reveal(
+                index: 5,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg),
+                  child: PrimaryButton(
+                    label: l.dashboardLogFuel,
+                    icon: Icons.local_gas_station_rounded,
+                    onPressed: () => context
+                        .push('/garage/dashboard/${widget.vehicleId}/fuel/log'),
+                  ),
                 ),
               ),
 
@@ -216,8 +231,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   onAction: () =>
                       context.go('/expenses/${widget.vehicleId}'),
                 ),
-                ...dash.recentActivity.map(
-                  (a) => _ActivityTile(item: a, isDark: isDark),
+                Reveal(
+                  index: 6,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg),
+                    child: HudGroup(
+                      dividerIndent: 68,
+                      children: [
+                        for (final a in dash.recentActivity)
+                          _ActivityTile(item: a, isDark: isDark),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -242,13 +268,16 @@ class _VehicleSwitcherRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final border = isDark ? AppColors.borderDark : AppColors.border;
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
+    final textPrimary =
+        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
+    // Tall enough that the chips' shadows aren't clipped by the list.
     return SizedBox(
-      height: 40,
+      height: 52,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg, AppSpacing.xs, AppSpacing.lg, AppSpacing.sm),
         itemCount: vehicles.length,
         separatorBuilder: (context, index) =>
             const SizedBox(width: AppSpacing.sm),
@@ -267,23 +296,26 @@ class _VehicleSwitcherRow extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md, vertical: AppSpacing.sm),
               decoration: ShapeDecoration(
-                color: isActive
-                    ? AppColors.primary
-                    : Colors.transparent,
+                color: isActive ? null : surface,
+                gradient: isActive
+                    ? const LinearGradient(colors: AppColors.ignitionGradient)
+                    : null,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.small),
                   side: BorderSide(
                     color: isActive ? AppColors.primary : border,
                   ),
                 ),
-                shadows: [
-                  if (isActive)
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.45),
-                      blurRadius: 14,
-                      spreadRadius: -4,
-                    ),
-                ],
+                shadows: isActive
+                    ? [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.45),
+                          blurRadius: 14,
+                          spreadRadius: -4,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : AppShadows.card(isDark),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -303,9 +335,7 @@ class _VehicleSwitcherRow extends ConsumerWidget {
                     vehicle.name,
                     style: AppTextStyles.label.copyWith(
                       fontSize: 13,
-                      color: isActive
-                          ? Colors.white
-                          : textSecondary,
+                      color: isActive ? Colors.white : textPrimary,
                     ),
                   ),
                 ],
@@ -340,12 +370,19 @@ class _HealthHero extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: HudPanel(
         glow: gradeColor,
+        sheen: true,
         padding: const EdgeInsets.fromLTRB(
             AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xl),
         child: Column(
           children: [
             Row(
               children: [
+                VehicleAvatar(
+                  colour: vehicle.colour,
+                  size: 36,
+                  type: vehicle.type,
+                ),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     '${vehicle.brand} ${vehicle.model}'.toUpperCase(),
@@ -363,10 +400,20 @@ class _HealthHero extends StatelessWidget {
               grade: dash.healthScore.grade,
               size: 184,
             ),
-            Text(
-              l.healthGradeLabel(dash.healthScore.grade),
-              textAlign: TextAlign.center,
-              style: AppTextStyles.heading3.copyWith(color: gradeColor),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+              decoration: BoxDecoration(
+                color: gradeColor.withValues(alpha: isDark ? 0.14 : 0.10),
+                borderRadius: BorderRadius.circular(AppRadius.full),
+                border:
+                    Border.all(color: gradeColor.withValues(alpha: 0.35)),
+              ),
+              child: Text(
+                l.healthGradeLabel(dash.healthScore.grade),
+                textAlign: TextAlign.center,
+                style: AppTextStyles.heading3.copyWith(color: gradeColor),
+              ),
             ),
           ],
         ),
@@ -384,6 +431,7 @@ class _QuickStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final lastFuelDays = dash.lastFuelLog != null
         ? now.difference(dash.lastFuelLog!.date).inDays
@@ -410,6 +458,7 @@ class _QuickStats extends StatelessWidget {
                       : null,
                   trendPositive: true,
                   icon: Icons.local_gas_station_outlined,
+                  color: AppColors.statFuel,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -420,6 +469,7 @@ class _QuickStats extends StatelessWidget {
                       ? '${dash.vehicle.odometerCurrent < dash.nextService!.nextDueKm! ? dash.nextService!.nextDueKm! - dash.vehicle.odometerCurrent : 0} km'
                       : l.dashboardUpToDate,
                   icon: Icons.build_outlined,
+                  color: isDark ? AppColors.successDark : AppColors.statService,
                 ),
               ),
             ],
@@ -435,6 +485,7 @@ class _QuickStats extends StatelessWidget {
                       ? '₹${dash.costPerKm!.toStringAsFixed(2)}'
                       : '—',
                   icon: Icons.route_outlined,
+                  color: AppColors.statCost,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -446,6 +497,7 @@ class _QuickStats extends StatelessWidget {
                   trend: 'km',
                   trendPositive: true,
                   icon: Icons.speed_outlined,
+                  color: isDark ? AppColors.accent : AppColors.statOdometer,
                 ),
               ),
             ],
@@ -491,15 +543,7 @@ class _ActivityTile extends StatelessWidget {
     };
 
     return ListTile(
-      leading: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, size: 18, color: color),
-      ),
+      leading: ClayIcon(icon: icon, color: color, size: 38),
       title: Text(title,
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary)),
       subtitle: Text(subtitle,
@@ -536,19 +580,8 @@ class _DashboardSkeleton extends StatelessWidget {
         const SizedBox(height: AppSpacing.lg),
 
         // Health hero card
-        Container(
+        HudPanel(
           padding: const EdgeInsets.all(AppSpacing.xl),
-          decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.surfaceDark
-                : AppColors.surface,
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-            border: Border.all(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.borderDark
-                  : AppColors.border,
-            ),
-          ),
           child: Row(
             children: [
               const ShimmerBox(width: 88, height: 88, borderRadius: 44),
@@ -572,15 +605,15 @@ class _DashboardSkeleton extends StatelessWidget {
 
         // Quick stats 2×2
         Row(children: const [
-          Expanded(child: ShimmerBox(height: 80, borderRadius: 12)),
+          Expanded(child: ShimmerBox(height: 80, borderRadius: AppRadius.large)),
           SizedBox(width: AppSpacing.md),
-          Expanded(child: ShimmerBox(height: 80, borderRadius: 12)),
+          Expanded(child: ShimmerBox(height: 80, borderRadius: AppRadius.large)),
         ]),
         const SizedBox(height: AppSpacing.md),
         Row(children: const [
-          Expanded(child: ShimmerBox(height: 80, borderRadius: 12)),
+          Expanded(child: ShimmerBox(height: 80, borderRadius: AppRadius.large)),
           SizedBox(width: AppSpacing.md),
-          Expanded(child: ShimmerBox(height: 80, borderRadius: 12)),
+          Expanded(child: ShimmerBox(height: 80, borderRadius: AppRadius.large)),
         ]),
         const SizedBox(height: AppSpacing.xl),
 

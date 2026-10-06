@@ -27,6 +27,8 @@ class AppTheme {
     final textTertiary =
         isDark ? AppColors.textTertiaryDark : AppColors.textTertiary;
     final danger = isDark ? AppColors.dangerDark : AppColors.danger;
+    final primaryTint =
+        AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.12);
 
     final base = isDark ? ThemeData.dark() : ThemeData.light();
     OutlineInputBorder inputBorder(Color c, [double w = 1]) =>
@@ -77,7 +79,7 @@ class AppTheme {
         backgroundColor: surface,
         surfaceTintColor: Colors.transparent,
         height: 70,
-        indicatorColor: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+        indicatorColor: primaryTint,
         indicatorShape: cutShape,
         iconTheme: WidgetStateProperty.resolveWith((states) => IconThemeData(
               color: states.contains(WidgetState.selected)
@@ -138,9 +140,39 @@ class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
+        backgroundColor: surface,
         selectedColor: AppColors.primary,
         labelStyle: AppTextStyles.captionMedium,
+        side: BorderSide(color: border),
         shape: cutShape,
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? primaryTint : surface),
+          foregroundColor: WidgetStateProperty.resolveWith((states) =>
+              states.contains(WidgetState.selected)
+                  ? AppColors.primary
+                  : textSecondary),
+          iconColor: const WidgetStatePropertyAll(AppColors.primary),
+          side: WidgetStatePropertyAll(BorderSide(color: border)),
+          textStyle: WidgetStatePropertyAll(AppTextStyles.label),
+          visualDensity: VisualDensity.compact,
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
+                ? Colors.white
+                : (isDark ? AppColors.textTertiaryDark : AppColors.textTertiary)),
+        trackColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : (isDark ? AppColors.surfaceVariantDark : AppColors.track)),
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : border),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: surface,
@@ -154,6 +186,7 @@ class AppTheme {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: surface,
         surfaceTintColor: Colors.transparent,
+        dragHandleColor: isDark ? AppColors.borderDark : AppColors.track,
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

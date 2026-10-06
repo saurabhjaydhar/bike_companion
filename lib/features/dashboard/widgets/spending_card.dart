@@ -36,7 +36,7 @@ class SpendingCard extends StatelessWidget {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final track = isDark ? AppColors.borderDark : AppColors.border;
+    final track = isDark ? AppColors.trackDark : AppColors.track;
     final progress = budget == null ? null : BudgetProgress(spent, budget!);
     final colour = switch (progress?.level) {
       BudgetLevel.near => AppColors.warning,

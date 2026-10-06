@@ -6,8 +6,10 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/stat_card.dart';
 import 'fuel_provider.dart';
+import '../../shared/widgets/clay_icon.dart';
 
 class FuelHistoryScreen extends ConsumerWidget {
   final String vehicleId;
@@ -19,7 +21,6 @@ class FuelHistoryScreen extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
     final rupee =
         NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l10n = context.l10n;
@@ -52,28 +53,27 @@ class FuelHistoryScreen extends ConsumerWidget {
                   label: l10n.fuelAvgMileageAllTime,
                   value: '${avgMileage.toStringAsFixed(1)} km/L',
                   icon: Icons.local_gas_station_outlined,
+                  color: AppColors.statFuel,
                 ),
               const SizedBox(height: AppSpacing.xl),
               ...logs.map((log) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color:
-                        isDark ? AppColors.surfaceDark : AppColors.surface,
-                    borderRadius:
-                        BorderRadius.circular(AppRadius.medium),
-                    border: Border.all(color: border),
-                  ),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: HudPanel(
                   child: Row(
                     children: [
+                      ClayIcon(icon: Icons.local_gas_station_rounded, color: AppColors.primary, size: 38),
+                      const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               DateFormat('d MMM y', l10n.localeName).format(log.date),
-                              style: AppTextStyles.bodySemiBold,
+                              style: AppTextStyles.bodySemiBold.copyWith(
+                                  color: isDark
+                                      ? AppColors.textPrimaryDark
+                                      : AppColors.textPrimary),
                             ),
                             const SizedBox(height: 2),
                             Text(
@@ -114,6 +114,7 @@ class FuelHistoryScreen extends ConsumerWidget {
                         ],
                       ),
                     ],
+                  ),
                   ),
                 );
               }),

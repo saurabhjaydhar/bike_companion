@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/vehicle_type.dart';
+import 'clay_icon.dart';
 
-/// Glowing tile with a vehicle icon, tinted with the vehicle's colour.
+/// Tile with a vehicle icon in the vehicle's colour: a glowing glass tile
+/// in dark mode, solid clay in light mode.
 class VehicleAvatar extends StatelessWidget {
   final Color colour;
   final double size;
@@ -22,6 +24,10 @@ class VehicleAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (!isDark && initials == null) {
+      return ClayIcon(icon: type.icon, color: colour, size: size);
+    }
     return Container(
       width: size,
       height: size,
@@ -31,14 +37,15 @@ class VehicleAvatar extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            colour.withValues(alpha: 0.35),
+            colour.withValues(alpha: isDark ? 0.35 : 0.22),
             colour.withValues(alpha: 0.08),
           ],
         ),
-        border: Border.all(color: colour.withValues(alpha: 0.55)),
+        border: Border.all(
+            color: colour.withValues(alpha: isDark ? 0.55 : 0.35)),
         boxShadow: [
           BoxShadow(
-            color: colour.withValues(alpha: 0.35),
+            color: colour.withValues(alpha: isDark ? 0.35 : 0.25),
             blurRadius: size * 0.35,
             spreadRadius: -size * 0.12,
           ),
@@ -56,7 +63,10 @@ class VehicleAvatar extends StatelessWidget {
             )
           : Icon(
               type.icon,
-              color: Color.lerp(colour, Colors.white, 0.35),
+              // Lightened to glow on black; darkened to read on white.
+              color: isDark
+                  ? Color.lerp(colour, Colors.white, 0.35)
+                  : Color.lerp(colour, Colors.black, 0.1),
               size: size * 0.55,
             ),
     );

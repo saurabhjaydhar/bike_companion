@@ -17,6 +17,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
+import '../../shared/widgets/hud_panel.dart';
 
 // ---------------------------------------------------------------------------
 // Theme mode provider — persisted to SharedPreferences
@@ -114,7 +115,6 @@ class SettingsScreen extends ConsumerWidget {
     final textPrimary = isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
     final border = isDark ? AppColors.borderDark : AppColors.border;
     final currentMode = ref.watch(themeModeProvider);
     final currentLocale = ref.watch(localeProvider);
@@ -127,12 +127,8 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           // Appearance section
           _SectionLabel(l.settingsAppearance, textSecondary),
-          Container(
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(color: border),
-            ),
+          HudPanel(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
                 _ThemeOption(
@@ -173,7 +169,6 @@ class SettingsScreen extends ConsumerWidget {
 
           // Reminders — one switch per vehicle
           _RemindersSection(
-            surface: surface,
             border: border,
             textPrimary: textPrimary,
             textSecondary: textSecondary,
@@ -181,12 +176,8 @@ class SettingsScreen extends ConsumerWidget {
 
           // Language section
           _SectionLabel(l.settingsLanguage, textSecondary),
-          Container(
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(color: border),
-            ),
+          HudPanel(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
                 _ThemeOption(
@@ -217,12 +208,8 @@ class SettingsScreen extends ConsumerWidget {
 
           // About section
           _SectionLabel(l.settingsAbout, textSecondary),
-          Container(
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(color: border),
-            ),
+          HudPanel(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
                 ListTile(
@@ -247,12 +234,8 @@ class SettingsScreen extends ConsumerWidget {
 
           // Account section
           _SectionLabel(l.settingsAccount, textSecondary),
-          Container(
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(color: border),
-            ),
+          HudPanel(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
                 _AccountTile(textPrimary: textPrimary, textSecondary: textSecondary),
@@ -273,12 +256,8 @@ class SettingsScreen extends ConsumerWidget {
 
           // Danger zone
           _SectionLabel(l.settingsData, textSecondary),
-          Container(
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(AppRadius.medium),
-              border: Border.all(color: border),
-            ),
+          HudPanel(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
                 ListTile(
@@ -456,13 +435,11 @@ final _reminderSettingsProvider = FutureProvider.autoDispose<
 });
 
 class _RemindersSection extends ConsumerWidget {
-  final Color surface;
   final Color border;
   final Color textPrimary;
   final Color textSecondary;
 
   const _RemindersSection({
-    required this.surface,
     required this.border,
     required this.textPrimary,
     required this.textSecondary,
@@ -478,12 +455,8 @@ class _RemindersSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _SectionLabel(l.settingsReminders, textSecondary),
-        Container(
-          decoration: BoxDecoration(
-            color: surface,
-            borderRadius: BorderRadius.circular(AppRadius.medium),
-            border: Border.all(color: border),
-          ),
+        HudPanel(
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               for (final (i, row) in rows.indexed) ...[

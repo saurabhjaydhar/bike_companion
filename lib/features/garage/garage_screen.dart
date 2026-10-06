@@ -10,6 +10,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
+import '../../shared/widgets/reveal.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import '../expenses/expense_style.dart';
 import 'garage_provider.dart';
@@ -23,8 +24,6 @@ class GarageScreen extends ConsumerWidget {
     final garageAsync = ref.watch(garageProvider);
     final activeVehicleId = ref.watch(activeVehicleIdProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
     final l = context.l10n;
 
     return Scaffold(
@@ -60,10 +59,12 @@ class GarageScreen extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
-                _SummaryStrip(
-                  vehicleCount: items.length,
-                  monthTotal: totalMonthly,
-                  alertCount: totalAlerts,
+                Reveal(
+                  child: _SummaryStrip(
+                    vehicleCount: items.length,
+                    monthTotal: totalMonthly,
+                    alertCount: totalAlerts,
+                  ),
                 ),
                 if (items.length > 1 &&
                     items.any((i) => i.yearTotal > 0)) ...[
@@ -82,8 +83,8 @@ class GarageScreen extends ConsumerWidget {
                 ...items.asMap().entries.map((e) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: _StaggeredItem(
-                      index: e.key,
+                    child: Reveal(
+                      index: e.key + 1,
                       child: VehicleCard(
                         item: e.value,
                         isActive: e.value.vehicle.id == activeVehicleId,
@@ -111,20 +112,23 @@ class GarageScreen extends ConsumerWidget {
                   child: Container(
                     height: 56,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      color: AppColors.primary
+                          .withValues(alpha: isDark ? 0.08 : 0.05),
+                      borderRadius: BorderRadius.circular(AppRadius.large),
                       border: Border.all(
-                        color: isDark ? AppColors.borderDark : AppColors.border,
+                        color: AppColors.primary.withValues(alpha: 0.35),
                         width: 1.5,
                       ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add_rounded, size: 18, color: textSecondary),
+                        const Icon(Icons.add_rounded,
+                            size: 18, color: AppColors.primary),
                         const SizedBox(width: AppSpacing.sm),
                         Text(l.garageAddAnother,
-                            style: AppTextStyles.bodyMedium
-                                .copyWith(color: textSecondary)),
+                            style: AppTextStyles.bodySemiBold
+                                .copyWith(color: AppColors.primary)),
                       ],
                     ),
                   ),
@@ -151,7 +155,7 @@ class _GarageSkeleton extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
         // Summary strip skeleton
-        const ShimmerBox(height: 72, borderRadius: 12),
+        const ShimmerBox(height: 72, borderRadius: AppRadius.large),
         const SizedBox(height: AppSpacing.xl),
         const ShimmerBox(width: 100, height: 20, borderRadius: 6),
         const SizedBox(height: AppSpacing.md),
@@ -169,20 +173,7 @@ class _VehicleCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 110,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? AppColors.surfaceDark
-            : AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? AppColors.borderDark
-              : AppColors.border,
-        ),
-      ),
+    return HudPanel(
       child: Row(
         children: [
           const ShimmerBox(width: 48, height: 48, borderRadius: 24),
@@ -209,54 +200,6 @@ class _VehicleCardSkeleton extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Stagger entrance animation
-// ---------------------------------------------------------------------------
-class _StaggeredItem extends StatefulWidget {
-  final int index;
-  final Widget child;
-
-  const _StaggeredItem({required this.index, required this.child});
-
-  @override
-  State<_StaggeredItem> createState() => _StaggeredItemState();
-}
-
-class _StaggeredItemState extends State<_StaggeredItem>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _opacity;
-  late final Animation<Offset> _slide;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      duration: AppDuration.slow,
-      vsync: this,
-    );
-    _opacity = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
-    _slide = Tween(begin: const Offset(0, 0.12), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
-
-    Future.delayed(Duration(milliseconds: widget.index * 70), () {
-      if (mounted) _ctrl.forward();
-    });
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => FadeTransition(
-        opacity: _opacity,
-        child: SlideTransition(position: _slide, child: widget.child),
-      );
-}
-
-// ---------------------------------------------------------------------------
 // This year's spending, vehicle by vehicle
 // ---------------------------------------------------------------------------
 class _SpendingComparison extends StatelessWidget {
@@ -270,7 +213,7 @@ class _SpendingComparison extends StatelessWidget {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final track = isDark ? AppColors.borderDark : AppColors.border;
+    final track = isDark ? AppColors.trackDark : AppColors.track;
     final l = context.l10n;
     final sorted = [...items]..sort((a, b) => b.yearTotal.compareTo(a.yearTotal));
     final yearTotal = items.fold(0.0, (s, i) => s + i.yearTotal);
@@ -362,7 +305,7 @@ class _SummaryStrip extends StatelessWidget {
     final l = context.l10n;
 
     return HudPanel(
-      glow: AppColors.accent,
+      glow: AppColors.accentFor(isDark),
       child: Row(
         children: [
           _Stat(

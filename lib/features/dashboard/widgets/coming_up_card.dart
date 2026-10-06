@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../data/models/health_score.dart';
 import '../../../l10n/l10n.dart';
+import '../../../shared/widgets/clay_icon.dart';
 import '../../../shared/widgets/hud_panel.dart';
 import '../dashboard_provider.dart';
 
@@ -41,6 +42,7 @@ class ComingUpCard extends StatelessWidget {
         isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     final textSecondary =
         isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    final border = isDark ? AppColors.borderDark : AppColors.border;
     final rows = _rows(context).take(_maxRows).toList();
 
     return Padding(
@@ -88,7 +90,12 @@ class ComingUpCard extends StatelessWidget {
                 label: l.comingUpEmpty,
               )
             else
-              ...rows,
+              for (final (i, row) in rows.indexed) ...[
+                if (i > 0)
+                  Divider(height: 1, indent: 44, endIndent: AppSpacing.sm,
+                      color: border),
+                row,
+              ],
           ],
         ),
       ),
@@ -139,7 +146,8 @@ class ComingUpCard extends StatelessWidget {
         now,
         _Row(
           icon: _icon(kind),
-          colour: AppColors.accent,
+          colour: AppColors.accentFor(
+              Theme.of(context).brightness == Brightness.dark),
           label: kind == DueKind.insurance ? l.docInsurance : l.docPuc,
           trailing: l.dueAddDate,
           onTap: () => onEditDate(kind),
@@ -211,12 +219,12 @@ class _Row extends StatelessWidget {
               onTap!();
             },
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 48),
+        constraints: const BoxConstraints(minHeight: 52),
         child: Padding(
           padding: const EdgeInsets.only(right: AppSpacing.sm),
           child: Row(
             children: [
-              Icon(icon, color: colour, size: 20),
+              ClayIcon(icon: icon, color: colour, size: 32),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(label,

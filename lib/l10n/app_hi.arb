@@ -337,5 +337,7 @@
   "logDocumentSub": "RC, बीमा, PUC",
   "odometerSave": "रीडिंग सेव करें",
   "odometerUpdated": "ओडोमीटर अपडेट हो गया",
-  "odometerInvalid": "किलोमीटर में रीडिंग डालें"
+  "odometerInvalid": "किलोमीटर में रीडिंग डालें",
+  "fuelOdometerEstimated": "आपके हर बार के लगभग {km} किमी के हिसाब से अनुमान। मिलाने के लिए बदलें।",
+  "fuelTripMileage": "{km} किमी · {litres} L · {mileage} km/L"
 }

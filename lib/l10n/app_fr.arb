@@ -337,5 +337,7 @@
   "logDocumentSub": "Carte grise, assurance, contrôle pollution",
   "odometerSave": "Enregistrer le relevé",
   "odometerUpdated": "Compteur mis à jour",
-  "odometerInvalid": "Saisissez un relevé en km"
+  "odometerInvalid": "Saisissez un relevé en km",
+  "fuelOdometerEstimated": "Estimé d'après vos {km} km habituels entre deux pleins. Ajustez si besoin.",
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
 }

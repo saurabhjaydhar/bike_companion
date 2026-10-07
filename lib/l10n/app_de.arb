@@ -337,5 +337,7 @@
   "logDocumentSub": "Fahrzeugschein, Versicherung, Abgas",
   "odometerSave": "Stand speichern",
   "odometerUpdated": "Kilometerstand aktualisiert",
-  "odometerInvalid": "Gib einen Stand in km ein"
+  "odometerInvalid": "Gib einen Stand in km ein",
+  "fuelOdometerEstimated": "Geschätzt aus deinen üblichen {km} km zwischen zwei Tankstopps. Bei Bedarf anpassen.",
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
 }

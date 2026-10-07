@@ -337,5 +337,7 @@
   "logDocumentSub": "Documento, seguro, emissões",
   "odometerSave": "Salvar leitura",
   "odometerUpdated": "Hodômetro atualizado",
-  "odometerInvalid": "Digite uma leitura em km"
+  "odometerInvalid": "Digite uma leitura em km",
+  "fuelOdometerEstimated": "Estimado pelos seus {km} km habituais entre abastecimentos. Ajuste se precisar.",
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
 }

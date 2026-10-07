@@ -2137,6 +2137,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a reading in km'**
   String get odometerInvalid;
+
+  /// No description provided for @fuelOdometerEstimated.
+  ///
+  /// In en, this message translates to:
+  /// **'Guessed from your usual {km} km between fills. Nudge it to match.'**
+  String fuelOdometerEstimated(int km);
+
+  /// No description provided for @fuelTripMileage.
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km · {litres} L · {mileage} km/L'**
+  String fuelTripMileage(int km, String litres, String mileage);
 }
 
 class _AppLocalizationsDelegate

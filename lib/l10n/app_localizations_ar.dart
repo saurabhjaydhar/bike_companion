@@ -1227,4 +1227,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get odometerInvalid => 'أدخل القراءة بالكيلومتر';
+
+  @override
+  String fuelOdometerEstimated(int km) {
+    return 'تقدير بناءً على $km كم المعتادة بين كل تعبئة. عدّله ليطابق العداد.';
+  }
+
+  @override
+  String fuelTripMileage(int km, String litres, String mileage) {
+    return '$km كم · $litres لتر · $mileage كم/لتر';
+  }
 }

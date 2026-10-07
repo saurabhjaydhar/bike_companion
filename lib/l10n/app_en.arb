@@ -676,5 +676,27 @@
   "logDocumentSub": "RC, insurance, PUC",
   "odometerSave": "Save reading",
   "odometerUpdated": "Odometer updated",
-  "odometerInvalid": "Enter a reading in km"
+  "odometerInvalid": "Enter a reading in km",
+  "fuelOdometerEstimated": "Guessed from your usual {km} km between fills. Nudge it to match.",
+  "@fuelOdometerEstimated": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L",
+  "@fuelTripMileage": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      },
+      "litres": {
+        "type": "String"
+      },
+      "mileage": {
+        "type": "String"
+      }
+    }
+  }
 }

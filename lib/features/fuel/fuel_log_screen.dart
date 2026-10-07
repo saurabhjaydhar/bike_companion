@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/parallelogram_border.dart';
 import '../../data/models/fuel_log.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../data/repositories/fuel_repository.dart';
@@ -16,6 +17,7 @@ import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
+import 'fuel_prefill.dart';
 import 'fuel_provider.dart';
 
 const _uuid = Uuid();
@@ -43,6 +45,10 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
   FuelLog? _lastLog;
   double? _avgMileage;
 
+  /// Usual km between fills, when the odometer was prefilled from it.
+  int? _estimatedFrom;
+  List<int> _amountChips = const [];
+
   @override
   void initState() {
     super.initState();
@@ -52,12 +58,52 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
   Future<void> _loadLastLog() async {
     final repo = getIt<FuelRepository>();
-    _lastLog = await repo.getLastFuelLog(widget.vehicleId);
+    final logs = await repo.getFuelLogs(widget.vehicleId, limit: 11);
+    final vehicle =
+        await getIt<VehicleRepository>().getVehicleById(widget.vehicleId);
+    _lastLog = logs.firstOrNull;
     _avgMileage = await repo.getAverageMileage(widget.vehicleId);
+    _amountChips = amountChips(logs);
+
+    // Start on a best guess so most fill-ups only need a nudge.
+    final trip = usualTripKm(logs);
+    final guess = suggestOdometer(
+      vehicleOdometer: vehicle?.odometerCurrent ?? 0,
+      lastLog: _lastLog,
+      usualTrip: trip,
+    );
+    if (guess != null && _odometerCtrl.text.isEmpty) {
+      _odometerCtrl.text = '$guess';
+      final fromTrip = _lastLog != null &&
+          (vehicle?.odometerCurrent ?? 0) <= _lastLog!.odometer;
+      _estimatedFrom = fromTrip ? trip : null;
+    }
     if (mounted) setState(() {});
   }
 
   void _onOdometerChanged() => setState(() {});
+
+  void _nudge(int km) {
+    HapticFeedback.selectionClick();
+    final next = ((_currentOdometer ?? _lastLog?.odometer ?? 0) + km)
+        .clamp(0, 9999999);
+    _odometerCtrl.text = '$next';
+  }
+
+  void _pickAmount(int amount) {
+    HapticFeedback.selectionClick();
+    setState(() => _amountCtrl.text = '$amount');
+  }
+
+  /// Litres typed in, or worked out from the amount and last price.
+  double? get _litres => double.tryParse(_litresCtrl.text) ?? _litresFromAmount;
+
+  double? get _tripMileage {
+    final km = _kmSinceLast, litres = _litres;
+    return km != null && km > 0 && litres != null && litres > 0
+        ? km / litres
+        : null;
+  }
 
   int? get _currentOdometer => int.tryParse(_odometerCtrl.text);
   int? get _kmSinceLast => (_lastLog != null && _currentOdometer != null)
@@ -98,7 +144,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
     setState(() => _saving = true);
     try {
-      final litres = double.tryParse(_litresCtrl.text) ?? _litresFromAmount;
+      final litres = _litres;
       final amount = double.tryParse(_amountCtrl.text);
       final kmSinceLast = _kmSinceLast;
       final mileage =
@@ -195,7 +241,9 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: _odometerCtrl,
-              autofocus: true,
+              // Prefilled readings only need a nudge, so keep the keyboard
+              // down; an empty field gets it straight away.
+              autofocus: _odometerCtrl.text.isEmpty && _lastLog == null,
               keyboardType: TextInputType.number,
               style: AppTextStyles.display
                   .copyWith(fontSize: 40, color: textPrimary),
@@ -217,12 +265,31 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                 return null;
               },
             ),
+            if (_odometerCtrl.text.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  for (final km in const [-100, -10, 10, 100])
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: _NudgeChip(
+                          label: km > 0 ? '+$km' : '−${-km}',
+                          onTap: () => _nudge(km),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
             if (_lastLog != null)
               Padding(
                 padding:
-                    const EdgeInsets.only(top: AppSpacing.xs),
+                    const EdgeInsets.only(top: AppSpacing.sm),
                 child: Text(
-                  l.fuelLastEntry(_lastLog!.odometer),
+                  _estimatedFrom != null
+                      ? l.fuelOdometerEstimated(_estimatedFrom!)
+                      : l.fuelLastEntry(_lastLog!.odometer),
                   style: AppTextStyles.caption
                       .copyWith(color: textSecondary),
                   textAlign: TextAlign.center,
@@ -250,10 +317,15 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        _estimatedLitres != null
-                            ? l.fuelKmSinceLastEstimate(_kmSinceLast!,
-                                _estimatedLitres!.toStringAsFixed(1))
-                            : l.fuelKmSinceLast(_kmSinceLast!),
+                        _tripMileage != null
+                            ? l.fuelTripMileage(
+                                _kmSinceLast!,
+                                _litres!.toStringAsFixed(1),
+                                _tripMileage!.toStringAsFixed(1))
+                            : _estimatedLitres != null
+                                ? l.fuelKmSinceLastEstimate(_kmSinceLast!,
+                                    _estimatedLitres!.toStringAsFixed(1))
+                                : l.fuelKmSinceLast(_kmSinceLast!),
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: AppColors.primary),
                       ),
@@ -266,6 +338,28 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
             // Amount paid — what spending tracking needs
             _FieldLabel(l.fuelAmountPaid, textSecondary),
+            if (_amountChips.isNotEmpty) ...[
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  for (final a in _amountChips)
+                    ChoiceChip(
+                      label: Text('₹$a'),
+                      labelStyle: AppTextStyles.data.copyWith(
+                        fontSize: 14,
+                        color: _amountCtrl.text == '$a'
+                            ? Colors.white
+                            : textPrimary,
+                      ),
+                      selected: _amountCtrl.text == '$a',
+                      showCheckmark: false,
+                      onSelected: (_) => _pickAmount(a),
+                    ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
             TextFormField(
               controller: _amountCtrl,
               keyboardType:
@@ -331,6 +425,39 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
               isLoading: _saving,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A small slanted button that nudges the odometer up or down.
+class _NudgeChip extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _NudgeChip({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Material(
+      color: isDark ? AppColors.surfaceVariantDark : AppColors.track,
+      shape: const ParallelogramBorder(slant: 6),
+      child: InkWell(
+        customBorder: const ParallelogramBorder(slant: 6),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.data.copyWith(
+              fontSize: 14,
+              color: isDark
+                  ? AppColors.textPrimaryDark
+                  : AppColors.textPrimary,
+            ),
+          ),
         ),
       ),
     );

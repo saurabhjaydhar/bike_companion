@@ -337,5 +337,7 @@
   "logDocumentSub": "Libretto, assicurazione, bollino",
   "odometerSave": "Salva lettura",
   "odometerUpdated": "Contachilometri aggiornato",
-  "odometerInvalid": "Inserisci una lettura in km"
+  "odometerInvalid": "Inserisci una lettura in km",
+  "fuelOdometerEstimated": "Stimato dai tuoi soliti {km} km tra un pieno e l'altro. Correggilo se serve.",
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
 }

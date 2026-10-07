@@ -337,5 +337,7 @@
   "logDocumentSub": "Permiso de circulación, seguro, emisiones",
   "odometerSave": "Guardar lectura",
   "odometerUpdated": "Cuentakilómetros actualizado",
-  "odometerInvalid": "Introduce una lectura en km"
+  "odometerInvalid": "Introduce una lectura en km",
+  "fuelOdometerEstimated": "Calculado con tus {km} km habituales entre repostajes. Ajústalo si hace falta.",
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
 }

@@ -1177,4 +1177,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get odometerInvalid => 'किलोमीटर में रीडिंग डालें';
+
+  @override
+  String fuelOdometerEstimated(int km) {
+    return 'आपके हर बार के लगभग $km किमी के हिसाब से अनुमान। मिलाने के लिए बदलें।';
+  }
+
+  @override
+  String fuelTripMileage(int km, String litres, String mileage) {
+    return '$km किमी · $litres L · $mileage km/L';
+  }
 }

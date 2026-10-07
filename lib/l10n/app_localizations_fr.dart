@@ -1222,4 +1222,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get odometerInvalid => 'Saisissez un relevé en km';
+
+  @override
+  String fuelOdometerEstimated(int km) {
+    return 'Estimé d\'après vos $km km habituels entre deux pleins. Ajustez si besoin.';
+  }
+
+  @override
+  String fuelTripMileage(int km, String litres, String mileage) {
+    return '$km km · $litres L · $mileage km/L';
+  }
 }

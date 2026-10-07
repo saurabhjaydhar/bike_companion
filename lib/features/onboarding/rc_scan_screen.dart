@@ -83,7 +83,7 @@ class _RcScanScreenState extends ConsumerState<RcScanScreen> {
         ),
       ),
       builder: (sheetContext) => SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -194,7 +194,8 @@ class VehicleCard extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.large)),
       ),
       builder: (_) => SafeArea(
-        child: Column(
+        child: SingleChildScrollView(
+         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: AppSpacing.sm),
@@ -231,6 +232,7 @@ class VehicleCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
           ],
+         ),
         ),
       ),
     );

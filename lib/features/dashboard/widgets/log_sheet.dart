@@ -31,6 +31,9 @@ Future<void> showLogSheet(
   final kind = await showModalBottomSheet<_LogKind>(
     context: context,
     showDragHandle: true,
+    // Let the sheet grow past the default 9/16 of the screen; it scrolls
+    // if five rows still don't fit (small phones, large text).
+    isScrollControlled: true,
     builder: (_) => const _LogSheet(),
   );
   if (kind == null || !context.mounted) return;
@@ -77,6 +80,7 @@ class _LogSheet extends StatelessWidget {
         ListTile(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+          visualDensity: VisualDensity.compact,
           leading: ClayIcon(icon: icon, color: color, size: 42),
           title: Text(title.toUpperCase(),
               style: AppTextStyles.heading3.copyWith(color: textPrimary)),
@@ -89,7 +93,8 @@ class _LogSheet extends StatelessWidget {
         );
 
     return SafeArea(
-      child: Column(
+      child: SingleChildScrollView(
+       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -111,6 +116,7 @@ class _LogSheet extends StatelessWidget {
               AppColors.warning, l.documentsAddTitle, l.logDocumentSub),
           const SizedBox(height: AppSpacing.md),
         ],
+       ),
       ),
     );
   }

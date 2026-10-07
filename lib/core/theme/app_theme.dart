@@ -51,7 +51,7 @@ class AppTheme {
         error: danger,
       ),
       scaffoldBackgroundColor: background,
-      textTheme: GoogleFonts.interTextTheme(base.textTheme).apply(
+      textTheme: GoogleFonts.sairaTextTheme(base.textTheme).apply(
         bodyColor: textPrimary,
         displayColor: textPrimary,
       ),

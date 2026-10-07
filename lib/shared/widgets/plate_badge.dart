@@ -27,7 +27,7 @@ class PlateBadge extends StatelessWidget {
         number,
         textDirection: TextDirection.ltr,
         maxLines: 1,
-        style: GoogleFonts.chakraPetch(
+        style: GoogleFonts.jetBrainsMono(
           fontSize: fontSize,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.4,

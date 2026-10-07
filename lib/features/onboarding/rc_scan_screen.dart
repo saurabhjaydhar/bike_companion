@@ -192,7 +192,6 @@ class _RcScanScreenState extends ConsumerState<RcScanScreen> {
             SwitchListTile(
               value: _useGemini,
               contentPadding: EdgeInsets.zero,
-              activeThumbColor: AppColors.primary,
               secondary: const Icon(
                 Icons.auto_awesome_rounded,
                 color: AppColors.accent,

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,12 +22,32 @@ import 'expenses_provider.dart';
 import 'quick_add_sheet.dart';
 import '../../shared/widgets/clay_icon.dart';
 
-class ExpensesScreen extends ConsumerWidget {
+class ExpensesScreen extends ConsumerStatefulWidget {
   final String vehicleId;
   const ExpensesScreen({super.key, required this.vehicleId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ExpensesScreen> createState() => _ExpensesScreenState();
+}
+
+class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
+  /// The add button hides while scrolling down so it never covers amounts,
+  /// and comes back on scroll up.
+  bool _fabVisible = true;
+
+  bool _onScroll(UserScrollNotification n) {
+    final visible = switch (n.direction) {
+      ScrollDirection.reverse => false,
+      ScrollDirection.forward => true,
+      ScrollDirection.idle => _fabVisible,
+    };
+    if (visible != _fabVisible) setState(() => _fabVisible = visible);
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final vehicleId = widget.vehicleId;
     final stateAsync = ref.watch(expensesProvider(vehicleId));
     final notifier = ref.read(expensesProvider(vehicleId).notifier);
     final l = context.l10n;
@@ -43,118 +64,126 @@ class ExpensesScreen extends ConsumerWidget {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            showQuickAddExpense(context, ref, vehicleId: vehicleId),
-        backgroundColor: AppColors.primary,
-        tooltip: l.expensesAddTitle,
-        child: const Icon(Icons.add, color: Colors.white),
+      floatingActionButton: AnimatedScale(
+        scale: _fabVisible ? 1 : 0,
+        duration: AppDuration.fast,
+        child: FloatingActionButton(
+          onPressed: () =>
+              showQuickAddExpense(context, ref, vehicleId: vehicleId),
+          backgroundColor: AppColors.primary,
+          tooltip: l.expensesAddTitle,
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
-      body: stateAsync.when(
-        skipLoadingOnReload: true,
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
-        data: (s) => GestureDetector(
-          // Swipe left/right to move between months or years.
-          onHorizontalDragEnd: (d) {
-            final v = d.primaryVelocity ?? 0;
-            if (v > 300) notifier.previous();
-            if (v < -300) notifier.next();
-          },
-          child: RefreshIndicator(
-            onRefresh: notifier.reload,
-            child: ListView(
-              padding: const EdgeInsets.only(bottom: 100),
-              children: [
-                const SizedBox(height: AppSpacing.sm),
-                Center(
-                  child: SegmentedButton<PeriodKind>(
-                    segments: [
-                      ButtonSegment(
-                          value: PeriodKind.month,
-                          label: Text(l.expensesModeMonth)),
-                      ButtonSegment(
-                          value: PeriodKind.year,
-                          label: Text(l.expensesModeYear)),
-                    ],
-                    selected: {s.period.kind},
-                    onSelectionChanged: (k) => notifier.setKind(k.single),
-                  ),
-                ),
-                _PeriodSelector(
-                  period: s.period,
-                  onPrev: notifier.previous,
-                  onNext: notifier.next,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
-                  child: _Headline(summary: s.summary),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                  child: _BudgetBar(
-                    state: s,
-                    onEdit: () => showBudgetSheet(
-                      context,
-                      ref,
-                      vehicle: s.vehicle,
-                      suggestion: suggestMonthlyBudget(s.recentMonths),
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: _onScroll,
+        child: stateAsync.when(
+          skipLoadingOnReload: true,
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('$e')),
+          data: (s) => GestureDetector(
+            // Swipe left/right to move between months or years.
+            onHorizontalDragEnd: (d) {
+              final v = d.primaryVelocity ?? 0;
+              if (v > 300) notifier.previous();
+              if (v < -300) notifier.next();
+            },
+            child: RefreshIndicator(
+              onRefresh: notifier.reload,
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 100),
+                children: [
+                  const SizedBox(height: AppSpacing.sm),
+                  Center(
+                    child: SegmentedButton<PeriodKind>(
+                      segments: [
+                        ButtonSegment(
+                            value: PeriodKind.month,
+                            label: Text(l.expensesModeMonth)),
+                        ButtonSegment(
+                            value: PeriodKind.year,
+                            label: Text(l.expensesModeYear)),
+                      ],
+                      selected: {s.period.kind},
+                      showSelectedIcon: false,
+                      onSelectionChanged: (k) => notifier.setKind(k.single),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                  child: _StatsRow(summary: s.summary),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                if (s.summary.chart.any((m) => m.total > 0))
+                  _PeriodSelector(
+                    period: s.period,
+                    onPrev: notifier.previous,
+                    onNext: notifier.next,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+                    child: _Headline(summary: s.summary),
+                  ),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                    child: _BarChart(
-                      summary: s.summary,
-                      onTapMonth: notifier.showMonth,
-                    ),
-                  ),
-                const SizedBox(height: AppSpacing.lg),
-                if (s.summary.byCategory.isNotEmpty) ...[
-                  _SectionTitle(l.expensesByCategory),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                    child: HudPanel(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                      child: Column(
-                        children: [
-                          for (final e in (s.summary.byCategory.entries
-                                  .toList()
-                                ..sort((a, b) => b.value.compareTo(a.value))))
-                            _CategoryRow(
-                              category: e.key,
-                              amount: e.value,
-                              total: s.summary.total,
-                            ),
-                        ],
+                    child: _BudgetBar(
+                      state: s,
+                      onEdit: () => showBudgetSheet(
+                        context,
+                        ref,
+                        vehicle: s.vehicle,
+                        suggestion: suggestMonthlyBudget(s.recentMonths),
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.md),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    child: _StatsRow(summary: s.summary),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  if (s.summary.chart.any((m) => m.total > 0))
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                      child: _BarChart(
+                        summary: s.summary,
+                        onTapMonth: notifier.showMonth,
+                      ),
+                    ),
+                  const SizedBox(height: AppSpacing.lg),
+                  if (s.summary.byCategory.isNotEmpty) ...[
+                    _SectionTitle(l.expensesByCategory),
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                      child: HudPanel(
+                        padding:
+                            const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                        child: Column(
+                          children: [
+                            for (final e in (s.summary.byCategory.entries
+                                    .toList()
+                                  ..sort((a, b) => b.value.compareTo(a.value))))
+                              _CategoryRow(
+                                category: e.key,
+                                amount: e.value,
+                                total: s.summary.total,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
+                  _SectionTitle(l.expensesTransactions),
+                  if (s.summary.entries.isEmpty)
+                    EmptyState(
+                      icon: Icons.receipt_long_rounded,
+                      heading: l.expensesEmptyTitle,
+                      body: l.expensesEmptyBody,
+                    )
+                  else
+                    ..._entryTiles(context, ref, s.summary.entries),
                 ],
-                _SectionTitle(l.expensesTransactions),
-                if (s.summary.entries.isEmpty)
-                  EmptyState(
-                    icon: Icons.receipt_long_rounded,
-                    heading: l.expensesEmptyTitle,
-                    body: l.expensesEmptyBody,
-                  )
-                else
-                  ..._entryTiles(context, ref, s.summary.entries),
-              ],
+              ),
             ),
           ),
         ),
@@ -216,7 +245,7 @@ class ExpensesScreen extends ConsumerWidget {
     WidgetRef ref,
     LedgerEntry e,
   ) async {
-    final notifier = ref.read(expensesProvider(vehicleId).notifier);
+    final notifier = ref.read(expensesProvider(widget.vehicleId).notifier);
     final messenger = ScaffoldMessenger.of(context);
     final l = context.l10n;
     await notifier.deleteExpense(e.id);
@@ -331,22 +360,22 @@ class _Headline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    // Carbon panel: always drawn light-on-dark, whatever the page theme.
+    final textPrimary = AppColors.textPrimaryDark;
+    final textSecondary = AppColors.textSecondaryDark;
     final l = context.l10n;
     final change = summary.changePercent;
     final down = change != null && change < 0;
     final changeColour = down
-        ? (isDark ? AppColors.successDark : AppColors.success)
-        : (isDark ? AppColors.dangerDark : AppColors.danger);
+        ? (AppColors.successDark)
+        : (AppColors.dangerDark);
     final pct = change?.abs().toStringAsFixed(0);
 
     return HudPanel(
-      glow: AppColors.primary,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      carbon: true,
+      // Leave the livery stripes their band on the end edge.
+      padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.xl,
+          AppSpacing.xl, AppSpacing.xl + HudPanel.stripeBand, AppSpacing.xl),
       child: Row(
         children: [
           Expanded(

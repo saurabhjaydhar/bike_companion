@@ -162,7 +162,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                         );
                       }),
                     ],
-                    style: GoogleFonts.chakraPetch(
+                    style: GoogleFonts.jetBrainsMono(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 2,
@@ -170,7 +170,7 @@ class _AddVehicleScreenState extends ConsumerState<AddVehicleScreen> {
                     ),
                     decoration: InputDecoration(
                       hintText: 'MH12DE1234',
-                      hintStyle: GoogleFonts.chakraPetch(
+                      hintStyle: GoogleFonts.jetBrainsMono(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 2,

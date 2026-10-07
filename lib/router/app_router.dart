@@ -11,6 +11,7 @@ import '../core/providers/active_vehicle_provider.dart';
 import '../core/services/auth_service.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_shadows.dart';
+import '../core/theme/app_theme.dart';
 import '../l10n/l10n.dart';
 import '../main.dart';
 import '../shared/widgets/aurora_backdrop.dart';
@@ -113,7 +114,7 @@ class _NavShell extends ConsumerWidget {
             Expanded(child: shell),
           ],
         ),
-        // A floating clay pill over the aurora.
+        // A floating carbon pill (light) / glowing panel (dark).
         bottomNavigationBar: SafeArea(
           top: false,
           child: Padding(
@@ -123,12 +124,11 @@ class _NavShell extends ConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: shape,
                 border: Border.all(
-                  color: isDark ? AppColors.borderDark : Colors.white,
-                  width: isDark ? 1 : 1.5,
+                  color: isDark ? AppColors.borderDark : AppColors.carbonEdge,
                 ),
                 boxShadow: isDark
                     ? [AppShadows.glow(AppColors.primary, true)]
-                    : AppShadows.clay(false),
+                    : AppShadows.raised(false),
               ),
               child: ClipRRect(
                 borderRadius: shape,
@@ -136,19 +136,23 @@ class _NavShell extends ConsumerWidget {
                 child: MediaQuery.removePadding(
                   context: context,
                   removeBottom: true,
-                  child: NavigationBar(
-                    height: 64,
-                    selectedIndex: shell.currentIndex,
-                    onDestinationSelected: (i) => _onTap(context, ref, i),
-                    backgroundColor: isDark
-                        ? AppColors.surfaceDark
-                        : AppColors.surface.withValues(alpha: 0.94),
-                    destinations: _tabs(context.l10n)
-                        .map((t) => NavigationDestination(
-                              icon: Icon(t.icon),
-                              label: t.label,
-                            ))
-                        .toList(),
+                  // Always drawn in the dark theme: a carbon bar in light
+                  // mode, the usual dark panel in dark mode.
+                  child: Theme(
+                    data: AppTheme.dark,
+                    child: NavigationBar(
+                      height: 64,
+                      selectedIndex: shell.currentIndex,
+                      onDestinationSelected: (i) => _onTap(context, ref, i),
+                      backgroundColor:
+                          isDark ? AppColors.surfaceDark : AppColors.carbon,
+                      destinations: _tabs(context.l10n)
+                          .map((t) => NavigationDestination(
+                                icon: Icon(t.icon),
+                                label: t.label,
+                              ))
+                          .toList(),
+                    ),
                   ),
                 ),
               ),

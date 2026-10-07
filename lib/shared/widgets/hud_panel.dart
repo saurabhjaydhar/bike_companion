@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_shadows.dart';
+import '../../core/theme/app_theme.dart';
 import 'energy_sweep.dart';
 
 /// The app's card surface.
 ///
 /// Dark mode: a glassy instrument panel — a top-lit gradient, a hairline
-/// border and an optional coloured glow. Light mode: soft clay — lit from the
-/// top left with a white highlight, a deep soft shadow to the bottom right
-/// and a bright rim along the top edge; a [glow] also washes the top-left
-/// corner with its colour.
+/// border and an optional coloured glow. Light mode: a crisp white panel
+/// with a fine border and a tight shadow; a [glow] tints the border.
+///
+/// [carbon] makes a hero panel: carbon black with orange racing stripes in
+/// both themes, and its contents are drawn with the dark theme so text,
+/// icons and gauges read light-on-dark automatically.
 ///
 /// Tappable panels squish slightly while pressed. Content is clipped to the
 /// rounded shape, so list tiles placed directly inside ripple cleanly to the
@@ -21,7 +24,11 @@ class HudPanel extends StatefulWidget {
   final Color? glow;
   final double radius;
   final bool sheen;
+  final bool carbon;
   final VoidCallback? onTap;
+
+  /// Width of the livery stripe band on a [carbon] panel's end edge.
+  static const double stripeBand = 46;
   final VoidCallback? onLongPress;
 
   const HudPanel({
@@ -31,6 +38,7 @@ class HudPanel extends StatefulWidget {
     this.glow,
     this.radius = AppRadius.large,
     this.sheen = false,
+    this.carbon = false,
     this.onTap,
     this.onLongPress,
   });
@@ -50,25 +58,33 @@ class _HudPanelState extends State<HudPanel> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
+    final carbon = widget.carbon;
     final shape = BorderRadius.circular(widget.radius);
     final glow = widget.glow;
 
-    final List<Color> fill;
-    if (isDark) {
-      fill = [
-        Color.alphaBlend(Colors.white.withValues(alpha: 0.04), surface),
-        surface,
-      ];
-    } else if (glow != null) {
-      fill = [
-        Color.alphaBlend(glow.withValues(alpha: 0.10), surface),
-        surface,
-        const Color(0xFFF3F6FB),
-      ];
+    final Color surface;
+    final Color border;
+    if (carbon) {
+      surface = isDark ? AppColors.surfaceDark : AppColors.carbon;
+      border = isDark ? AppColors.borderDark : AppColors.carbonEdge;
     } else {
-      fill = [surface, surface, const Color(0xFFF3F6FB)];
+      surface = isDark ? AppColors.surfaceDark : AppColors.surface;
+      border = isDark ? AppColors.borderDark : AppColors.border;
+    }
+    final edge = glow != null
+        ? Color.alphaBlend(glow.withValues(alpha: isDark ? 0.35 : 0.45), border)
+        : border;
+    final lit = isDark || carbon;
+
+    Widget content = InkWell(
+      borderRadius: shape,
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
+      onHighlightChanged: _press,
+      child: Padding(padding: widget.padding, child: widget.child),
+    );
+    if (carbon && !isDark) {
+      content = Theme(data: AppTheme.dark, child: content);
     }
 
     return AnimatedScale(
@@ -79,52 +95,50 @@ class _HudPanelState extends State<HudPanel> {
         decoration: BoxDecoration(
           borderRadius: shape,
           boxShadow: [
-            ...AppShadows.clay(isDark),
+            ...(carbon ? AppShadows.raised(isDark) : AppShadows.panel(isDark)),
             if (glow != null) AppShadows.glow(glow, isDark),
           ],
         ),
-        child: CustomPaint(
-          foregroundPainter: _RimPainter(
-            radius: widget.radius,
-            isDark: isDark,
-            edge: glow != null
-                ? Color.alphaBlend(
-                    glow.withValues(alpha: isDark ? 0.35 : 0.30), border)
-                : border,
-          ),
-          child: Material(
-            type: MaterialType.transparency,
-            borderRadius: shape,
-            clipBehavior: Clip.antiAlias,
-            child: Ink(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: isDark ? Alignment.topCenter : Alignment.topLeft,
-                  end:
-                      isDark ? Alignment.bottomCenter : Alignment.bottomRight,
-                  colors: fill,
-                ),
+        child: Material(
+          type: MaterialType.transparency,
+          borderRadius: shape,
+          clipBehavior: Clip.antiAlias,
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: shape,
+              border: Border.all(color: edge, width: lit ? 1 : 1.2),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: lit
+                    ? [
+                        Color.alphaBlend(
+                            Colors.white.withValues(alpha: 0.05), surface),
+                        surface,
+                      ]
+                    : [surface, surface],
               ),
-              child: Stack(
-                fit: StackFit.passthrough,
-                children: [
-                  InkWell(
-                    borderRadius: shape,
-                    onTap: widget.onTap,
-                    onLongPress: widget.onLongPress,
-                    onHighlightChanged: _press,
-                    child: Padding(padding: widget.padding, child: widget.child),
-                  ),
-                  if (widget.sheen)
-                    Positioned.fill(
-                      child: EnergySweep(
-                        color: isDark
-                            ? (glow ?? AppColors.accent)
-                            : Colors.white,
+            ),
+            child: Stack(
+              fit: StackFit.passthrough,
+              children: [
+                if (carbon)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter:
+                            _RacingStripesPainter(Directionality.of(context)),
                       ),
                     ),
-                ],
-              ),
+                  ),
+                content,
+                if (widget.sheen)
+                  Positioned.fill(
+                    child: EnergySweep(
+                      color: lit ? (glow ?? AppColors.accent) : Colors.white,
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -133,43 +147,66 @@ class _HudPanelState extends State<HudPanel> {
   }
 }
 
-/// Edge of a panel: in light mode a bright rim along the top-left fading to
-/// a faint edge at the bottom right, like light catching a rounded surface;
-/// in dark mode a hairline with a slightly brighter top.
-class _RimPainter extends CustomPainter {
-  final double radius;
-  final bool isDark;
-  final Color edge;
+/// Slanted orange livery stripes in a slim band along the panel's end edge
+/// (right in LTR, left in RTL), fading in from the top. Content that sits
+/// against the end edge should leave [HudPanel.stripeBand] of room.
+class _RacingStripesPainter extends CustomPainter {
+  final TextDirection direction;
+  const _RacingStripesPainter(this.direction);
 
-  _RimPainter({required this.radius, required this.isDark, required this.edge});
+  static const _stripe = 7.0;
+  static const _gap = 9.0;
+  static const _slope = 0.45; // horizontal shift per pixel of height
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = (Offset.zero & size).deflate(0.5);
-    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(radius));
-    final colors = isDark
-        ? [Color.alphaBlend(Colors.white.withValues(alpha: 0.08), edge), edge]
-        : [
-            Colors.white,
-            Colors.white.withValues(alpha: 0.6),
-            edge.withValues(alpha: 0.7),
-          ];
-    canvas.drawRRect(
-      rrect,
+    const band = HudPanel.stripeBand;
+    final rtl = direction == TextDirection.rtl;
+    final bandRect = rtl
+        ? Rect.fromLTWH(0, 0, band, size.height)
+        : Rect.fromLTWH(size.width - band, 0, band, size.height);
+
+    canvas.save();
+    canvas.clipRect(bandRect);
+    canvas.saveLayer(bandRect, Paint());
+    final run = size.height * _slope;
+    final paint = Paint()..color = AppColors.primary;
+    for (var x = bandRect.left - _stripe;
+        x < bandRect.right + run;
+        x += _stripe + _gap) {
+      final top = rtl ? x - run : x;
+      final bottom = rtl ? x : x - run;
+      canvas.drawPath(
+        Path()
+          ..moveTo(top, 0)
+          ..lineTo(top + _stripe, 0)
+          ..lineTo(bottom + _stripe, size.height)
+          ..lineTo(bottom, size.height)
+          ..close(),
+        paint,
+      );
+    }
+    // Fade in from the top so the header row stays clean.
+    canvas.drawRect(
+      bandRect,
       Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = isDark ? 1 : 1.2
+        ..blendMode = BlendMode.dstIn
         ..shader = LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colors,
-        ).createShader(rect),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white.withValues(alpha: 0),
+            Colors.white.withValues(alpha: 0.85),
+          ],
+          stops: const [0.15, 1],
+        ).createShader(bandRect),
     );
+    canvas.restore();
+    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(_RimPainter old) =>
-      old.radius != radius || old.isDark != isDark || old.edge != edge;
+  bool shouldRepaint(_RacingStripesPainter old) => old.direction != direction;
 }
 
 /// A [HudPanel] holding a list of rows (usually list tiles) separated by

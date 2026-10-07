@@ -296,25 +296,33 @@ class _VehicleSwitcherRow extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md, vertical: AppSpacing.sm),
               decoration: ShapeDecoration(
-                color: isActive ? null : surface,
-                gradient: isActive
+                // Active: ignition gradient in dark mode, carbon in light.
+                color: isActive
+                    ? (isDark ? null : AppColors.carbon)
+                    : surface,
+                gradient: isActive && isDark
                     ? const LinearGradient(colors: AppColors.ignitionGradient)
                     : null,
                 shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.small),
                   side: BorderSide(
-                    color: isActive ? AppColors.primary : border,
+                    color: isActive
+                        ? (isDark ? AppColors.primary : AppColors.carbon)
+                        : border,
                   ),
                 ),
                 shadows: isActive
-                    ? [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.45),
-                          blurRadius: 14,
-                          spreadRadius: -4,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
+                    ? (isDark
+                        ? [
+                            BoxShadow(
+                              color:
+                                  AppColors.primary.withValues(alpha: 0.45),
+                              blurRadius: 14,
+                              spreadRadius: -4,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : AppShadows.raised(false))
                     : AppShadows.card(isDark),
               ),
               child: Row(
@@ -325,7 +333,7 @@ class _VehicleSwitcherRow extends ConsumerWidget {
                     height: 8,
                     decoration: BoxDecoration(
                       color: isActive
-                          ? Colors.white
+                          ? (isDark ? Colors.white : AppColors.primary)
                           : vehicle.colour,
                       shape: BoxShape.circle,
                     ),
@@ -357,11 +365,10 @@ class _HealthHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    // Carbon panel: always drawn light-on-dark, whatever the page theme.
+    final textSecondary = AppColors.textSecondaryDark;
     final gradeColor =
-        HealthRing.gradeColor(dash.healthScore.grade, isDark: isDark);
+        HealthRing.gradeColor(dash.healthScore.grade, isDark: true);
     final l = context.l10n;
     final vehicle = dash.vehicle;
 
@@ -369,6 +376,7 @@ class _HealthHero extends StatelessWidget {
       padding:
           const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: HudPanel(
+        carbon: true,
         glow: gradeColor,
         sheen: true,
         padding: const EdgeInsets.fromLTRB(
@@ -404,7 +412,7 @@ class _HealthHero extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md, vertical: AppSpacing.xs),
               decoration: BoxDecoration(
-                color: gradeColor.withValues(alpha: isDark ? 0.14 : 0.10),
+                color: gradeColor.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(AppRadius.full),
                 border:
                     Border.all(color: gradeColor.withValues(alpha: 0.35)),

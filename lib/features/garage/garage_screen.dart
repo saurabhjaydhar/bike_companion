@@ -294,18 +294,19 @@ class _SummaryStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
-    final textPrimary =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
-    final textSecondary =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+    // Carbon panel: always drawn light-on-dark, whatever the page theme.
+    final border = AppColors.borderDark;
+    final textPrimary = AppColors.textPrimaryDark;
+    final textSecondary = AppColors.textSecondaryDark;
     final rupeeFormat = NumberFormat.currency(
         locale: 'en_IN', symbol: '₹', decimalDigits: 0);
     final l = context.l10n;
 
     return HudPanel(
-      glow: AppColors.accentFor(isDark),
+      carbon: true,
+      // Leave the livery stripes their band on the end edge.
+      padding: const EdgeInsetsDirectional.fromSTEB(AppSpacing.lg,
+          AppSpacing.lg, AppSpacing.lg + HudPanel.stripeBand, AppSpacing.lg),
       child: Row(
         children: [
           _Stat(
@@ -326,7 +327,7 @@ class _SummaryStrip extends StatelessWidget {
             label: l.garageStatAlerts,
             value: '$alertCount',
             valueColor: alertCount > 0
-                ? (isDark ? AppColors.warningDark : AppColors.warning)
+                ? (AppColors.warningDark)
                 : null,
             textPrimary: textPrimary,
             textSecondary: textSecondary,

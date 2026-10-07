@@ -463,7 +463,6 @@ class _RemindersSection extends ConsumerWidget {
                 if (i > 0) Divider(height: 1, color: border),
                 SwitchListTile(
                   value: !row.muted,
-                  activeThumbColor: AppColors.primary,
                   secondary: Icon(
                     row.muted
                         ? Icons.notifications_off_outlined

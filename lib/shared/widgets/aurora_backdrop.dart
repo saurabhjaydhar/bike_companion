@@ -6,7 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import '../../core/theme/app_colors.dart';
 
-/// Page background: soft colour blobs drifting slowly over a faint dot grid.
+/// Page background. Dark mode: soft colour blobs drifting slowly over a faint
+/// dot grid. Light mode: a still, warm paper page with the dot grid only.
 ///
 /// Every backdrop paints in screen coordinates against one shared clock, so
 /// two backdrops on screen at once (a page and the nav shell around it) line
@@ -40,7 +41,9 @@ class _AuroraBackdropState extends State<AuroraBackdrop>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final still = MediaQuery.disableAnimationsOf(context);
+    // Only the dark aurora moves; light mode is a still page.
+    final still = MediaQuery.disableAnimationsOf(context) ||
+        Theme.of(context).brightness == Brightness.light;
     if (still && _ticker.isActive) _ticker.stop();
     if (!still && !_ticker.isActive) _ticker.start();
   }
@@ -151,13 +154,13 @@ class _RenderAurora extends RenderBox {
   @override
   Size computeDryLayout(BoxConstraints constraints) => constraints.biggest;
 
-  /// Blob colour, light-mode alpha, dark-mode alpha, size (× screen width),
+  /// Blob colour, alpha, size (× screen width),
   /// anchor (fractions of the screen) and drift period in seconds.
   static const _blobs = [
-    (AppColors.primary, 0.30, 0.13, 0.95, Offset(0.95, 0.05), 31.0),
-    (AppColors.accent, 0.40, 0.10, 0.85, Offset(0.0, 0.35), 37.0),
-    (AppColors.statCost, 0.26, 0.12, 0.90, Offset(0.85, 0.75), 43.0),
-    (Color(0xFFFF4D8D), 0.16, 0.06, 0.70, Offset(0.1, 0.95), 53.0),
+    (AppColors.primary, 0.13, 0.95, Offset(0.95, 0.05), 31.0),
+    (AppColors.accent, 0.10, 0.85, Offset(0.0, 0.35), 37.0),
+    (AppColors.statCost, 0.12, 0.90, Offset(0.85, 0.75), 43.0),
+    (Color(0xFFFF4D8D), 0.06, 0.70, Offset(0.1, 0.95), 53.0),
   ];
 
   static Size? _dotsSize;
@@ -190,25 +193,27 @@ class _RenderAurora extends RenderBox {
     final t = _time.value;
     final w = _screen.width;
     final h = _screen.height;
-    for (final (colour, lightA, darkA, scale, anchor, period) in _blobs) {
-      final phase = 2 * pi * t / period;
-      final centre = Offset(
-        (anchor.dx + 0.12 * sin(phase)) * w,
-        (anchor.dy + 0.08 * cos(phase * 0.8)) * h,
-      );
-      final radius = w * scale * (1 + 0.08 * sin(phase * 1.3));
-      final a = _isDark ? darkA : lightA;
-      canvas.drawCircle(
-        centre,
-        radius,
-        Paint()
-          ..shader = RadialGradient(colors: [
-            colour.withValues(alpha: a),
-            colour.withValues(alpha: a * 0.4),
-            colour.withValues(alpha: 0),
-          ], stops: const [0, 0.45, 1])
-              .createShader(Rect.fromCircle(center: centre, radius: radius)),
-      );
+    // Colour blobs drift in dark mode only; light mode is plain paper.
+    if (_isDark) {
+      for (final (colour, alpha, scale, anchor, period) in _blobs) {
+        final phase = 2 * pi * t / period;
+        final centre = Offset(
+          (anchor.dx + 0.12 * sin(phase)) * w,
+          (anchor.dy + 0.08 * cos(phase * 0.8)) * h,
+        );
+        final radius = w * scale * (1 + 0.08 * sin(phase * 1.3));
+        canvas.drawCircle(
+          centre,
+          radius,
+          Paint()
+            ..shader = RadialGradient(colors: [
+              colour.withValues(alpha: alpha),
+              colour.withValues(alpha: alpha * 0.4),
+              colour.withValues(alpha: 0),
+            ], stops: const [0, 0.45, 1])
+                .createShader(Rect.fromCircle(center: centre, radius: radius)),
+        );
+      }
     }
 
     // Faint dot grid — the "instrument panel" texture.

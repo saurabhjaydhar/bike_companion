@@ -658,7 +658,7 @@ class _FormField extends StatelessWidget {
               ? TextCapitalization.characters
               : TextCapitalization.sentences,
           style: latin
-              ? GoogleFonts.chakraPetch(
+              ? GoogleFonts.jetBrainsMono(
                   fontWeight: FontWeight.w600, letterSpacing: 1.2)
               : null,
           decoration: InputDecoration(errorText: errorText, hintText: hintText),

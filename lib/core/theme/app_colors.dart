@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// "Night Ride" palette — an instrument-cluster look: near-black panels,
-/// ignition-orange primary, cyan HUD accent and neon status colours.
+/// Garajo palette. Dark ("Night Ride"): an instrument cluster — near-black
+/// panels, cyan HUD accent and neon status colours. Light ("Paddock"): warm
+/// paper, white panels, carbon-black heroes. Ignition orange is the brand
+/// colour in both.
 class AppColors {
   // Primary — ignition orange
   static const Color primary = Color(0xFFFF5A1F);
@@ -28,23 +30,28 @@ class AppColors {
   static const Color warningDark = Color(0xFFFFC233);
   static const Color dangerDark = Color(0xFFFF4D6A);
 
-  // Surface — light. Cards are white on a cool grey page and get their
-  // depth from shadows (see AppShadows), so the hairline border stays faint.
+  // Surface — light ("Paddock"): warm paper page, crisp white panels with a
+  // fine border, near-black ink. Depth comes from borders and a tight
+  // shadow, not soft blur; the hero uses [carbon].
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF4F6FA);
-  static const Color background = Color(0xFFE9EDF3);
-  static const Color border = Color(0xFFE3E7EF);
+  static const Color surfaceVariant = Color(0xFFF7F6F2);
+  static const Color background = Color(0xFFF3F2EE);
+  static const Color border = Color(0xFFDCDAD3);
 
   /// Unfilled tracks (progress bars, gauge segments, idle chart bars) —
   /// a step darker than [border] so they read against white.
-  static const Color track = Color(0xFFD9DEE8);
+  static const Color track = Color(0xFFE4E2DC);
 
-  /// Navy used to tint light-mode shadows, so they look cool rather than
-  /// muddy grey.
-  static const Color shadow = Color(0xFF1A2340);
-  static const Color textPrimary = Color(0xFF0B0E14);
-  static const Color textSecondary = Color(0xFF5A6273);
-  static const Color textTertiary = Color(0xFF949CAD);
+  /// Warm ink used to tint light-mode shadows and the page texture.
+  static const Color shadow = Color(0xFF1A1712);
+  static const Color textPrimary = Color(0xFF111214);
+  static const Color textSecondary = Color(0xFF5C5F66);
+  static const Color textTertiary = Color(0xFF9A9CA2);
+
+  /// Carbon-black surface for hero panels and the nav bar in light mode —
+  /// the "fairing" that anchors each page.
+  static const Color carbon = Color(0xFF111214);
+  static const Color carbonEdge = Color(0xFF26282E);
 
   // Surface — dark
   static const Color surfaceDark = Color(0xFF11141B);

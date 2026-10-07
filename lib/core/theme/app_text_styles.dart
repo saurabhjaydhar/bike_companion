@@ -1,80 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Headings, labels and numbers use Chakra Petch — a squared, instrument-panel
-/// face. Body text stays in Inter for readability. Scripts these fonts don't
-/// cover (Devanagari, Arabic) fall back to the platform font automatically.
+/// Type for a motorsport look:
+/// - Saira Condensed for headings, labels and big readouts — tall, narrow
+///   and fast, like livery lettering.
+/// - Saira for body text — the same family, so the two sit together.
+/// - JetBrains Mono for data (km, ₹, days) — fixed-width digits that line up
+///   like a telemetry readout.
+/// Scripts these fonts don't cover (Devanagari, Arabic) fall back to the
+/// platform font automatically.
 class AppTextStyles {
-  static TextStyle get display => GoogleFonts.chakraPetch(
-        fontSize: 34,
+  static TextStyle get display => GoogleFonts.sairaCondensed(
+        fontSize: 40,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.2,
+        height: 1.05,
+      );
+
+  static TextStyle get heading1 => GoogleFonts.sairaCondensed(
+        fontSize: 32,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.2,
+        height: 1.1,
+      );
+
+  static TextStyle get heading2 => GoogleFonts.sairaCondensed(
+        fontSize: 25,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.3,
+        height: 1.15,
+      );
+
+  static TextStyle get heading3 => GoogleFonts.sairaCondensed(
+        fontSize: 19,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.4,
+        height: 1.25,
+      );
+
+  /// Large readouts — the health score, money totals.
+  static TextStyle get metric => GoogleFonts.sairaCondensed(
+        fontSize: 32,
+        fontWeight: FontWeight.w800,
+        height: 1.0,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
+
+  /// Data values — km, ₹, days — in a monospaced telemetry face.
+  static TextStyle get data => GoogleFonts.jetBrainsMono(
+        fontSize: 20,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.3,
         height: 1.15,
       );
 
-  static TextStyle get heading1 => GoogleFonts.chakraPetch(
-        fontSize: 26,
-        fontWeight: FontWeight.w700,
-        letterSpacing: -0.2,
-        height: 1.25,
-      );
-
-  static TextStyle get heading2 => GoogleFonts.chakraPetch(
-        fontSize: 21,
-        fontWeight: FontWeight.w700,
-        height: 1.3,
-      );
-
-  static TextStyle get heading3 => GoogleFonts.chakraPetch(
-        fontSize: 17,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.2,
-        height: 1.35,
-      );
-
-  /// Large numeric readouts (scores, money, odometer).
-  static TextStyle get metric => GoogleFonts.chakraPetch(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
-        height: 1.1,
-        fontFeatures: const [FontFeature.tabularFigures()],
-      );
-
-  static TextStyle get body => GoogleFonts.inter(
+  static TextStyle get body => GoogleFonts.saira(
         fontSize: 14,
         fontWeight: FontWeight.w400,
         height: 1.5,
       );
 
-  static TextStyle get bodyMedium => GoogleFonts.inter(
+  static TextStyle get bodyMedium => GoogleFonts.saira(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         height: 1.5,
       );
 
-  static TextStyle get bodySemiBold => GoogleFonts.inter(
+  static TextStyle get bodySemiBold => GoogleFonts.saira(
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.5,
       );
 
-  static TextStyle get caption => GoogleFonts.inter(
+  static TextStyle get caption => GoogleFonts.saira(
         fontSize: 12,
         fontWeight: FontWeight.w400,
         height: 1.5,
         letterSpacing: 0.1,
       );
 
-  static TextStyle get captionMedium => GoogleFonts.inter(
+  static TextStyle get captionMedium => GoogleFonts.saira(
         fontSize: 12,
         fontWeight: FontWeight.w500,
         height: 1.5,
       );
 
-  static TextStyle get label => GoogleFonts.chakraPetch(
-        fontSize: 11.5,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.9,
-        height: 1.4,
+  static TextStyle get label => GoogleFonts.sairaCondensed(
+        fontSize: 12.5,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.4,
+        height: 1.35,
       );
 }

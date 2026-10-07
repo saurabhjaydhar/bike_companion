@@ -355,5 +355,21 @@
   "backupLater": "Depois",
   "backupAction": "Fazer backup",
   "backupDone": "Garagem salva na sua conta Google",
-  "settingsGuest": "Convidado"
+  "settingsGuest": "Convidado",
+  "tipNext": "Próximo",
+  "tipSkip": "Pular",
+  "tipGotIt": "Entendi",
+  "tourScoreTitle": "Saúde do veículo",
+  "tourScoreBody": "Como está seu veículo, com base em revisões, seguro e consumo. Toque para ver o que resolver.",
+  "tourLogTitle": "Registre tudo",
+  "tourLogBody": "Combustível, uma despesa, uma revisão, o hodômetro ou um documento – tudo por este botão.",
+  "tourSwitchTitle": "Seus veículos",
+  "tourSwitchBody": "Toque no nome para trocar de veículo, adicionar outro ou editar os dados.",
+  "tipExpenses": "Deslize para os lados para mudar o mês. Defina um orçamento e avisamos antes de você estourar.",
+  "tipService": "Toque em um item para registrá-lo. Calculamos a próxima vez e lembramos você.",
+  "tipDocuments": "Adicione documento, seguro e inspeção com a validade. Avisamos antes de vencerem.",
+  "tipFuelLog": "Só o hodômetro e quanto pagou. Calculamos litros e consumo, e na próxima vez preenchemos a leitura.",
+  "tipGarage": "Toque em um veículo para abri-lo. Use ⋮ para editar ou excluir.",
+  "settingsShowTips": "Mostrar dicas de novo",
+  "settingsTipsReset": "As dicas vão aparecer de novo em cada tela"
 }

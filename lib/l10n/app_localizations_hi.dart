@@ -1237,4 +1237,60 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsGuest => 'मेहमान';
+
+  @override
+  String get tipNext => 'आगे';
+
+  @override
+  String get tipSkip => 'छोड़ें';
+
+  @override
+  String get tipGotIt => 'समझ गया';
+
+  @override
+  String get tourScoreTitle => 'हेल्थ स्कोर';
+
+  @override
+  String get tourScoreBody =>
+      'सर्विस, बीमा और माइलेज के हिसाब से आपके वाहन की हालत। क्या ठीक करना है, देखने के लिए टैप करें।';
+
+  @override
+  String get tourLogTitle => 'कुछ भी दर्ज करें';
+
+  @override
+  String get tourLogBody =>
+      'फ़्यूल, ख़र्च, सर्विस, ओडोमीटर या डॉक्यूमेंट – सब इसी एक बटन से।';
+
+  @override
+  String get tourSwitchTitle => 'आपके वाहन';
+
+  @override
+  String get tourSwitchBody =>
+      'वाहन बदलने, नया जोड़ने या जानकारी बदलने के लिए नाम पर टैप करें।';
+
+  @override
+  String get tipExpenses =>
+      'महीना बदलने के लिए दाएँ-बाएँ स्वाइप करें। बजट सेट करें, ज़्यादा ख़र्च से पहले हम बता देंगे।';
+
+  @override
+  String get tipService =>
+      'दर्ज करने के लिए किसी भी आइटम पर टैप करें। अगली बार कब ड्यू है, हम बताएँगे और याद दिलाएँगे।';
+
+  @override
+  String get tipDocuments =>
+      'RC, बीमा और PUC उनकी एक्सपायरी तारीख़ के साथ जोड़ें। ख़त्म होने से पहले हम याद दिलाएँगे।';
+
+  @override
+  String get tipFuelLog =>
+      'बस ओडोमीटर और कितना भरा। लीटर और माइलेज हम निकाल लेंगे, और अगली बार रीडिंग भी भर देंगे।';
+
+  @override
+  String get tipGarage =>
+      'वाहन खोलने के लिए उस पर टैप करें। बदलने या हटाने के लिए ⋮ दबाएँ।';
+
+  @override
+  String get settingsShowTips => 'टिप्स फिर से दिखाएँ';
+
+  @override
+  String get settingsTipsReset => 'हर स्क्रीन पर टिप्स फिर दिखेंगे';
 }

@@ -714,5 +714,21 @@
   "backupLater": "Later",
   "backupAction": "Back up",
   "backupDone": "Garage backed up to your Google account",
-  "settingsGuest": "Guest"
+  "settingsGuest": "Guest",
+  "tipNext": "Next",
+  "tipSkip": "Skip",
+  "tipGotIt": "Got it",
+  "tourScoreTitle": "Health score",
+  "tourScoreBody": "How your vehicle is doing, from services, insurance and mileage. Tap it to see what to fix.",
+  "tourLogTitle": "Log anything",
+  "tourLogBody": "Fuel, an expense, a service, an odometer reading or a document – all from this one button.",
+  "tourSwitchTitle": "Your vehicles",
+  "tourSwitchBody": "Tap the name to switch vehicle, add another or edit its details.",
+  "tipExpenses": "Swipe left or right to change the month. Set a budget and we'll warn you before you overspend.",
+  "tipService": "Tap any item to log it. We work out when it's due next and remind you.",
+  "tipDocuments": "Add your RC, insurance and PUC with expiry dates. We'll remind you before they run out.",
+  "tipFuelLog": "Just the odometer and what you paid. We work out litres and mileage, and fill in the reading for you next time.",
+  "tipGarage": "Tap a vehicle to open it. Use ⋮ to edit or delete it.",
+  "settingsShowTips": "Show tips again",
+  "settingsTipsReset": "Tips will show again on each screen"
 }

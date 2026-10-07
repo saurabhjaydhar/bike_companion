@@ -1278,4 +1278,61 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsGuest => 'Ospite';
+
+  @override
+  String get tipNext => 'Avanti';
+
+  @override
+  String get tipSkip => 'Salta';
+
+  @override
+  String get tipGotIt => 'Capito';
+
+  @override
+  String get tourScoreTitle => 'Stato di salute';
+
+  @override
+  String get tourScoreBody =>
+      'Come sta il tuo veicolo, tra manutenzione, assicurazione e consumi. Toccalo per vedere cosa sistemare.';
+
+  @override
+  String get tourLogTitle => 'Registra tutto';
+
+  @override
+  String get tourLogBody =>
+      'Carburante, una spesa, un tagliando, i km o un documento: tutto da questo pulsante.';
+
+  @override
+  String get tourSwitchTitle => 'I tuoi veicoli';
+
+  @override
+  String get tourSwitchBody =>
+      'Tocca il nome per cambiare veicolo, aggiungerne un altro o modificarne i dati.';
+
+  @override
+  String get tipExpenses =>
+      'Scorri a destra o sinistra per cambiare mese. Imposta un budget e ti avviseremo prima di sforarlo.';
+
+  @override
+  String get tipService =>
+      'Tocca una voce per registrarla. Calcoliamo la prossima scadenza e te la ricordiamo.';
+
+  @override
+  String get tipDocuments =>
+      'Aggiungi libretto, assicurazione e bollino con la scadenza. Ti avviseremo prima che scadano.';
+
+  @override
+  String get tipFuelLog =>
+      'Solo i km e quanto hai pagato. Calcoliamo litri e consumi, e la prossima volta compiliamo noi la lettura.';
+
+  @override
+  String get tipGarage =>
+      'Tocca un veicolo per aprirlo. Usa ⋮ per modificarlo o eliminarlo.';
+
+  @override
+  String get settingsShowTips => 'Mostra di nuovo i suggerimenti';
+
+  @override
+  String get settingsTipsReset =>
+      'I suggerimenti riappariranno in ogni schermata';
 }

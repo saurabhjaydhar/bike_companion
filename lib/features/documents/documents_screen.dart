@@ -11,6 +11,7 @@ import '../../core/services/storage_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
+import '../../shared/widgets/first_time_tips.dart';
 import '../../data/models/document.dart';
 import '../../main.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -69,6 +70,7 @@ class DocumentsScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(
                   AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 100),
               children: [
+                TipCard(id: Tips.documents, text: l.tipDocuments),
                 if (expiring.isNotEmpty) ...[
                   _SectionHeader(l.documentsExpiringSoon, isDark: isDark),
                   _DocGrid(

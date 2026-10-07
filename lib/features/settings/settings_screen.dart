@@ -18,6 +18,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/backup_prompt.dart';
+import '../../shared/widgets/first_time_tips.dart';
 import '../../shared/widgets/hud_panel.dart';
 
 // ---------------------------------------------------------------------------
@@ -213,6 +214,20 @@ class SettingsScreen extends ConsumerWidget {
             padding: EdgeInsets.zero,
             child: Column(
               children: [
+                ListTile(
+                  leading: Icon(Icons.lightbulb_outline_rounded,
+                      color: textSecondary),
+                  title: Text(l.settingsShowTips,
+                      style: AppTextStyles.body.copyWith(color: textPrimary)),
+                  onTap: () async {
+                    await Tips.resetAll();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l.settingsTipsReset)));
+                    }
+                  },
+                ),
+                Divider(height: 1, color: border),
                 ListTile(
                   title: Text(l.settingsVersion,
                       style: AppTextStyles.body.copyWith(color: textPrimary)),

@@ -1270,4 +1270,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsGuest => 'Guest';
+
+  @override
+  String get tipNext => 'Next';
+
+  @override
+  String get tipSkip => 'Skip';
+
+  @override
+  String get tipGotIt => 'Got it';
+
+  @override
+  String get tourScoreTitle => 'Health score';
+
+  @override
+  String get tourScoreBody =>
+      'How your vehicle is doing, from services, insurance and mileage. Tap it to see what to fix.';
+
+  @override
+  String get tourLogTitle => 'Log anything';
+
+  @override
+  String get tourLogBody =>
+      'Fuel, an expense, a service, an odometer reading or a document – all from this one button.';
+
+  @override
+  String get tourSwitchTitle => 'Your vehicles';
+
+  @override
+  String get tourSwitchBody =>
+      'Tap the name to switch vehicle, add another or edit its details.';
+
+  @override
+  String get tipExpenses =>
+      'Swipe left or right to change the month. Set a budget and we\'ll warn you before you overspend.';
+
+  @override
+  String get tipService =>
+      'Tap any item to log it. We work out when it\'s due next and remind you.';
+
+  @override
+  String get tipDocuments =>
+      'Add your RC, insurance and PUC with expiry dates. We\'ll remind you before they run out.';
+
+  @override
+  String get tipFuelLog =>
+      'Just the odometer and what you paid. We work out litres and mileage, and fill in the reading for you next time.';
+
+  @override
+  String get tipGarage =>
+      'Tap a vehicle to open it. Use ⋮ to edit or delete it.';
+
+  @override
+  String get settingsShowTips => 'Show tips again';
+
+  @override
+  String get settingsTipsReset => 'Tips will show again on each screen';
 }

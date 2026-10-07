@@ -8,6 +8,7 @@ import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
+import '../../shared/widgets/first_time_tips.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
 import '../../shared/widgets/reveal.dart';
@@ -59,6 +60,7 @@ class GarageScreen extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
+                TipCard(id: Tips.garage, text: context.l10n.tipGarage),
                 Reveal(
                   child: _SummaryStrip(
                     vehicleCount: items.length,

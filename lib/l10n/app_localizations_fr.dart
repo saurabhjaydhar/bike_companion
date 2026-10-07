@@ -1282,4 +1282,60 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsGuest => 'Invité';
+
+  @override
+  String get tipNext => 'Suivant';
+
+  @override
+  String get tipSkip => 'Passer';
+
+  @override
+  String get tipGotIt => 'Compris';
+
+  @override
+  String get tourScoreTitle => 'Score de santé';
+
+  @override
+  String get tourScoreBody =>
+      'L\'état de votre véhicule selon l\'entretien, l\'assurance et la consommation. Touchez-le pour voir quoi corriger.';
+
+  @override
+  String get tourLogTitle => 'Tout saisir ici';
+
+  @override
+  String get tourLogBody =>
+      'Carburant, dépense, entretien, kilométrage ou document : tout depuis ce bouton.';
+
+  @override
+  String get tourSwitchTitle => 'Vos véhicules';
+
+  @override
+  String get tourSwitchBody =>
+      'Touchez le nom pour changer de véhicule, en ajouter un ou modifier ses infos.';
+
+  @override
+  String get tipExpenses =>
+      'Balayez à gauche ou à droite pour changer de mois. Fixez un budget et on vous prévient avant de le dépasser.';
+
+  @override
+  String get tipService =>
+      'Touchez un élément pour le saisir. On calcule la prochaine échéance et on vous la rappelle.';
+
+  @override
+  String get tipDocuments =>
+      'Ajoutez vos papiers avec leur date d\'expiration. On vous prévient avant qu\'ils expirent.';
+
+  @override
+  String get tipFuelLog =>
+      'Juste le compteur et le montant payé. On calcule litres et consommation, et on pré-remplit le relevé la prochaine fois.';
+
+  @override
+  String get tipGarage =>
+      'Touchez un véhicule pour l\'ouvrir. Utilisez ⋮ pour le modifier ou le supprimer.';
+
+  @override
+  String get settingsShowTips => 'Revoir les astuces';
+
+  @override
+  String get settingsTipsReset => 'Les astuces réapparaîtront sur chaque écran';
 }

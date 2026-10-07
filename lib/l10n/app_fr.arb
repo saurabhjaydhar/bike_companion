@@ -355,5 +355,21 @@
   "backupLater": "Plus tard",
   "backupAction": "Sauvegarder",
   "backupDone": "Garage sauvegardé sur votre compte Google",
-  "settingsGuest": "Invité"
+  "settingsGuest": "Invité",
+  "tipNext": "Suivant",
+  "tipSkip": "Passer",
+  "tipGotIt": "Compris",
+  "tourScoreTitle": "Score de santé",
+  "tourScoreBody": "L'état de votre véhicule selon l'entretien, l'assurance et la consommation. Touchez-le pour voir quoi corriger.",
+  "tourLogTitle": "Tout saisir ici",
+  "tourLogBody": "Carburant, dépense, entretien, kilométrage ou document : tout depuis ce bouton.",
+  "tourSwitchTitle": "Vos véhicules",
+  "tourSwitchBody": "Touchez le nom pour changer de véhicule, en ajouter un ou modifier ses infos.",
+  "tipExpenses": "Balayez à gauche ou à droite pour changer de mois. Fixez un budget et on vous prévient avant de le dépasser.",
+  "tipService": "Touchez un élément pour le saisir. On calcule la prochaine échéance et on vous la rappelle.",
+  "tipDocuments": "Ajoutez vos papiers avec leur date d'expiration. On vous prévient avant qu'ils expirent.",
+  "tipFuelLog": "Juste le compteur et le montant payé. On calcule litres et consommation, et on pré-remplit le relevé la prochaine fois.",
+  "tipGarage": "Touchez un véhicule pour l'ouvrir. Utilisez ⋮ pour le modifier ou le supprimer.",
+  "settingsShowTips": "Revoir les astuces",
+  "settingsTipsReset": "Les astuces réapparaîtront sur chaque écran"
 }

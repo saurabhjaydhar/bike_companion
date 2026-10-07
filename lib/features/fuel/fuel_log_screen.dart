@@ -16,6 +16,7 @@ import '../../features/expenses/expenses_provider.dart';
 import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
+import '../../shared/widgets/first_time_tips.dart';
 import '../../shared/widgets/primary_button.dart';
 import 'fuel_prefill.dart';
 import 'fuel_provider.dart';
@@ -234,6 +235,7 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.xl),
           children: [
+            TipCard(id: Tips.fuelLog, text: l.tipFuelLog),
             // Large odometer input
             Text(l.fuelCurrentOdometer,
                 style: AppTextStyles.label

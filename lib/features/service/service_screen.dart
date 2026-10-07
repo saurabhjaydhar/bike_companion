@@ -11,6 +11,7 @@ import '../../features/dashboard/dashboard_provider.dart';
 import '../../features/garage/garage_provider.dart';
 import '../expenses/expenses_provider.dart';
 import '../../l10n/l10n.dart';
+import '../../shared/widgets/first_time_tips.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
 import 'service_provider.dart';
@@ -96,6 +97,7 @@ class _DueSoonTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
+        TipCard(id: Tips.service, text: context.l10n.tipService),
         HudGroup(
           dividerIndent: 72,
           children: [

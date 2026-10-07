@@ -2245,6 +2245,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Guest'**
   String get settingsGuest;
+
+  /// No description provided for @tipNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get tipNext;
+
+  /// No description provided for @tipSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get tipSkip;
+
+  /// No description provided for @tipGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get tipGotIt;
+
+  /// No description provided for @tourScoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health score'**
+  String get tourScoreTitle;
+
+  /// No description provided for @tourScoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How your vehicle is doing, from services, insurance and mileage. Tap it to see what to fix.'**
+  String get tourScoreBody;
+
+  /// No description provided for @tourLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log anything'**
+  String get tourLogTitle;
+
+  /// No description provided for @tourLogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel, an expense, a service, an odometer reading or a document – all from this one button.'**
+  String get tourLogBody;
+
+  /// No description provided for @tourSwitchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vehicles'**
+  String get tourSwitchTitle;
+
+  /// No description provided for @tourSwitchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the name to switch vehicle, add another or edit its details.'**
+  String get tourSwitchBody;
+
+  /// No description provided for @tipExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe left or right to change the month. Set a budget and we\'ll warn you before you overspend.'**
+  String get tipExpenses;
+
+  /// No description provided for @tipService.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap any item to log it. We work out when it\'s due next and remind you.'**
+  String get tipService;
+
+  /// No description provided for @tipDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your RC, insurance and PUC with expiry dates. We\'ll remind you before they run out.'**
+  String get tipDocuments;
+
+  /// No description provided for @tipFuelLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Just the odometer and what you paid. We work out litres and mileage, and fill in the reading for you next time.'**
+  String get tipFuelLog;
+
+  /// No description provided for @tipGarage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a vehicle to open it. Use ⋮ to edit or delete it.'**
+  String get tipGarage;
+
+  /// No description provided for @settingsShowTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Show tips again'**
+  String get settingsShowTips;
+
+  /// No description provided for @settingsTipsReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips will show again on each screen'**
+  String get settingsTipsReset;
 }
 
 class _AppLocalizationsDelegate

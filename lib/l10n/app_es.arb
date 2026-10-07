@@ -355,5 +355,21 @@
   "backupLater": "Más tarde",
   "backupAction": "Guardar",
   "backupDone": "Garaje guardado en tu cuenta de Google",
-  "settingsGuest": "Invitado"
+  "settingsGuest": "Invitado",
+  "tipNext": "Siguiente",
+  "tipSkip": "Omitir",
+  "tipGotIt": "Entendido",
+  "tourScoreTitle": "Estado del vehículo",
+  "tourScoreBody": "Cómo está tu vehículo según mantenimiento, seguro y consumo. Tócalo para ver qué arreglar.",
+  "tourLogTitle": "Registra lo que sea",
+  "tourLogBody": "Combustible, un gasto, un mantenimiento, el cuentakilómetros o un documento: todo desde este botón.",
+  "tourSwitchTitle": "Tus vehículos",
+  "tourSwitchBody": "Toca el nombre para cambiar de vehículo, añadir otro o editar sus datos.",
+  "tipExpenses": "Desliza a izquierda o derecha para cambiar de mes. Pon un presupuesto y te avisaremos antes de pasarte.",
+  "tipService": "Toca cualquier elemento para registrarlo. Calculamos cuándo toca el siguiente y te lo recordamos.",
+  "tipDocuments": "Añade tus documentos con su fecha de caducidad. Te avisaremos antes de que venzan.",
+  "tipFuelLog": "Solo el cuentakilómetros y lo que pagaste. Calculamos litros y consumo, y la próxima vez rellenamos la lectura.",
+  "tipGarage": "Toca un vehículo para abrirlo. Usa ⋮ para editarlo o eliminarlo.",
+  "settingsShowTips": "Volver a mostrar consejos",
+  "settingsTipsReset": "Los consejos volverán a aparecer en cada pantalla"
 }

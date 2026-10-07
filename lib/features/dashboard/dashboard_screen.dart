@@ -34,6 +34,7 @@ import 'widgets/vehicle_switcher_sheet.dart';
 import 'widgets/spending_card.dart';
 import '../../shared/widgets/backup_prompt.dart';
 import '../../shared/widgets/clay_icon.dart';
+import '../../shared/widgets/first_time_tips.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   final String vehicleId;
@@ -120,6 +121,33 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   /// Whether the LOG button shows: hidden while scrolling down.
   bool _fabVisible = true;
 
+  // Targets for the first-time tour.
+  final _titleKey = GlobalKey();
+  final _heroKey = GlobalKey();
+  final _logKey = GlobalKey();
+  bool _tourChecked = false;
+
+  /// Runs the Home tour once, after the dashboard has loaded and settled.
+  Future<void> _maybeShowTour() async {
+    if (_tourChecked) return;
+    _tourChecked = true;
+    if (await Tips.isSeen(Tips.homeTour)) return;
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (!mounted || widget.edit != null) return;
+    await Tips.markSeen(Tips.homeTour);
+    if (!mounted) return;
+    final l = context.l10n;
+    await showSpotlightTour(context, [
+      TourStep(
+          target: _heroKey, title: l.tourScoreTitle, body: l.tourScoreBody),
+      TourStep(target: _logKey, title: l.tourLogTitle, body: l.tourLogBody),
+      TourStep(
+          target: _titleKey,
+          title: l.tourSwitchTitle,
+          body: l.tourSwitchBody),
+    ]);
+  }
+
   bool _onScroll(UserScrollNotification n) {
     final visible = switch (n.direction) {
       ScrollDirection.reverse => false,
@@ -155,6 +183,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     final dashAsync = ref.watch(dashboardProvider(widget.vehicleId));
+    if (dashAsync.hasValue) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowTour());
+    }
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l = context.l10n;
 
@@ -164,6 +195,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
         // Tap the name to switch vehicle, add one or open the garage.
         title: dashAsync.maybeWhen(
           data: (d) => InkWell(
+            key: _titleKey,
             onTap: () => showVehicleSwitcher(context, ref,
                 vehicles: d.allVehicles, activeVehicleId: widget.vehicleId),
             child: Row(
@@ -198,6 +230,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                 opacity: _fabVisible ? 1 : 0,
                 duration: AppDuration.normal,
                 child: FloatingActionButton.extended(
+                key: _logKey,
                 onPressed: () =>
                     showLogSheet(context, ref, vehicleId: widget.vehicleId),
                 backgroundColor: AppColors.primary,
@@ -237,7 +270,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               Reveal(
                 index: 1,
                 child: _HealthHero(
-                    dash: dash, onTap: () => _openHealth(dash)),
+                    panelKey: _heroKey,
+                    dash: dash,
+                    onTap: () => _openHealth(dash)),
               ),
 
               const SizedBox(height: AppSpacing.lg),
@@ -399,7 +434,9 @@ class _VehicleSwitcherRow extends ConsumerWidget {
 class _HealthHero extends StatelessWidget {
   final DashboardState dash;
   final VoidCallback onTap;
-  const _HealthHero({required this.dash, required this.onTap});
+  final GlobalKey? panelKey;
+  const _HealthHero(
+      {required this.dash, required this.onTap, this.panelKey});
 
   @override
   Widget build(BuildContext context) {
@@ -414,6 +451,7 @@ class _HealthHero extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: HudPanel(
+        key: panelKey,
         onTap: onTap,
         carbon: true,
         wideStripes: true,

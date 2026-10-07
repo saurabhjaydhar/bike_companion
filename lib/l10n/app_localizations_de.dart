@@ -1279,4 +1279,61 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsGuest => 'Gast';
+
+  @override
+  String get tipNext => 'Weiter';
+
+  @override
+  String get tipSkip => 'Überspringen';
+
+  @override
+  String get tipGotIt => 'Verstanden';
+
+  @override
+  String get tourScoreTitle => 'Zustandswert';
+
+  @override
+  String get tourScoreBody =>
+      'Wie es deinem Fahrzeug geht – aus Wartung, Versicherung und Verbrauch. Tippe darauf, um zu sehen, was zu tun ist.';
+
+  @override
+  String get tourLogTitle => 'Alles eintragen';
+
+  @override
+  String get tourLogBody =>
+      'Tanken, Ausgaben, Wartung, Kilometerstand oder Dokumente – alles über diesen einen Knopf.';
+
+  @override
+  String get tourSwitchTitle => 'Deine Fahrzeuge';
+
+  @override
+  String get tourSwitchBody =>
+      'Tippe auf den Namen, um das Fahrzeug zu wechseln, eins hinzuzufügen oder Details zu ändern.';
+
+  @override
+  String get tipExpenses =>
+      'Wische nach links oder rechts, um den Monat zu wechseln. Lege ein Budget fest – wir warnen dich vorher.';
+
+  @override
+  String get tipService =>
+      'Tippe auf einen Eintrag, um ihn zu erfassen. Wir berechnen, wann er wieder fällig ist, und erinnern dich.';
+
+  @override
+  String get tipDocuments =>
+      'Füge Fahrzeugschein, Versicherung und Abgasnachweis mit Ablaufdatum hinzu. Wir erinnern dich rechtzeitig.';
+
+  @override
+  String get tipFuelLog =>
+      'Nur Kilometerstand und Betrag. Liter und Verbrauch rechnen wir aus – und beim nächsten Mal tragen wir den Stand vor.';
+
+  @override
+  String get tipGarage =>
+      'Tippe auf ein Fahrzeug, um es zu öffnen. Über ⋮ kannst du es bearbeiten oder löschen.';
+
+  @override
+  String get settingsShowTips => 'Tipps erneut anzeigen';
+
+  @override
+  String get settingsTipsReset =>
+      'Tipps werden auf jedem Bildschirm wieder angezeigt';
 }

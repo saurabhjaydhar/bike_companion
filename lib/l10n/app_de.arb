@@ -355,5 +355,21 @@
   "backupLater": "Später",
   "backupAction": "Sichern",
   "backupDone": "Garage in deinem Google-Konto gesichert",
-  "settingsGuest": "Gast"
+  "settingsGuest": "Gast",
+  "tipNext": "Weiter",
+  "tipSkip": "Überspringen",
+  "tipGotIt": "Verstanden",
+  "tourScoreTitle": "Zustandswert",
+  "tourScoreBody": "Wie es deinem Fahrzeug geht – aus Wartung, Versicherung und Verbrauch. Tippe darauf, um zu sehen, was zu tun ist.",
+  "tourLogTitle": "Alles eintragen",
+  "tourLogBody": "Tanken, Ausgaben, Wartung, Kilometerstand oder Dokumente – alles über diesen einen Knopf.",
+  "tourSwitchTitle": "Deine Fahrzeuge",
+  "tourSwitchBody": "Tippe auf den Namen, um das Fahrzeug zu wechseln, eins hinzuzufügen oder Details zu ändern.",
+  "tipExpenses": "Wische nach links oder rechts, um den Monat zu wechseln. Lege ein Budget fest – wir warnen dich vorher.",
+  "tipService": "Tippe auf einen Eintrag, um ihn zu erfassen. Wir berechnen, wann er wieder fällig ist, und erinnern dich.",
+  "tipDocuments": "Füge Fahrzeugschein, Versicherung und Abgasnachweis mit Ablaufdatum hinzu. Wir erinnern dich rechtzeitig.",
+  "tipFuelLog": "Nur Kilometerstand und Betrag. Liter und Verbrauch rechnen wir aus – und beim nächsten Mal tragen wir den Stand vor.",
+  "tipGarage": "Tippe auf ein Fahrzeug, um es zu öffnen. Über ⋮ kannst du es bearbeiten oder löschen.",
+  "settingsShowTips": "Tipps erneut anzeigen",
+  "settingsTipsReset": "Tipps werden auf jedem Bildschirm wieder angezeigt"
 }

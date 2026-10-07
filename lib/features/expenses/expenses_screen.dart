@@ -14,6 +14,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../data/models/expense.dart';
 import '../../data/models/ledger_entry.dart';
 import '../../l10n/l10n.dart';
+import '../../shared/widgets/first_time_tips.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/hud_panel.dart';
 import 'budget_sheet.dart';
@@ -94,6 +95,12 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                 padding: const EdgeInsets.only(bottom: 100),
                 children: [
                   const SizedBox(height: AppSpacing.sm),
+                  TipCard(
+                    id: Tips.expenses,
+                    text: l.tipExpenses,
+                    padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md),
+                  ),
                   Center(
                     child: SegmentedButton<PeriodKind>(
                       segments: [

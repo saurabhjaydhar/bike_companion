@@ -1287,4 +1287,60 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsGuest => 'ضيف';
+
+  @override
+  String get tipNext => 'التالي';
+
+  @override
+  String get tipSkip => 'تخطٍّ';
+
+  @override
+  String get tipGotIt => 'فهمت';
+
+  @override
+  String get tourScoreTitle => 'مؤشر الحالة';
+
+  @override
+  String get tourScoreBody =>
+      'حالة مركبتك حسب الصيانة والتأمين واستهلاك الوقود. اضغط عليه لترى ما يجب إصلاحه.';
+
+  @override
+  String get tourLogTitle => 'سجّل أي شيء';
+
+  @override
+  String get tourLogBody =>
+      'الوقود أو مصروف أو صيانة أو قراءة العداد أو مستند – كلها من هذا الزر.';
+
+  @override
+  String get tourSwitchTitle => 'مركباتك';
+
+  @override
+  String get tourSwitchBody =>
+      'اضغط على الاسم لتبديل المركبة أو إضافة أخرى أو تعديل بياناتها.';
+
+  @override
+  String get tipExpenses =>
+      'اسحب يمينًا أو يسارًا لتغيير الشهر. حدّد ميزانية وسننبهك قبل تجاوزها.';
+
+  @override
+  String get tipService =>
+      'اضغط على أي بند لتسجيله. سنحسب موعده التالي ونذكّرك به.';
+
+  @override
+  String get tipDocuments =>
+      'أضف الاستمارة والتأمين وشهادة الانبعاثات مع تواريخ انتهائها. سنذكّرك قبل انتهائها.';
+
+  @override
+  String get tipFuelLog =>
+      'فقط العداد والمبلغ المدفوع. نحسب اللترات والاستهلاك، ونملأ القراءة لك في المرة القادمة.';
+
+  @override
+  String get tipGarage =>
+      'اضغط على المركبة لفتحها. استخدم ⋮ لتعديلها أو حذفها.';
+
+  @override
+  String get settingsShowTips => 'إظهار النصائح مجددًا';
+
+  @override
+  String get settingsTipsReset => 'ستظهر النصائح مجددًا في كل شاشة';
 }

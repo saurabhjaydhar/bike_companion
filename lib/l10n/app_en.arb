@@ -698,5 +698,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "vehicleEditTitle": "Edit vehicle",
+  "vehicleUpdated": "Vehicle updated",
+  "vehicleMoreDetails": "More details",
+  "vehicleSectionDueDates": "RENEWAL DATES",
+  "healthFuelEconomy": "Fuel economy",
+  "healthBreakdownTitle": "Health score",
+  "healthBreakdownBody": "What makes up the score. Fix the top items to raise it.",
+  "healthFixLog": "Log it",
+  "healthFixUpdate": "Update date"
 }

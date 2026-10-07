@@ -339,5 +339,14 @@
   "odometerUpdated": "Kilometerstand aktualisiert",
   "odometerInvalid": "Gib einen Stand in km ein",
   "fuelOdometerEstimated": "Geschätzt aus deinen üblichen {km} km zwischen zwei Tankstopps. Bei Bedarf anpassen.",
-  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L",
+  "vehicleEditTitle": "Fahrzeug bearbeiten",
+  "vehicleUpdated": "Fahrzeug aktualisiert",
+  "vehicleMoreDetails": "Weitere Details",
+  "vehicleSectionDueDates": "VERLÄNGERUNGSTERMINE",
+  "healthFuelEconomy": "Verbrauch",
+  "healthBreakdownTitle": "Zustandswert",
+  "healthBreakdownBody": "Woraus sich der Wert zusammensetzt. Erledige die oberen Punkte, um ihn zu steigern.",
+  "healthFixLog": "Eintragen",
+  "healthFixUpdate": "Datum ändern"
 }

@@ -2149,6 +2149,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{km} km · {litres} L · {mileage} km/L'**
   String fuelTripMileage(int km, String litres, String mileage);
+
+  /// No description provided for @vehicleEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vehicle'**
+  String get vehicleEditTitle;
+
+  /// No description provided for @vehicleUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle updated'**
+  String get vehicleUpdated;
+
+  /// No description provided for @vehicleMoreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'More details'**
+  String get vehicleMoreDetails;
+
+  /// No description provided for @vehicleSectionDueDates.
+  ///
+  /// In en, this message translates to:
+  /// **'RENEWAL DATES'**
+  String get vehicleSectionDueDates;
+
+  /// No description provided for @healthFuelEconomy.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel economy'**
+  String get healthFuelEconomy;
+
+  /// No description provided for @healthBreakdownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health score'**
+  String get healthBreakdownTitle;
+
+  /// No description provided for @healthBreakdownBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What makes up the score. Fix the top items to raise it.'**
+  String get healthBreakdownBody;
+
+  /// No description provided for @healthFixLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Log it'**
+  String get healthFixLog;
+
+  /// No description provided for @healthFixUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update date'**
+  String get healthFixUpdate;
 }
 
 class _AppLocalizationsDelegate

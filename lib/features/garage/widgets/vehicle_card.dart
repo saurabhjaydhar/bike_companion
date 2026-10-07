@@ -16,6 +16,7 @@ class VehicleCard extends StatelessWidget {
   final bool isActive;
   final VoidCallback onTap;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const VehicleCard({
     super.key,
@@ -23,6 +24,7 @@ class VehicleCard extends StatelessWidget {
     required this.isActive,
     required this.onTap,
     required this.onDelete,
+    required this.onEdit,
   });
 
   @override
@@ -128,6 +130,14 @@ class VehicleCard extends StatelessWidget {
                   ),
                 ],
               ),
+              // Visible way into edit/delete (long-press still works).
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32),
+                icon: Icon(Icons.more_vert_rounded, color: textSecondary),
+                onPressed: () => _showOptions(context),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -199,6 +209,15 @@ class VehicleCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: Text(context.l10n.vehicleEditTitle,
+                  style: AppTextStyles.bodyMedium),
+              onTap: () {
+                Navigator.pop(context);
+                onEdit();
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.delete_outline_rounded,
                   color: AppColors.danger),

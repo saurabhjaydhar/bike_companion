@@ -1237,4 +1237,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String fuelTripMileage(int km, String litres, String mileage) {
     return '$km كم · $litres لتر · $mileage كم/لتر';
   }
+
+  @override
+  String get vehicleEditTitle => 'تعديل المركبة';
+
+  @override
+  String get vehicleUpdated => 'تم تحديث المركبة';
+
+  @override
+  String get vehicleMoreDetails => 'مزيد من التفاصيل';
+
+  @override
+  String get vehicleSectionDueDates => 'مواعيد التجديد';
+
+  @override
+  String get healthFuelEconomy => 'استهلاك الوقود';
+
+  @override
+  String get healthBreakdownTitle => 'مؤشر الحالة';
+
+  @override
+  String get healthBreakdownBody =>
+      'مما يتكوّن المؤشر. عالج البنود في الأعلى لرفعه.';
+
+  @override
+  String get healthFixLog => 'سجّل';
+
+  @override
+  String get healthFixUpdate => 'تحديث التاريخ';
 }

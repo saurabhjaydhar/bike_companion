@@ -339,5 +339,14 @@
   "odometerUpdated": "Compteur mis à jour",
   "odometerInvalid": "Saisissez un relevé en km",
   "fuelOdometerEstimated": "Estimé d'après vos {km} km habituels entre deux pleins. Ajustez si besoin.",
-  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L"
+  "fuelTripMileage": "{km} km · {litres} L · {mileage} km/L",
+  "vehicleEditTitle": "Modifier le véhicule",
+  "vehicleUpdated": "Véhicule mis à jour",
+  "vehicleMoreDetails": "Plus de détails",
+  "vehicleSectionDueDates": "DATES DE RENOUVELLEMENT",
+  "healthFuelEconomy": "Consommation",
+  "healthBreakdownTitle": "Score de santé",
+  "healthBreakdownBody": "Ce qui compose le score. Réglez les premiers points pour l'améliorer.",
+  "healthFixLog": "Saisir",
+  "healthFixUpdate": "Modifier la date"
 }

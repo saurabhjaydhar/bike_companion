@@ -27,6 +27,7 @@ import '../features/onboarding/rc_scan_screen.dart';
 import '../features/onboarding/vehicle_details_screen.dart';
 import '../features/service/service_screen.dart';
 import '../data/models/rc_details.dart';
+import '../data/models/vehicle.dart';
 import '../data/repositories/vehicle_repository.dart';
 import '../features/settings/settings_screen.dart';
 
@@ -215,6 +216,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ),
           );
         },
+      ),
+
+      // Edit a vehicle (the vehicle comes in `extra`).
+      GoRoute(
+        path: '/vehicle/edit',
+        redirect: (context, state) => state.extra is Vehicle ? null : '/home',
+        pageBuilder: (context, state) => _slide(
+          state,
+          VehicleDetailsScreen.edit(state.extra! as Vehicle),
+        ),
       ),
 
       // Main tabbed shell

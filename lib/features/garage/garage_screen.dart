@@ -93,6 +93,8 @@ class GarageScreen extends ConsumerWidget {
                           setActiveVehicle(ref, e.value.vehicle.id);
                           context.go('/garage/dashboard/${e.value.vehicle.id}');
                         },
+                        onEdit: () => context.push('/vehicle/edit',
+                            extra: e.value.vehicle),
                         onDelete: () => ref
                             .read(garageProvider.notifier)
                             .deleteVehicle(e.value.vehicle.id),

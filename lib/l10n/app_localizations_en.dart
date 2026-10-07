@@ -1220,4 +1220,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String fuelTripMileage(int km, String litres, String mileage) {
     return '$km km · $litres L · $mileage km/L';
   }
+
+  @override
+  String get vehicleEditTitle => 'Edit vehicle';
+
+  @override
+  String get vehicleUpdated => 'Vehicle updated';
+
+  @override
+  String get vehicleMoreDetails => 'More details';
+
+  @override
+  String get vehicleSectionDueDates => 'RENEWAL DATES';
+
+  @override
+  String get healthFuelEconomy => 'Fuel economy';
+
+  @override
+  String get healthBreakdownTitle => 'Health score';
+
+  @override
+  String get healthBreakdownBody =>
+      'What makes up the score. Fix the top items to raise it.';
+
+  @override
+  String get healthFixLog => 'Log it';
+
+  @override
+  String get healthFixUpdate => 'Update date';
 }

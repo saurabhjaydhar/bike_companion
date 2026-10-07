@@ -23,9 +23,12 @@ import '../../data/repositories/vehicle_repository.dart';
 import '../../main.dart';
 import '../../shared/widgets/reminder_permission.dart';
 import '../garage/garage_provider.dart';
+import '../service/service_provider.dart';
+import '../service/service_screen.dart';
 import 'dashboard_provider.dart';
 import '../expenses/budget_sheet.dart';
 import 'widgets/coming_up_card.dart';
+import 'widgets/health_breakdown_sheet.dart';
 import 'widgets/log_sheet.dart';
 import 'widgets/vehicle_switcher_sheet.dart';
 import 'widgets/spending_card.dart';
@@ -126,6 +129,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     return false;
   }
 
+  /// Score breakdown; its fix buttons open the matching form.
+  Future<void> _openHealth(DashboardState dash) async {
+    final fix = await showHealthBreakdown(context, dash.healthScore);
+    if (fix == null || !mounted) return;
+    final id = widget.vehicleId;
+    switch (fix) {
+      case LogServiceFix(:final serviceType):
+        await ref.read(serviceProvider(id).future);
+        if (!mounted) return;
+        await showLogServiceSheet(context, ref, id, serviceType);
+      case EditInsuranceFix():
+        await _editDate(DueKind.insurance);
+      case LogFuelFix():
+        context.push('/garage/dashboard/$id/fuel/log');
+    }
+  }
+
   Future<void> _turnOnReminders() async {
     await turnOnReminders(context);
     await ref.read(dashboardProvider(widget.vehicleId).notifier).refresh();
@@ -209,7 +229,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               const SizedBox(height: AppSpacing.lg),
 
               // Health hero
-              Reveal(index: 1, child: _HealthHero(dash: dash)),
+              Reveal(
+                index: 1,
+                child: _HealthHero(
+                    dash: dash, onTap: () => _openHealth(dash)),
+              ),
 
               const SizedBox(height: AppSpacing.lg),
 
@@ -366,7 +390,8 @@ class _VehicleSwitcherRow extends ConsumerWidget {
 // ---------------------------------------------------------------------------
 class _HealthHero extends StatelessWidget {
   final DashboardState dash;
-  const _HealthHero({required this.dash});
+  final VoidCallback onTap;
+  const _HealthHero({required this.dash, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -381,6 +406,7 @@ class _HealthHero extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: HudPanel(
+        onTap: onTap,
         carbon: true,
         wideStripes: true,
         padding: const EdgeInsets.fromLTRB(
@@ -513,6 +539,8 @@ class _QuickStats extends StatelessWidget {
             children: [
               Expanded(
                 child: StatCard(
+                  onTap: () => context.push(
+                      '/garage/dashboard/${dash.vehicle.id}/fuel/history'),
                   label: l.dashboardLastFuel,
                   value: lastFuelDays != null
                       ? l.commonDaysAgo(lastFuelDays)

@@ -1229,4 +1229,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String fuelTripMileage(int km, String litres, String mileage) {
     return '$km km · $litres L · $mileage km/L';
   }
+
+  @override
+  String get vehicleEditTitle => 'Fahrzeug bearbeiten';
+
+  @override
+  String get vehicleUpdated => 'Fahrzeug aktualisiert';
+
+  @override
+  String get vehicleMoreDetails => 'Weitere Details';
+
+  @override
+  String get vehicleSectionDueDates => 'VERLÄNGERUNGSTERMINE';
+
+  @override
+  String get healthFuelEconomy => 'Verbrauch';
+
+  @override
+  String get healthBreakdownTitle => 'Zustandswert';
+
+  @override
+  String get healthBreakdownBody =>
+      'Woraus sich der Wert zusammensetzt. Erledige die oberen Punkte, um ihn zu steigern.';
+
+  @override
+  String get healthFixLog => 'Eintragen';
+
+  @override
+  String get healthFixUpdate => 'Datum ändern';
 }

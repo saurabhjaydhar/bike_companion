@@ -339,5 +339,14 @@
   "odometerUpdated": "تم تحديث العداد",
   "odometerInvalid": "أدخل القراءة بالكيلومتر",
   "fuelOdometerEstimated": "تقدير بناءً على {km} كم المعتادة بين كل تعبئة. عدّله ليطابق العداد.",
-  "fuelTripMileage": "{km} كم · {litres} لتر · {mileage} كم/لتر"
+  "fuelTripMileage": "{km} كم · {litres} لتر · {mileage} كم/لتر",
+  "vehicleEditTitle": "تعديل المركبة",
+  "vehicleUpdated": "تم تحديث المركبة",
+  "vehicleMoreDetails": "مزيد من التفاصيل",
+  "vehicleSectionDueDates": "مواعيد التجديد",
+  "healthFuelEconomy": "استهلاك الوقود",
+  "healthBreakdownTitle": "مؤشر الحالة",
+  "healthBreakdownBody": "مما يتكوّن المؤشر. عالج البنود في الأعلى لرفعه.",
+  "healthFixLog": "سجّل",
+  "healthFixUpdate": "تحديث التاريخ"
 }

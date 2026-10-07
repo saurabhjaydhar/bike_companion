@@ -1187,4 +1187,32 @@ class AppLocalizationsHi extends AppLocalizations {
   String fuelTripMileage(int km, String litres, String mileage) {
     return '$km किमी · $litres L · $mileage km/L';
   }
+
+  @override
+  String get vehicleEditTitle => 'वाहन बदलें';
+
+  @override
+  String get vehicleUpdated => 'वाहन अपडेट हो गया';
+
+  @override
+  String get vehicleMoreDetails => 'और जानकारी';
+
+  @override
+  String get vehicleSectionDueDates => 'नवीनीकरण की तारीख़ें';
+
+  @override
+  String get healthFuelEconomy => 'माइलेज';
+
+  @override
+  String get healthBreakdownTitle => 'हेल्थ स्कोर';
+
+  @override
+  String get healthBreakdownBody =>
+      'स्कोर किन चीज़ों से बनता है। ऊपर वाली चीज़ें ठीक करें तो स्कोर बढ़ेगा।';
+
+  @override
+  String get healthFixLog => 'दर्ज करें';
+
+  @override
+  String get healthFixUpdate => 'तारीख़ बदलें';
 }

@@ -13,6 +13,7 @@ class StatCard extends StatelessWidget {
   final String? trend;
   final bool trendPositive;
   final bool emphasis;
+  final VoidCallback? onTap;
 
   const StatCard({
     super.key,
@@ -21,6 +22,7 @@ class StatCard extends StatelessWidget {
     this.trend,
     this.trendPositive = true,
     this.emphasis = false,
+    this.onTap,
   });
 
   @override
@@ -35,6 +37,7 @@ class StatCard extends StatelessWidget {
         : (isDark ? AppColors.dangerDark : AppColors.danger);
 
     return HudPanel(
+      onTap: onTap,
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.lg, AppSpacing.md + 2, AppSpacing.md, AppSpacing.md + 2),
       child: Column(

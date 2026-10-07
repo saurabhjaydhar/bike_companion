@@ -98,6 +98,19 @@ extension L10nLabels on AppLocalizations {
     VehicleType.car => vehicleTypeCar,
   };
 
+  /// Name for a [HealthFactor.label] (a stable English key).
+  String healthFactorLabel(String label) => switch (label) {
+        'Engine Oil' => serviceTypeLabel(ServiceTypes.oilChange),
+        'Chain' => serviceTypeLabel(ServiceTypes.chainLube),
+        'Air Filter' => serviceTypeLabel(ServiceTypes.airFilter),
+        'Brake Pads' => serviceTypeLabel(ServiceTypes.brakePads),
+        'Tyres' => serviceTypeLabel(ServiceTypes.tyres),
+        'Battery' => serviceTypeLabel(ServiceTypes.battery),
+        'Insurance' => docInsurance,
+        'Fuel Economy' => healthFuelEconomy,
+        _ => label,
+      };
+
   String healthGradeLabel(HealthGrade grade) {
     switch (grade) {
       case HealthGrade.excellent: return gradeExcellent;

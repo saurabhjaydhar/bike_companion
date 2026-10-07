@@ -339,5 +339,14 @@
   "odometerUpdated": "ओडोमीटर अपडेट हो गया",
   "odometerInvalid": "किलोमीटर में रीडिंग डालें",
   "fuelOdometerEstimated": "आपके हर बार के लगभग {km} किमी के हिसाब से अनुमान। मिलाने के लिए बदलें।",
-  "fuelTripMileage": "{km} किमी · {litres} L · {mileage} km/L"
+  "fuelTripMileage": "{km} किमी · {litres} L · {mileage} km/L",
+  "vehicleEditTitle": "वाहन बदलें",
+  "vehicleUpdated": "वाहन अपडेट हो गया",
+  "vehicleMoreDetails": "और जानकारी",
+  "vehicleSectionDueDates": "नवीनीकरण की तारीख़ें",
+  "healthFuelEconomy": "माइलेज",
+  "healthBreakdownTitle": "हेल्थ स्कोर",
+  "healthBreakdownBody": "स्कोर किन चीज़ों से बनता है। ऊपर वाली चीज़ें ठीक करें तो स्कोर बढ़ेगा।",
+  "healthFixLog": "दर्ज करें",
+  "healthFixUpdate": "तारीख़ बदलें"
 }

@@ -63,10 +63,23 @@ Future<void> showVehicleSwitcher(
                         : Text(v.regNumber,
                             style: AppTextStyles.caption
                                 .copyWith(color: textSecondary)),
-                    trailing: v.id == activeVehicleId
-                        ? const Icon(Icons.check_rounded,
-                            color: AppColors.primary)
-                        : null,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (v.id == activeVehicleId)
+                          const Icon(Icons.check_rounded,
+                              color: AppColors.primary),
+                        IconButton(
+                          tooltip: l.vehicleEditTitle,
+                          icon: Icon(Icons.edit_outlined,
+                              color: textSecondary),
+                          onPressed: () {
+                            Navigator.pop(sheet);
+                            context.push('/vehicle/edit', extra: v);
+                          },
+                        ),
+                      ],
+                    ),
                     onTap: () {
                       if (v.id == activeVehicleId) {
                         Navigator.pop(sheet);

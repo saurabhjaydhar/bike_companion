@@ -34,7 +34,7 @@ class DocumentsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l.documentsTitle)),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDocument(context, ref, vehicleId),
+        onPressed: () => showAddDocumentSheet(context, ref, vehicleId),
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -493,9 +493,9 @@ void _showFullPhoto(BuildContext context, String path) {
 // ---------------------------------------------------------------------------
 // Add document bottom sheet
 // ---------------------------------------------------------------------------
-void _showAddDocument(
+Future<void> showAddDocumentSheet(
     BuildContext context, WidgetRef ref, String vehicleId) {
-  showModalBottomSheet(
+  return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(

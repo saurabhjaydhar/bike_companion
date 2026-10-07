@@ -326,5 +326,16 @@
   "onboardingSlideRemindBody": "تذكيرات قبل مواعيد التأمين وشهادة PUC والصيانة — في التاسعة صباحًا، وليس ليلًا أبدًا.",
   "onboardingSlideScanTitle": "امسح ولا تكتب",
   "onboardingSlideScanBody": "صوّر بطاقة RC وسنملأ تفاصيل مركبتك.",
-  "fuelLitresFromPrice": "≈ {litres} لتر بسعر ₹{price}/لتر (آخر تعبئة)"
+  "fuelLitresFromPrice": "≈ {litres} لتر بسعر ₹{price}/لتر (آخر تعبئة)",
+  "logButton": "تسجيل",
+  "logSheetTitle": "ماذا تريد أن تسجّل؟",
+  "logFuelSub": "اللترات والتكلفة والاستهلاك",
+  "logExpenseSub": "قطع غيار، تأمين، مواقف، رسوم طرق",
+  "logServiceSub": "تغيير الزيت، السلسلة، الإطارات",
+  "logOdometerTitle": "تحديث عداد المسافة",
+  "logOdometerSub": "حافظ على تحديث الكيلومترات",
+  "logDocumentSub": "الاستمارة، التأمين، فحص الانبعاثات",
+  "odometerSave": "حفظ القراءة",
+  "odometerUpdated": "تم تحديث العداد",
+  "odometerInvalid": "أدخل القراءة بالكيلومتر"
 }

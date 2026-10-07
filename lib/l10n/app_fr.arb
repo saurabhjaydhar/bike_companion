@@ -326,5 +326,16 @@
   "onboardingSlideRemindBody": "Des rappels avant l'échéance de l'assurance, du PUC et des entretiens — à 9 h, jamais la nuit.",
   "onboardingSlideScanTitle": "Scannez, ne tapez pas",
   "onboardingSlideScanBody": "Photographiez votre RC et nous remplirons les détails de votre véhicule.",
-  "fuelLitresFromPrice": "≈ {litres} L à ₹{price}/L (votre dernier plein)"
+  "fuelLitresFromPrice": "≈ {litres} L à ₹{price}/L (votre dernier plein)",
+  "logButton": "Saisir",
+  "logSheetTitle": "Que voulez-vous saisir ?",
+  "logFuelSub": "Litres, coût et consommation",
+  "logExpenseSub": "Pièces, assurance, parking, péages",
+  "logServiceSub": "Vidange, chaîne, pneus",
+  "logOdometerTitle": "Mettre à jour le compteur",
+  "logOdometerSub": "Gardez vos km à jour",
+  "logDocumentSub": "Carte grise, assurance, contrôle pollution",
+  "odometerSave": "Enregistrer le relevé",
+  "odometerUpdated": "Compteur mis à jour",
+  "odometerInvalid": "Saisissez un relevé en km"
 }

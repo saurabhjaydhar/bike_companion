@@ -1177,4 +1177,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String fuelLitresFromPrice(String litres, String price) {
     return '≈ $litres L at ₹$price/L (your last fill-up)';
   }
+
+  @override
+  String get logButton => 'Log';
+
+  @override
+  String get logSheetTitle => 'What are you logging?';
+
+  @override
+  String get logFuelSub => 'Litres, cost and mileage';
+
+  @override
+  String get logExpenseSub => 'Parts, insurance, parking, tolls';
+
+  @override
+  String get logServiceSub => 'Oil change, chain, tyres';
+
+  @override
+  String get logOdometerTitle => 'Update odometer';
+
+  @override
+  String get logOdometerSub => 'Keep your km up to date';
+
+  @override
+  String get logDocumentSub => 'RC, insurance, PUC';
+
+  @override
+  String get odometerSave => 'Save reading';
+
+  @override
+  String get odometerUpdated => 'Odometer updated';
+
+  @override
+  String get odometerInvalid => 'Enter a reading in km';
 }

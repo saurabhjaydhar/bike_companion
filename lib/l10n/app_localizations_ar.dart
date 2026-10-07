@@ -1194,4 +1194,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String fuelLitresFromPrice(String litres, String price) {
     return '≈ $litres لتر بسعر ₹$price/لتر (آخر تعبئة)';
   }
+
+  @override
+  String get logButton => 'تسجيل';
+
+  @override
+  String get logSheetTitle => 'ماذا تريد أن تسجّل؟';
+
+  @override
+  String get logFuelSub => 'اللترات والتكلفة والاستهلاك';
+
+  @override
+  String get logExpenseSub => 'قطع غيار، تأمين، مواقف، رسوم طرق';
+
+  @override
+  String get logServiceSub => 'تغيير الزيت، السلسلة، الإطارات';
+
+  @override
+  String get logOdometerTitle => 'تحديث عداد المسافة';
+
+  @override
+  String get logOdometerSub => 'حافظ على تحديث الكيلومترات';
+
+  @override
+  String get logDocumentSub => 'الاستمارة، التأمين، فحص الانبعاثات';
+
+  @override
+  String get odometerSave => 'حفظ القراءة';
+
+  @override
+  String get odometerUpdated => 'تم تحديث العداد';
+
+  @override
+  String get odometerInvalid => 'أدخل القراءة بالكيلومتر';
 }

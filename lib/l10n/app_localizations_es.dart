@@ -1186,4 +1186,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String fuelLitresFromPrice(String litres, String price) {
     return '≈ $litres L a ₹$price/L (tu último repostaje)';
   }
+
+  @override
+  String get logButton => 'Registrar';
+
+  @override
+  String get logSheetTitle => '¿Qué quieres registrar?';
+
+  @override
+  String get logFuelSub => 'Litros, coste y consumo';
+
+  @override
+  String get logExpenseSub => 'Piezas, seguro, parking, peajes';
+
+  @override
+  String get logServiceSub => 'Cambio de aceite, cadena, neumáticos';
+
+  @override
+  String get logOdometerTitle => 'Actualizar cuentakilómetros';
+
+  @override
+  String get logOdometerSub => 'Mantén tus km al día';
+
+  @override
+  String get logDocumentSub => 'Permiso de circulación, seguro, emisiones';
+
+  @override
+  String get odometerSave => 'Guardar lectura';
+
+  @override
+  String get odometerUpdated => 'Cuentakilómetros actualizado';
+
+  @override
+  String get odometerInvalid => 'Introduce una lectura en km';
 }

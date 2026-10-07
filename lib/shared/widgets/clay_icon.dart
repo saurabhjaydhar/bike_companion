@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 
 /// An icon on a rounded tile. In light mode the tile is a flat, solid block
 /// of the colour with a white icon, like a livery decal. In dark mode it is a

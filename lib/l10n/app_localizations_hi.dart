@@ -1144,4 +1144,37 @@ class AppLocalizationsHi extends AppLocalizations {
   String fuelLitresFromPrice(String litres, String price) {
     return '≈ $litres L, ₹$price/L पर (आपकी पिछली फ़िलिंग)';
   }
+
+  @override
+  String get logButton => 'दर्ज करें';
+
+  @override
+  String get logSheetTitle => 'क्या दर्ज करना है?';
+
+  @override
+  String get logFuelSub => 'लीटर, ख़र्च और माइलेज';
+
+  @override
+  String get logExpenseSub => 'पार्ट्स, बीमा, पार्किंग, टोल';
+
+  @override
+  String get logServiceSub => 'ऑयल चेंज, चेन, टायर';
+
+  @override
+  String get logOdometerTitle => 'ओडोमीटर अपडेट करें';
+
+  @override
+  String get logOdometerSub => 'किलोमीटर अप-टू-डेट रखें';
+
+  @override
+  String get logDocumentSub => 'RC, बीमा, PUC';
+
+  @override
+  String get odometerSave => 'रीडिंग सेव करें';
+
+  @override
+  String get odometerUpdated => 'ओडोमीटर अपडेट हो गया';
+
+  @override
+  String get odometerInvalid => 'किलोमीटर में रीडिंग डालें';
 }

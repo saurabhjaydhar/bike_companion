@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,6 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_shadows.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/parallelogram_border.dart';
 import '../../l10n/l10n.dart';
@@ -18,7 +18,6 @@ import '../../shared/widgets/reveal.dart';
 import '../../shared/widgets/section_header.dart';
 import '../../shared/widgets/shimmer_box.dart';
 import '../../shared/widgets/stat_card.dart';
-import '../../shared/widgets/vehicle_avatar.dart';
 import '../../core/services/reminder_planner.dart';
 import '../../data/repositories/vehicle_repository.dart';
 import '../../main.dart';
@@ -26,8 +25,9 @@ import '../../shared/widgets/reminder_permission.dart';
 import '../garage/garage_provider.dart';
 import 'dashboard_provider.dart';
 import '../expenses/budget_sheet.dart';
-import '../expenses/quick_add_sheet.dart';
 import 'widgets/coming_up_card.dart';
+import 'widgets/log_sheet.dart';
+import 'widgets/vehicle_switcher_sheet.dart';
 import 'widgets/spending_card.dart';
 import '../../shared/widgets/clay_icon.dart';
 
@@ -113,6 +113,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     if (mounted) await askReminderPermissionOnce(context);
   }
 
+  /// Whether the LOG button shows: hidden while scrolling down.
+  bool _fabVisible = true;
+
+  bool _onScroll(UserScrollNotification n) {
+    final visible = switch (n.direction) {
+      ScrollDirection.reverse => false,
+      ScrollDirection.forward => true,
+      ScrollDirection.idle => _fabVisible,
+    };
+    if (visible != _fabVisible) setState(() => _fabVisible = visible);
+    return false;
+  }
+
   Future<void> _turnOnReminders() async {
     await turnOnReminders(context);
     await ref.read(dashboardProvider(widget.vehicleId).notifier).refresh();
@@ -127,9 +140,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go('/garage')),
+        // Tap the name to switch vehicle, add one or open the garage.
         title: dashAsync.maybeWhen(
-          data: (d) => Text(d.vehicle.name.toUpperCase(),
-              style: AppTextStyles.heading1),
+          data: (d) => InkWell(
+            onTap: () => showVehicleSwitcher(context, ref,
+                vehicles: d.allVehicles, activeVehicleId: widget.vehicleId),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(d.vehicle.name.toUpperCase(),
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.heading1),
+                ),
+                const Icon(Icons.keyboard_arrow_down_rounded, size: 28),
+              ],
+            ),
+          ),
           orElse: () => Text(l.dashboardTitle),
         ),
         actions: [
@@ -139,16 +166,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           ),
         ],
       ),
+      // One labelled button for logging anything; it tucks away while
+      // scrolling down so it never covers a card.
       floatingActionButton: dashAsync.hasValue
-          ? FloatingActionButton(
-              onPressed: () => showQuickAddExpense(context, ref,
-                  vehicleId: widget.vehicleId),
-              backgroundColor: AppColors.primary,
-              tooltip: l.expensesAddTitle,
-              child: const Icon(Icons.add, color: Colors.white),
+          ? AnimatedSlide(
+              offset: _fabVisible ? Offset.zero : const Offset(0, 2),
+              duration: AppDuration.normal,
+              curve: Curves.easeOutCubic,
+              child: FloatingActionButton.extended(
+                onPressed: () =>
+                    showLogSheet(context, ref, vehicleId: widget.vehicleId),
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                shape: const ParallelogramBorder(slant: 12),
+                icon: const Icon(Icons.add_rounded),
+                label: Text(l.logButton.toUpperCase(),
+                    style: AppTextStyles.label
+                        .copyWith(fontSize: 15, color: Colors.white)),
+              ),
             )
           : null,
-      body: dashAsync.when(
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: _onScroll,
+        child: dashAsync.when(
         loading: () => const _DashboardSkeleton(),
         error: (e, _) => Center(child: Text('$e')),
         data: (dash) => RefreshIndicator(
@@ -251,6 +291,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           ),
         ),
       ),
+      ),
     );
   }
 }
@@ -268,10 +309,6 @@ class _VehicleSwitcherRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final border = isDark ? AppColors.borderDark : AppColors.border;
-    final surface = isDark ? AppColors.surfaceDark : AppColors.surface;
-    final textPrimary =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
     // Tall enough that the chips' shadows aren't clipped by the list.
     return SizedBox(
       height: 52,
@@ -460,7 +497,6 @@ class _QuickStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final now = DateTime.now();
     final lastFuelDays = dash.lastFuelLog != null
         ? now.difference(dash.lastFuelLog!.date).inDays

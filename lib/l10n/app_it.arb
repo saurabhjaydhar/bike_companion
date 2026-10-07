@@ -326,5 +326,16 @@
   "onboardingSlideRemindBody": "Promemoria prima della scadenza di assicurazione, PUC e tagliandi, alle 9 del mattino, mai di notte.",
   "onboardingSlideScanTitle": "Scansiona, non digitare",
   "onboardingSlideScanBody": "Fotografa la tua RC e compileremo i dati del tuo veicolo.",
-  "fuelLitresFromPrice": "≈ {litres} L a ₹{price}/L (il tuo ultimo rifornimento)"
+  "fuelLitresFromPrice": "≈ {litres} L a ₹{price}/L (il tuo ultimo rifornimento)",
+  "logButton": "Registra",
+  "logSheetTitle": "Cosa vuoi registrare?",
+  "logFuelSub": "Litri, costo e consumi",
+  "logExpenseSub": "Ricambi, assicurazione, parcheggio, pedaggi",
+  "logServiceSub": "Cambio olio, catena, gomme",
+  "logOdometerTitle": "Aggiorna contachilometri",
+  "logOdometerSub": "Tieni aggiornati i km",
+  "logDocumentSub": "Libretto, assicurazione, bollino",
+  "odometerSave": "Salva lettura",
+  "odometerUpdated": "Contachilometri aggiornato",
+  "odometerInvalid": "Inserisci una lettura in km"
 }

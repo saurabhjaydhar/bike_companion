@@ -9,9 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
 import '../core/providers/active_vehicle_provider.dart';
 import '../core/services/auth_service.dart';
-import '../core/theme/app_colors.dart';
-import '../core/theme/app_shadows.dart';
-import '../core/theme/app_theme.dart';
 import '../l10n/l10n.dart';
 import '../main.dart';
 import '../shared/widgets/aurora_backdrop.dart';
@@ -30,6 +27,7 @@ import '../features/onboarding/rc_scan_screen.dart';
 import '../features/onboarding/vehicle_details_screen.dart';
 import '../features/service/service_screen.dart';
 import '../data/models/rc_details.dart';
+import '../data/repositories/vehicle_repository.dart';
 import '../features/settings/settings_screen.dart';
 
 // Bridges Firebase auth stream → GoRouter refreshListenable.
@@ -77,7 +75,13 @@ class _NavShell extends ConsumerWidget {
     final vehicleId = ref.read(activeVehicleIdProvider);
     switch (index) {
       case 0:
-        shell.goBranch(0, initialLocation: index == shell.currentIndex);
+        // Home is the active vehicle's dashboard; the garage list is one
+        // step back from there.
+        if (vehicleId != null) {
+          context.go('/garage/dashboard/$vehicleId');
+        } else {
+          shell.goBranch(0, initialLocation: index == shell.currentIndex);
+        }
       case 1:
         if (vehicleId != null) {
           context.go('/expenses/$vehicleId');
@@ -135,7 +139,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   ref.onDispose(refreshNotifier.dispose);
 
   return GoRouter(
-    initialLocation: '/garage',
+    initialLocation: '/home',
     refreshListenable: refreshNotifier,
     redirect: (context, state) async {
       final isAuthed = authService.currentUser != null;
@@ -145,7 +149,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       // Auth gate — redirect unauthenticated users to /auth.
       if (!isAuthed && !isOnAuth && !isOnOnboarding) return '/auth';
-      if (isAuthed && isOnAuth) return '/garage';
+      if (isAuthed && isOnAuth) return '/home';
 
       // Onboarding gate — shown once after first sign-in.
       final prefs = await SharedPreferences.getInstance();
@@ -155,6 +159,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      // Launch target: open straight on the vehicle the rider last used.
+      GoRoute(
+        path: '/home',
+        redirect: (context, state) async {
+          final prefs = await SharedPreferences.getInstance();
+          final vehicles = await getIt<VehicleRepository>().getAllVehicles();
+          final id = pickHomeVehicle(
+            [for (final v in vehicles) v.id],
+            prefs.getString(SharedPrefKeys.activeVehicleId),
+          );
+          if (id == null) return '/garage';
+          ref.read(activeVehicleIdProvider.notifier).state = id;
+          return '/garage/dashboard/$id';
+        },
+      ),
+
       // Auth (sign in with phone OTP)
       GoRoute(
         path: '/auth',

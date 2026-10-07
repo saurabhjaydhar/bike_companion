@@ -326,5 +326,16 @@
   "onboardingSlideRemindBody": "बीमा, PUC और सर्विस की तारीख से पहले रिमाइंडर — सुबह 9 बजे, रात में कभी नहीं।",
   "onboardingSlideScanTitle": "टाइप नहीं, स्कैन करें",
   "onboardingSlideScanBody": "अपने RC की फ़ोटो लें और हम आपके वाहन का विवरण भर देंगे।",
-  "fuelLitresFromPrice": "≈ {litres} L, ₹{price}/L पर (आपकी पिछली फ़िलिंग)"
+  "fuelLitresFromPrice": "≈ {litres} L, ₹{price}/L पर (आपकी पिछली फ़िलिंग)",
+  "logButton": "दर्ज करें",
+  "logSheetTitle": "क्या दर्ज करना है?",
+  "logFuelSub": "लीटर, ख़र्च और माइलेज",
+  "logExpenseSub": "पार्ट्स, बीमा, पार्किंग, टोल",
+  "logServiceSub": "ऑयल चेंज, चेन, टायर",
+  "logOdometerTitle": "ओडोमीटर अपडेट करें",
+  "logOdometerSub": "किलोमीटर अप-टू-डेट रखें",
+  "logDocumentSub": "RC, बीमा, PUC",
+  "odometerSave": "रीडिंग सेव करें",
+  "odometerUpdated": "ओडोमीटर अपडेट हो गया",
+  "odometerInvalid": "किलोमीटर में रीडिंग डालें"
 }

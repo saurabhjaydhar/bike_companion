@@ -665,5 +665,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "logButton": "Log",
+  "logSheetTitle": "What are you logging?",
+  "logFuelSub": "Litres, cost and mileage",
+  "logExpenseSub": "Parts, insurance, parking, tolls",
+  "logServiceSub": "Oil change, chain, tyres",
+  "logOdometerTitle": "Update odometer",
+  "logOdometerSub": "Keep your km up to date",
+  "logDocumentSub": "RC, insurance, PUC",
+  "odometerSave": "Save reading",
+  "odometerUpdated": "Odometer updated",
+  "odometerInvalid": "Enter a reading in km"
 }

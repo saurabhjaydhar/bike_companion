@@ -1185,4 +1185,37 @@ class AppLocalizationsIt extends AppLocalizations {
   String fuelLitresFromPrice(String litres, String price) {
     return '≈ $litres L a ₹$price/L (il tuo ultimo rifornimento)';
   }
+
+  @override
+  String get logButton => 'Registra';
+
+  @override
+  String get logSheetTitle => 'Cosa vuoi registrare?';
+
+  @override
+  String get logFuelSub => 'Litri, costo e consumi';
+
+  @override
+  String get logExpenseSub => 'Ricambi, assicurazione, parcheggio, pedaggi';
+
+  @override
+  String get logServiceSub => 'Cambio olio, catena, gomme';
+
+  @override
+  String get logOdometerTitle => 'Aggiorna contachilometri';
+
+  @override
+  String get logOdometerSub => 'Tieni aggiornati i km';
+
+  @override
+  String get logDocumentSub => 'Libretto, assicurazione, bollino';
+
+  @override
+  String get odometerSave => 'Salva lettura';
+
+  @override
+  String get odometerUpdated => 'Contachilometri aggiornato';
+
+  @override
+  String get odometerInvalid => 'Inserisci una lettura in km';
 }

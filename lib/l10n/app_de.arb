@@ -326,5 +326,16 @@
   "onboardingSlideRemindBody": "Erinnerungen vor Ablauf von Versicherung, PUC und Wartung – um 9 Uhr, nie nachts.",
   "onboardingSlideScanTitle": "Scannen statt tippen",
   "onboardingSlideScanBody": "Fotografiere deine RC und wir füllen die Fahrzeugdaten aus.",
-  "fuelLitresFromPrice": "≈ {litres} L zu ₹{price}/L (dein letzter Tankstopp)"
+  "fuelLitresFromPrice": "≈ {litres} L zu ₹{price}/L (dein letzter Tankstopp)",
+  "logButton": "Eintragen",
+  "logSheetTitle": "Was möchtest du eintragen?",
+  "logFuelSub": "Liter, Kosten und Verbrauch",
+  "logExpenseSub": "Teile, Versicherung, Parken, Maut",
+  "logServiceSub": "Ölwechsel, Kette, Reifen",
+  "logOdometerTitle": "Kilometerstand aktualisieren",
+  "logOdometerSub": "Halte deine km aktuell",
+  "logDocumentSub": "Fahrzeugschein, Versicherung, Abgas",
+  "odometerSave": "Stand speichern",
+  "odometerUpdated": "Kilometerstand aktualisiert",
+  "odometerInvalid": "Gib einen Stand in km ein"
 }

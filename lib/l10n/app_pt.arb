@@ -326,5 +326,16 @@
   "onboardingSlideRemindBody": "Lembretes antes de vencerem o seguro, o PUC e as revisões — às 9h, nunca à noite.",
   "onboardingSlideScanTitle": "Digitalize, não digite",
   "onboardingSlideScanBody": "Fotografe seu RC e preencheremos os dados do seu veículo.",
-  "fuelLitresFromPrice": "≈ {litres} L a ₹{price}/L (seu último abastecimento)"
+  "fuelLitresFromPrice": "≈ {litres} L a ₹{price}/L (seu último abastecimento)",
+  "logButton": "Registrar",
+  "logSheetTitle": "O que você quer registrar?",
+  "logFuelSub": "Litros, custo e consumo",
+  "logExpenseSub": "Peças, seguro, estacionamento, pedágios",
+  "logServiceSub": "Troca de óleo, corrente, pneus",
+  "logOdometerTitle": "Atualizar hodômetro",
+  "logOdometerSub": "Mantenha seus km em dia",
+  "logDocumentSub": "Documento, seguro, emissões",
+  "odometerSave": "Salvar leitura",
+  "odometerUpdated": "Hodômetro atualizado",
+  "odometerInvalid": "Digite uma leitura em km"
 }

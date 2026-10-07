@@ -102,7 +102,7 @@ class _DueSoonTab extends StatelessWidget {
             for (final item in items)
               _ServiceRow(
                 item: item,
-                onTap: () => _showLogSheet(context, ref, vehicleId, item.type),
+                onTap: () => showLogServiceSheet(context, ref, vehicleId, item.type),
               ),
           ],
         ),
@@ -290,9 +290,9 @@ class _HistoryTab extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Log service bottom sheet
 // ---------------------------------------------------------------------------
-void _showLogSheet(
+Future<void> showLogServiceSheet(
     BuildContext context, WidgetRef ref, String vehicleId, String preselectedType) {
-  showModalBottomSheet(
+  return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(

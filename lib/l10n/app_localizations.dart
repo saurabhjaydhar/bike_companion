@@ -2071,6 +2071,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'≈ {litres} L at ₹{price}/L (your last fill-up)'**
   String fuelLitresFromPrice(String litres, String price);
+
+  /// No description provided for @logButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Log'**
+  String get logButton;
+
+  /// No description provided for @logSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you logging?'**
+  String get logSheetTitle;
+
+  /// No description provided for @logFuelSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Litres, cost and mileage'**
+  String get logFuelSub;
+
+  /// No description provided for @logExpenseSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Parts, insurance, parking, tolls'**
+  String get logExpenseSub;
+
+  /// No description provided for @logServiceSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Oil change, chain, tyres'**
+  String get logServiceSub;
+
+  /// No description provided for @logOdometerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update odometer'**
+  String get logOdometerTitle;
+
+  /// No description provided for @logOdometerSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your km up to date'**
+  String get logOdometerSub;
+
+  /// No description provided for @logDocumentSub.
+  ///
+  /// In en, this message translates to:
+  /// **'RC, insurance, PUC'**
+  String get logDocumentSub;
+
+  /// No description provided for @odometerSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save reading'**
+  String get odometerSave;
+
+  /// No description provided for @odometerUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Odometer updated'**
+  String get odometerUpdated;
+
+  /// No description provided for @odometerInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a reading in km'**
+  String get odometerInvalid;
 }
 
 class _AppLocalizationsDelegate

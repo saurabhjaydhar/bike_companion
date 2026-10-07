@@ -7,6 +7,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:940236812223:android:f1e4d33599d4bebe6afb0a",
+        "android_client_info": {
+          "package_name": "app.garajo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940236812223-8o7o2sri8lmbe4ttuk1nr2u5laca3reb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.garajo",
+            "certificate_hash": "c1f4eafd3a7b6eac9104ab8c41b135b663ea93a1"
+          }
+        },
+        {
+          "client_id": "940236812223-6i16ikp9nnq0c7h5efv3vmt6t68phaf4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoz4D06Y1fJOFIaBjjsCnapuhPiwnSWDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940236812223-6i16ikp9nnq0c7h5efv3vmt6t68phaf4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "940236812223-5td5a9ipid68eolcb78rem9kmn88u8ao.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.garajo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:940236812223:android:605c907fa610d07b6afb0a",
         "android_client_info": {
           "package_name": "com.app.bike_companion"
@@ -37,6 +81,13 @@
             {
               "client_id": "940236812223-6i16ikp9nnq0c7h5efv3vmt6t68phaf4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "940236812223-5td5a9ipid68eolcb78rem9kmn88u8ao.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.garajo"
+              }
             }
           ]
         }

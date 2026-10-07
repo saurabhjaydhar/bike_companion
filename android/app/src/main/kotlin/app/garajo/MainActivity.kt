@@ -1,4 +1,4 @@
-package com.app.bike_companion
+package app.garajo
 
 import io.flutter.embedding.android.FlutterActivity
 

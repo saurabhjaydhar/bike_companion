@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.app.bike_companion"
+    namespace = "app.garajo"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -24,7 +24,7 @@ android {
 
 
     defaultConfig {
-        applicationId = "com.app.bike_companion"
+        applicationId = "app.garajo"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
         versionCode = 1

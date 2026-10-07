@@ -15,6 +15,7 @@ import '../core/theme/app_theme.dart';
 import '../l10n/l10n.dart';
 import '../main.dart';
 import '../shared/widgets/aurora_backdrop.dart';
+import '../shared/widgets/livery_nav_bar.dart';
 import '../shared/widgets/offline_banner.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/dashboard/dashboard_screen.dart';
@@ -68,12 +69,8 @@ class _NavShell extends ConsumerWidget {
   final StatefulNavigationShell shell;
   const _NavShell({required this.shell});
 
-  static List<({IconData icon, String label})> _tabs(AppLocalizations l) => [
-        (icon: Icons.dashboard_rounded, label: l.navHome),
-        (icon: Icons.receipt_long_rounded, label: l.expensesTitle),
-        (icon: Icons.build_rounded, label: l.expenseService),
-        (icon: Icons.folder_rounded, label: l.navDocs),
-      ];
+  static List<String> _tabs(AppLocalizations l) =>
+      [l.navHome, l.expensesTitle, l.expenseService, l.navDocs];
 
   void _onTap(BuildContext context, WidgetRef ref, int index) {
     HapticFeedback.selectionClick();
@@ -104,8 +101,6 @@ class _NavShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final shape = BorderRadius.circular(28);
     return AuroraBackdrop(
       child: Scaffold(
         body: Column(
@@ -114,48 +109,15 @@ class _NavShell extends ConsumerWidget {
             Expanded(child: shell),
           ],
         ),
-        // A floating carbon pill (light) / glowing panel (dark).
         bottomNavigationBar: SafeArea(
           top: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg, AppSpacing.xs, AppSpacing.lg, AppSpacing.md),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: shape,
-                border: Border.all(
-                  color: isDark ? AppColors.borderDark : AppColors.carbonEdge,
-                ),
-                boxShadow: isDark
-                    ? [AppShadows.glow(AppColors.primary, true)]
-                    : AppShadows.raised(false),
-              ),
-              child: ClipRRect(
-                borderRadius: shape,
-                // The SafeArea above already clears the system bar.
-                child: MediaQuery.removePadding(
-                  context: context,
-                  removeBottom: true,
-                  // Always drawn in the dark theme: a carbon bar in light
-                  // mode, the usual dark panel in dark mode.
-                  child: Theme(
-                    data: AppTheme.dark,
-                    child: NavigationBar(
-                      height: 64,
-                      selectedIndex: shell.currentIndex,
-                      onDestinationSelected: (i) => _onTap(context, ref, i),
-                      backgroundColor:
-                          isDark ? AppColors.surfaceDark : AppColors.carbon,
-                      destinations: _tabs(context.l10n)
-                          .map((t) => NavigationDestination(
-                                icon: Icon(t.icon),
-                                label: t.label,
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                ),
-              ),
+            child: LiveryNavBar(
+              labels: _tabs(context.l10n),
+              selectedIndex: shell.currentIndex,
+              onSelected: (i) => _onTap(context, ref, i),
             ),
           ),
         ),

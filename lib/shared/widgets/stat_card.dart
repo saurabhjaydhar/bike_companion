@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import 'clay_icon.dart';
 import 'hud_panel.dart';
 
-/// A compact instrument readout: label, a prominent value and optional trend.
+/// A compact telemetry readout: a small uppercase label over a big
+/// monospaced value, with an optional trend line. [emphasis] paints the value
+/// in ignition orange to draw the eye (e.g. the next service).
 class StatCard extends StatelessWidget {
   final String label;
   final String value;
   final String? trend;
   final bool trendPositive;
-  final IconData? icon;
-
-  /// Tints the icon tile. Defaults to the HUD accent.
-  final Color? color;
+  final bool emphasis;
 
   const StatCard({
     super.key,
@@ -22,8 +20,7 @@ class StatCard extends StatelessWidget {
     required this.value,
     this.trend,
     this.trendPositive = true,
-    this.icon,
-    this.color,
+    this.emphasis = false,
   });
 
   @override
@@ -36,36 +33,30 @@ class StatCard extends StatelessWidget {
     final trendColor = trendPositive
         ? (isDark ? AppColors.successDark : AppColors.success)
         : (isDark ? AppColors.dangerDark : AppColors.danger);
-    final tint = color ?? AppColors.accentFor(isDark);
 
     return HudPanel(
-      padding: const EdgeInsets.all(AppSpacing.md + 2),
+      padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, AppSpacing.md + 2, AppSpacing.md, AppSpacing.md + 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              if (icon != null) ...[
-                ClayIcon(icon: icon!, color: tint, size: 32),
-                const SizedBox(width: AppSpacing.sm),
-              ],
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.label.copyWith(color: textSecondary),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
           Text(
-            value,
+            label.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.label.copyWith(
+              color: textSecondary,
+              fontSize: 11.5,
+              letterSpacing: 2,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            value.toUpperCase(),
             style: AppTextStyles.data.copyWith(
-              color: textPrimary,
-              fontSize: 19,
+              color: emphasis ? AppColors.primary : textPrimary,
+              fontSize: 22,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

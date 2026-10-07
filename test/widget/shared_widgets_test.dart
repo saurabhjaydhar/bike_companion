@@ -67,7 +67,8 @@ void main() {
           onCta: () => tapped = true,
         ),
       ));
-      await tester.tap(find.text('Add my vehicle'));
+      // PrimaryButton renders its label in uppercase livery lettering.
+      await tester.tap(find.text('ADD MY VEHICLE'));
       expect(tapped, isTrue);
     });
 

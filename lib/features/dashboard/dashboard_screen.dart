@@ -8,6 +8,7 @@ import '../../core/providers/active_vehicle_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_shadows.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/parallelogram_border.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/health_ring.dart';
 import '../../shared/widgets/hud_panel.dart';
@@ -127,7 +128,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go('/garage')),
         title: dashAsync.maybeWhen(
-          data: (d) => Text(d.vehicle.name),
+          data: (d) => Text(d.vehicle.name.toUpperCase(),
+              style: AppTextStyles.heading1),
           orElse: () => Text(l.dashboardTitle),
         ),
         actions: [
@@ -171,9 +173,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
               const SizedBox(height: AppSpacing.lg),
 
+              // Quick stats 2×2
+              Reveal(index: 2, child: _QuickStats(dash: dash)),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              // Fuel log button
+              Reveal(
+                index: 3,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg),
+                  child: PrimaryButton(
+                    label: l.dashboardLogFuel,
+                    onPressed: () => context
+                        .push('/garage/dashboard/${widget.vehicleId}/fuel/log'),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
               // What to act on next
               Reveal(
-                index: 2,
+                index: 4,
                 child: ComingUpCard(
                   dash: dash,
                   onEditDate: _editDate,
@@ -185,7 +208,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
               // This month's spending against the budget
               Reveal(
-                index: 3,
+                index: 5,
                 child: SpendingCard(
                   spent: dash.monthTotal,
                   budget: dash.vehicle.monthlyBudget,
@@ -195,28 +218,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                     ref,
                     vehicle: dash.vehicle,
                     suggestion: dash.budgetSuggestion,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // Quick stats 2×2
-              Reveal(index: 4, child: _QuickStats(dash: dash)),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // Fuel log button
-              Reveal(
-                index: 5,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg),
-                  child: PrimaryButton(
-                    label: l.dashboardLogFuel,
-                    icon: Icons.local_gas_station_rounded,
-                    onPressed: () => context
-                        .push('/garage/dashboard/${widget.vehicleId}/fuel/log'),
                   ),
                 ),
               ),
@@ -294,59 +295,26 @@ class _VehicleSwitcherRow extends ConsumerWidget {
             child: AnimatedContainer(
               duration: AppDuration.normal,
               padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                  horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+              // Slanted livery chips: active is carbon (light) or ignition
+              // orange (dark); inactive is a flat grey plate.
               decoration: ShapeDecoration(
-                // Active: ignition gradient in dark mode, carbon in light.
                 color: isActive
-                    ? (isDark ? null : AppColors.carbon)
-                    : surface,
-                gradient: isActive && isDark
-                    ? const LinearGradient(colors: AppColors.ignitionGradient)
-                    : null,
-                shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.small),
-                  side: BorderSide(
-                    color: isActive
-                        ? (isDark ? AppColors.primary : AppColors.carbon)
-                        : border,
-                  ),
-                ),
-                shadows: isActive
-                    ? (isDark
-                        ? [
-                            BoxShadow(
-                              color:
-                                  AppColors.primary.withValues(alpha: 0.45),
-                              blurRadius: 14,
-                              spreadRadius: -4,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : AppShadows.raised(false))
-                    : AppShadows.card(isDark),
+                    ? (isDark ? AppColors.primary : AppColors.carbon)
+                    : (isDark ? AppColors.surfaceVariantDark : AppColors.track),
+                shape: const ParallelogramBorder(slant: 8),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? (isDark ? Colors.white : AppColors.primary)
-                          : vehicle.colour,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    vehicle.name,
-                    style: AppTextStyles.label.copyWith(
-                      fontSize: 13,
-                      color: isActive ? Colors.white : textPrimary,
-                    ),
-                  ),
-                ],
+              child: Text(
+                vehicle.name.toUpperCase(),
+                style: AppTextStyles.label.copyWith(
+                  fontSize: 13,
+                  letterSpacing: 1.6,
+                  color: isActive
+                      ? Colors.white
+                      : (isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondary),
+                ),
               ),
             ),
           );
@@ -366,66 +334,119 @@ class _HealthHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Carbon panel: always drawn light-on-dark, whatever the page theme.
-    final textSecondary = AppColors.textSecondaryDark;
+    const textSecondary = AppColors.textSecondaryDark;
     final gradeColor =
         HealthRing.gradeColor(dash.healthScore.grade, isDark: true);
     final l = context.l10n;
     final vehicle = dash.vehicle;
+    final score = dash.healthScore.score;
 
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: HudPanel(
         carbon: true,
-        glow: gradeColor,
-        sheen: true,
+        wideStripes: true,
         padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xl),
+            AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.lg),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                VehicleAvatar(
-                  colour: vehicle.colour,
-                  size: 36,
-                  type: vehicle.type,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    '${vehicle.brand} ${vehicle.model}'.toUpperCase(),
+            // Keep the header and readout clear of the stripes.
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 110),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${vehicle.brand} · ${vehicle.model}'.toUpperCase(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.label.copyWith(color: textSecondary),
+                    style: AppTextStyles.label
+                        .copyWith(color: textSecondary, letterSpacing: 2),
                   ),
-                ),
-                PlateBadge(vehicle.regNumber),
-              ],
+                  const SizedBox(height: AppSpacing.sm),
+                  PlateBadge(vehicle.regNumber, fontSize: 12),
+                  const SizedBox(height: AppSpacing.md),
+                  _ScoreReadout(score: score),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    l.healthGradeLabel(dash.healthScore.grade).toUpperCase(),
+                    style: AppTextStyles.label.copyWith(
+                      color: gradeColor,
+                      fontSize: 15,
+                      letterSpacing: 2.2,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
-            HealthRing(
-              score: dash.healthScore.score,
-              grade: dash.healthScore.grade,
-              size: 184,
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-              decoration: BoxDecoration(
-                color: gradeColor.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(AppRadius.full),
-                border:
-                    Border.all(color: gradeColor.withValues(alpha: 0.35)),
-              ),
-              child: Text(
-                l.healthGradeLabel(dash.healthScore.grade),
-                textAlign: TextAlign.center,
-                style: AppTextStyles.heading3.copyWith(color: gradeColor),
-              ),
-            ),
+            _SegmentBar(score: score, colour: gradeColor),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The big health number with an orange % — counts up when it appears.
+class _ScoreReadout extends StatelessWidget {
+  final int score;
+  const _ScoreReadout({required this.score});
+
+  @override
+  Widget build(BuildContext context) {
+    final still = MediaQuery.disableAnimationsOf(context);
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: still ? score.toDouble() : 0, end: score.toDouble()),
+      duration: AppDuration.healthRing,
+      curve: Curves.easeOutCubic,
+      builder: (context, v, _) => Text.rich(
+        TextSpan(children: [
+          TextSpan(text: '${v.round()}'),
+          TextSpan(
+            text: '%',
+            style: TextStyle(
+                fontSize: 36, color: AppColors.primary, height: 1),
+          ),
+        ]),
+        style: AppTextStyles.display.copyWith(
+          fontSize: 104,
+          height: 0.9,
+          color: AppColors.textPrimaryDark,
+          letterSpacing: -1,
+        ),
+      ),
+    );
+  }
+}
+
+/// Ten slanted segments, lit up to the score — a rev-counter strip.
+class _SegmentBar extends StatelessWidget {
+  final int score;
+  final Color colour;
+  const _SegmentBar({required this.score, required this.colour});
+
+  @override
+  Widget build(BuildContext context) {
+    final lit = (score / 10).round();
+    return Row(
+      children: [
+        for (var i = 0; i < 10; i++)
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: 5),
+              child: Transform(
+                transform: Matrix4.skewX(-0.35),
+                alignment: Alignment.center,
+                child: Container(
+                  height: 9,
+                  color: i < lit ? colour : const Color(0xFF2A2C31),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -465,8 +486,6 @@ class _QuickStats extends StatelessWidget {
                           dash.avgMileage!.toStringAsFixed(1))
                       : null,
                   trendPositive: true,
-                  icon: Icons.local_gas_station_outlined,
-                  color: AppColors.statFuel,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -476,8 +495,7 @@ class _QuickStats extends StatelessWidget {
                   value: dash.nextService?.nextDueKm != null
                       ? '${dash.vehicle.odometerCurrent < dash.nextService!.nextDueKm! ? dash.nextService!.nextDueKm! - dash.vehicle.odometerCurrent : 0} km'
                       : l.dashboardUpToDate,
-                  icon: Icons.build_outlined,
-                  color: isDark ? AppColors.successDark : AppColors.statService,
+                  emphasis: true,
                 ),
               ),
             ],
@@ -492,20 +510,13 @@ class _QuickStats extends StatelessWidget {
                   value: dash.costPerKm != null
                       ? '₹${dash.costPerKm!.toStringAsFixed(2)}'
                       : '—',
-                  icon: Icons.route_outlined,
-                  color: AppColors.statCost,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: StatCard(
                   label: l.fieldOdometer,
-                  value: NumberFormat('#,##,###')
-                      .format(dash.vehicle.odometerCurrent),
-                  trend: 'km',
-                  trendPositive: true,
-                  icon: Icons.speed_outlined,
-                  color: isDark ? AppColors.accent : AppColors.statOdometer,
+                  value: '${NumberFormat('#,##,###').format(dash.vehicle.odometerCurrent)} km',
                 ),
               ),
             ],

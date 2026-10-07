@@ -25,6 +25,10 @@ class HudPanel extends StatefulWidget {
   final double radius;
   final bool sheen;
   final bool carbon;
+
+  /// On a [carbon] panel: bold stripes filling a wedge on the end side (for
+  /// hero cards whose content is start-aligned), instead of the slim band.
+  final bool wideStripes;
   final VoidCallback? onTap;
 
   /// Width of the livery stripe band on a [carbon] panel's end edge.
@@ -39,6 +43,7 @@ class HudPanel extends StatefulWidget {
     this.radius = AppRadius.large,
     this.sheen = false,
     this.carbon = false,
+    this.wideStripes = false,
     this.onTap,
     this.onLongPress,
   });
@@ -126,8 +131,9 @@ class _HudPanelState extends State<HudPanel> {
                   Positioned.fill(
                     child: IgnorePointer(
                       child: CustomPaint(
-                        painter:
-                            _RacingStripesPainter(Directionality.of(context)),
+                        painter: widget.wideStripes
+                            ? _WideStripesPainter(Directionality.of(context))
+                            : _RacingStripesPainter(Directionality.of(context)),
                       ),
                     ),
                   ),
@@ -207,6 +213,58 @@ class _RacingStripesPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_RacingStripesPainter old) => old.direction != direction;
+}
+
+/// Bold livery for hero panels: thick slanted orange stripes filling a wedge
+/// on the end side — widest at the bottom, like a fairing graphic.
+class _WideStripesPainter extends CustomPainter {
+  final TextDirection direction;
+  const _WideStripesPainter(this.direction);
+
+  static const _wedge = 120.0; // wedge width at the bottom edge
+  static const _stripe = 10.0;
+  static const _gap = 12.0;
+  static const _slope = 0.45; // horizontal shift per pixel of height
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rtl = direction == TextDirection.rtl;
+    // Draw for LTR, then mirror for RTL.
+    if (rtl) {
+      canvas.save();
+      canvas.translate(size.width, 0);
+      canvas.scale(-1, 1);
+    }
+    final w = size.width;
+    final h = size.height;
+    final run = h * _slope;
+    // Wedge: narrow at the top right, widening toward the bottom.
+    final wedge = Path()
+      ..moveTo(w - _wedge * 0.4, 0)
+      ..lineTo(w, 0)
+      ..lineTo(w, h)
+      ..lineTo(w - _wedge, h)
+      ..close();
+    canvas.save();
+    canvas.clipPath(wedge);
+    final paint = Paint()..color = AppColors.primary.withValues(alpha: 0.95);
+    for (var x = w - _wedge - run; x < w + run; x += _stripe + _gap) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(x + run, 0)
+          ..lineTo(x + run + _stripe, 0)
+          ..lineTo(x + _stripe, h)
+          ..lineTo(x, h)
+          ..close(),
+        paint,
+      );
+    }
+    canvas.restore();
+    if (rtl) canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_WideStripesPainter old) => old.direction != direction;
 }
 
 /// A [HudPanel] holding a list of rows (usually list tiles) separated by

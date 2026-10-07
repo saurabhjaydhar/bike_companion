@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/theme/app_theme.dart';
-import 'energy_sweep.dart';
+import '../../core/theme/parallelogram_border.dart';
 
-/// Full-width cut-corner button with the ignition gradient, a glossy top
-/// highlight, a soft glow and a periodic glint of light. Has a loading state
-/// and an outlined variant.
+/// Full-width slanted livery button: solid ignition orange with an
+/// uppercase label (plus a glow in dark mode). Has a loading state and an
+/// outlined variant.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -24,8 +23,12 @@ class PrimaryButton extends StatelessWidget {
     this.icon,
   });
 
+  /// The slanted livery shape shared by the filled and outlined variants.
+  static const shape = ParallelogramBorder(slant: 14);
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final enabled = !isLoading && onPressed != null;
     final fg = isOutlined ? AppColors.primary : Colors.white;
     final child = isLoading
@@ -43,13 +46,13 @@ class PrimaryButton extends StatelessWidget {
               ],
               Flexible(
                 child: Text(
-                  label,
+                  label.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.heading3.copyWith(
                     color: fg,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.6,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 2,
                   ),
                 ),
               ),
@@ -62,6 +65,10 @@ class PrimaryButton extends StatelessWidget {
         height: 54,
         child: OutlinedButton(
           onPressed: enabled ? onPressed : null,
+          style: OutlinedButton.styleFrom(
+            shape: shape.copyWith(
+                side: const BorderSide(color: AppColors.primary, width: 1.5)),
+          ),
           child: child,
         ),
       );
@@ -72,17 +79,13 @@ class PrimaryButton extends StatelessWidget {
       height: 54,
       child: DecoratedBox(
         decoration: ShapeDecoration(
-          shape: AppTheme.cutShape,
-          gradient: LinearGradient(
-            colors: enabled || isLoading
-                ? AppColors.ignitionGradient
-                : [
-                    AppColors.textTertiary.withValues(alpha: 0.5),
-                    AppColors.textTertiary.withValues(alpha: 0.5),
-                  ],
-          ),
+          shape: shape,
+          color: enabled || isLoading
+              ? AppColors.primary
+              : AppColors.textTertiary.withValues(alpha: 0.5),
           shadows: [
-            if (enabled)
+            // A glow in dark mode; flat livery paint in light mode.
+            if (enabled && isDark)
               BoxShadow(
                 color: AppColors.primary.withValues(alpha: 0.45),
                 blurRadius: 20,
@@ -93,38 +96,11 @@ class PrimaryButton extends StatelessWidget {
         ),
         child: Material(
           color: Colors.transparent,
-          shape: AppTheme.cutShape,
+          shape: shape,
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: enabled ? onPressed : null,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Clay gloss over the top half.
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: FractionallySizedBox(
-                    heightFactor: 0.5,
-                    widthFactor: 1,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.white.withValues(alpha: 0.22),
-                            Colors.white.withValues(alpha: 0),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (enabled)
-                  const EnergySweep(period: Duration(milliseconds: 4200)),
-                Center(child: child),
-              ],
-            ),
+            child: Center(child: child),
           ),
         ),
       ),

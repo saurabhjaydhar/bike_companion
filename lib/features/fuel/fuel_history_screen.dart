@@ -52,8 +52,6 @@ class FuelHistoryScreen extends ConsumerWidget {
                 StatCard(
                   label: l10n.fuelAvgMileageAllTime,
                   value: '${avgMileage.toStringAsFixed(1)} km/L',
-                  icon: Icons.local_gas_station_outlined,
-                  color: AppColors.statFuel,
                 ),
               const SizedBox(height: AppSpacing.xl),
               ...logs.map((log) {

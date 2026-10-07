@@ -22,6 +22,42 @@ class AuthService {
     return _auth.signInWithCredential(credential);
   }
 
+  /// Turns a guest (anonymous) account into a Google one, keeping the same
+  /// user id so everything already synced stays put. If that Google account
+  /// already exists, signs into it instead and [switched] is true.
+  /// Returns null if the user cancelled.
+  Future<({UserCredential credential, bool switched})?> linkWithGoogle() async {
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return null;
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final user = _auth.currentUser;
+    if (user == null || !user.isAnonymous) {
+      return (
+        credential: await _auth.signInWithCredential(credential),
+        switched: true,
+      );
+    }
+    try {
+      return (
+        credential: await user.linkWithCredential(credential),
+        switched: false,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code != 'credential-already-in-use' &&
+          e.code != 'email-already-in-use') {
+        rethrow;
+      }
+      return (
+        credential: await _auth.signInWithCredential(e.credential ?? credential),
+        switched: true,
+      );
+    }
+  }
+
   /// Sign in anonymously so the user can use the app without a Google account.
   Future<UserCredential> signInAnonymously() =>
       _auth.signInAnonymously();

@@ -17,6 +17,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
+import '../../shared/widgets/backup_prompt.dart';
 import '../../shared/widgets/hud_panel.dart';
 
 // ---------------------------------------------------------------------------
@@ -383,14 +384,41 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-class _AccountTile extends StatelessWidget {
+class _AccountTile extends StatefulWidget {
   final Color textPrimary;
   final Color textSecondary;
   const _AccountTile({required this.textPrimary, required this.textSecondary});
 
   @override
+  State<_AccountTile> createState() => _AccountTileState();
+}
+
+class _AccountTileState extends State<_AccountTile> {
+  @override
   Widget build(BuildContext context) {
+    final textPrimary = widget.textPrimary;
+    final textSecondary = widget.textSecondary;
     final user = getIt<AuthService>().currentUser;
+    if (user?.isAnonymous ?? false) {
+      return ListTile(
+        leading: const CircleAvatar(
+          backgroundColor: AppColors.accentInk,
+          radius: 20,
+          child: Icon(Icons.cloud_off_rounded, color: Colors.white, size: 20),
+        ),
+        title: Text(context.l10n.settingsGuest,
+            style: AppTextStyles.body.copyWith(color: textPrimary)),
+        subtitle: Text(context.l10n.backupBody,
+            style: AppTextStyles.caption.copyWith(color: textSecondary)),
+        trailing: TextButton(
+          onPressed: () async {
+            // Rebuild with the Google name and photo.
+            if (await backUpWithGoogle(context) && mounted) setState(() {});
+          },
+          child: Text(context.l10n.backupAction),
+        ),
+      );
+    }
     final name = user?.displayName ?? context.l10n.settingsSignedIn;
     final email = user?.email ?? '';
     final photoUrl = user?.photoURL;

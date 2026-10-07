@@ -1265,4 +1265,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get healthFixUpdate => 'تحديث التاريخ';
+
+  @override
+  String get onboardingHaveAccount => 'لدي حساب بالفعل';
+
+  @override
+  String get backupTitle => 'احفظ نسخة من مرآبك';
+
+  @override
+  String get backupBody =>
+      'محفوظ على هذا الهاتف فقط. سجّل الدخول عبر Google لحمايته ومزامنته.';
+
+  @override
+  String get backupLater => 'لاحقًا';
+
+  @override
+  String get backupAction => 'نسخ احتياطي';
+
+  @override
+  String get backupDone => 'تم حفظ المرآب في حسابك على Google';
+
+  @override
+  String get settingsGuest => 'ضيف';
 }

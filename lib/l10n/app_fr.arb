@@ -348,5 +348,12 @@
   "healthBreakdownTitle": "Score de santé",
   "healthBreakdownBody": "Ce qui compose le score. Réglez les premiers points pour l'améliorer.",
   "healthFixLog": "Saisir",
-  "healthFixUpdate": "Modifier la date"
+  "healthFixUpdate": "Modifier la date",
+  "onboardingHaveAccount": "J'ai déjà un compte",
+  "backupTitle": "Sauvegardez votre garage",
+  "backupBody": "Enregistré sur ce téléphone uniquement. Connectez-vous avec Google pour le sécuriser et le synchroniser.",
+  "backupLater": "Plus tard",
+  "backupAction": "Sauvegarder",
+  "backupDone": "Garage sauvegardé sur votre compte Google",
+  "settingsGuest": "Invité"
 }

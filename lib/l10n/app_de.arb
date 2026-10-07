@@ -348,5 +348,12 @@
   "healthBreakdownTitle": "Zustandswert",
   "healthBreakdownBody": "Woraus sich der Wert zusammensetzt. Erledige die oberen Punkte, um ihn zu steigern.",
   "healthFixLog": "Eintragen",
-  "healthFixUpdate": "Datum ändern"
+  "healthFixUpdate": "Datum ändern",
+  "onboardingHaveAccount": "Ich habe schon ein Konto",
+  "backupTitle": "Sichere deine Garage",
+  "backupBody": "Nur auf diesem Handy gespeichert. Melde dich mit Google an, um es zu sichern und zu synchronisieren.",
+  "backupLater": "Später",
+  "backupAction": "Sichern",
+  "backupDone": "Garage in deinem Google-Konto gesichert",
+  "settingsGuest": "Gast"
 }

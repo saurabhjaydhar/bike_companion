@@ -1255,4 +1255,26 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get healthFixUpdate => 'Atualizar data';
+
+  @override
+  String get onboardingHaveAccount => 'Já tenho uma conta';
+
+  @override
+  String get backupTitle => 'Faça backup da sua garagem';
+
+  @override
+  String get backupBody =>
+      'Salvo só neste celular. Entre com o Google para proteger e sincronizar.';
+
+  @override
+  String get backupLater => 'Depois';
+
+  @override
+  String get backupAction => 'Fazer backup';
+
+  @override
+  String get backupDone => 'Garagem salva na sua conta Google';
+
+  @override
+  String get settingsGuest => 'Convidado';
 }

@@ -2203,6 +2203,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update date'**
   String get healthFixUpdate;
+
+  /// No description provided for @onboardingHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have an account'**
+  String get onboardingHaveAccount;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up your garage'**
+  String get backupTitle;
+
+  /// No description provided for @backupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone only. Sign in with Google to keep it safe and sync it.'**
+  String get backupBody;
+
+  /// No description provided for @backupLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get backupLater;
+
+  /// No description provided for @backupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up'**
+  String get backupAction;
+
+  /// No description provided for @backupDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Garage backed up to your Google account'**
+  String get backupDone;
+
+  /// No description provided for @settingsGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get settingsGuest;
 }
 
 class _AppLocalizationsDelegate

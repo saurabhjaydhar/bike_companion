@@ -4,6 +4,8 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
+import '../../core/services/auth_service.dart';
+import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// First-run welcome: three swipeable cards on what the app does, and one
@@ -19,6 +21,29 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _pages = PageController();
   int _page = 0;
+  bool _starting = false;
+
+  /// Starts straight away as a guest; the garage can be backed up to
+  /// Google later from the dashboard or Settings.
+  Future<void> _getStarted() async {
+    final auth = getIt<AuthService>();
+    if (auth.currentUser == null) {
+      setState(() => _starting = true);
+      try {
+        await auth.signInAnonymously();
+      } catch (_) {
+        if (mounted) {
+          setState(() => _starting = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.l10n.authOfflineError)));
+        }
+        return;
+      }
+      if (!mounted) return;
+      setState(() => _starting = false);
+    }
+    context.push('/onboarding/add-vehicle');
+  }
 
   @override
   void dispose() {
@@ -86,9 +111,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               PrimaryButton(
                 label: l.onboardingAddMyVehicle,
                 icon: Icons.add_rounded,
-                onPressed: () => context.push('/onboarding/add-vehicle'),
+                isLoading: _starting,
+                onPressed: _getStarted,
               ),
-              const SizedBox(height: AppSpacing.sm),
+              if (getIt<AuthService>().currentUser == null)
+                TextButton(
+                  onPressed: () => context.go('/auth'),
+                  child: Text(l.onboardingHaveAccount),
+                )
+              else
+                const SizedBox(height: AppSpacing.sm),
             ],
           ),
         ),

@@ -348,5 +348,12 @@
   "healthBreakdownTitle": "हेल्थ स्कोर",
   "healthBreakdownBody": "स्कोर किन चीज़ों से बनता है। ऊपर वाली चीज़ें ठीक करें तो स्कोर बढ़ेगा।",
   "healthFixLog": "दर्ज करें",
-  "healthFixUpdate": "तारीख़ बदलें"
+  "healthFixUpdate": "तारीख़ बदलें",
+  "onboardingHaveAccount": "मेरा पहले से अकाउंट है",
+  "backupTitle": "अपने गैराज का बैकअप लें",
+  "backupBody": "अभी सिर्फ़ इस फ़ोन में है। सुरक्षित रखने और सिंक करने के लिए Google से साइन इन करें।",
+  "backupLater": "बाद में",
+  "backupAction": "बैकअप लें",
+  "backupDone": "गैराज आपके Google अकाउंट में सेव हो गया",
+  "settingsGuest": "मेहमान"
 }

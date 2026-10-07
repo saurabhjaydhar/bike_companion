@@ -32,6 +32,7 @@ import 'widgets/health_breakdown_sheet.dart';
 import 'widgets/log_sheet.dart';
 import 'widgets/vehicle_switcher_sheet.dart';
 import 'widgets/spending_card.dart';
+import '../../shared/widgets/backup_prompt.dart';
 import '../../shared/widgets/clay_icon.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -193,7 +194,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               offset: _fabVisible ? Offset.zero : const Offset(0, 2),
               duration: AppDuration.normal,
               curve: Curves.easeOutCubic,
-              child: FloatingActionButton.extended(
+              child: AnimatedOpacity(
+                opacity: _fabVisible ? 1 : 0,
+                duration: AppDuration.normal,
+                child: FloatingActionButton.extended(
                 onPressed: () =>
                     showLogSheet(context, ref, vehicleId: widget.vehicleId),
                 backgroundColor: AppColors.primary,
@@ -203,6 +207,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                 label: Text(l.logButton.toUpperCase(),
                     style: AppTextStyles.label
                         .copyWith(fontSize: 15, color: Colors.white)),
+                ),
               ),
             )
           : null,
@@ -241,6 +246,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               Reveal(index: 2, child: _QuickStats(dash: dash)),
 
               const SizedBox(height: AppSpacing.lg),
+
+              // Guests: offer to back up to Google.
+              const BackupNudgeCard(),
 
               // Fuel log button
               Reveal(

@@ -148,8 +148,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isOnAuth = loc == '/auth';
       final isOnOnboarding = loc.startsWith('/onboarding');
 
-      // Auth gate — redirect unauthenticated users to /auth.
-      if (!isAuthed && !isOnAuth && !isOnOnboarding) return '/auth';
+      // Use first, sign in later: newcomers land on the welcome screen,
+      // whose "Get started" starts a guest session. Sign-in stays one tap
+      // away from there.
+      if (!isAuthed && !isOnAuth && loc != '/onboarding') return '/onboarding';
       if (isAuthed && isOnAuth) return '/home';
 
       // Onboarding gate — shown once after first sign-in.

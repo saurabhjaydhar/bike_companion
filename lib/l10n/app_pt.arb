@@ -348,5 +348,12 @@
   "healthBreakdownTitle": "Saúde do veículo",
   "healthBreakdownBody": "O que compõe a pontuação. Resolva os primeiros itens para aumentá-la.",
   "healthFixLog": "Registrar",
-  "healthFixUpdate": "Atualizar data"
+  "healthFixUpdate": "Atualizar data",
+  "onboardingHaveAccount": "Já tenho uma conta",
+  "backupTitle": "Faça backup da sua garagem",
+  "backupBody": "Salvo só neste celular. Entre com o Google para proteger e sincronizar.",
+  "backupLater": "Depois",
+  "backupAction": "Fazer backup",
+  "backupDone": "Garagem salva na sua conta Google",
+  "settingsGuest": "Convidado"
 }

@@ -57,26 +57,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     }
   }
 
+  /// No confirm step: guests can back up to Google any time later.
   Future<void> _continueOffline() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(context.l10n.authOfflineTitle),
-        content: Text(context.l10n.authOfflineBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(context.l10n.commonCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.l10n.commonContinue),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) return;
     _setLoading(true);
     HapticFeedback.lightImpact();
 

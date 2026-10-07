@@ -80,6 +80,7 @@ class SharedPrefKeys {
   static const String themeMode = 'theme_mode';
   static const String locale = 'locale';
   static const String rcScanUseGemini = 'rc_scan_use_gemini';
+  static const String backupNudgeDismissedAt = 'backup_nudge_dismissed_at';
 }
 
 const List<String> kIndianBrands = [

@@ -1260,4 +1260,26 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get healthFixUpdate => 'Modifier la date';
+
+  @override
+  String get onboardingHaveAccount => 'J\'ai déjà un compte';
+
+  @override
+  String get backupTitle => 'Sauvegardez votre garage';
+
+  @override
+  String get backupBody =>
+      'Enregistré sur ce téléphone uniquement. Connectez-vous avec Google pour le sécuriser et le synchroniser.';
+
+  @override
+  String get backupLater => 'Plus tard';
+
+  @override
+  String get backupAction => 'Sauvegarder';
+
+  @override
+  String get backupDone => 'Garage sauvegardé sur votre compte Google';
+
+  @override
+  String get settingsGuest => 'Invité';
 }

@@ -348,5 +348,12 @@
   "healthBreakdownTitle": "مؤشر الحالة",
   "healthBreakdownBody": "مما يتكوّن المؤشر. عالج البنود في الأعلى لرفعه.",
   "healthFixLog": "سجّل",
-  "healthFixUpdate": "تحديث التاريخ"
+  "healthFixUpdate": "تحديث التاريخ",
+  "onboardingHaveAccount": "لدي حساب بالفعل",
+  "backupTitle": "احفظ نسخة من مرآبك",
+  "backupBody": "محفوظ على هذا الهاتف فقط. سجّل الدخول عبر Google لحمايته ومزامنته.",
+  "backupLater": "لاحقًا",
+  "backupAction": "نسخ احتياطي",
+  "backupDone": "تم حفظ المرآب في حسابك على Google",
+  "settingsGuest": "ضيف"
 }

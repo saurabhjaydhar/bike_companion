@@ -707,5 +707,12 @@
   "healthBreakdownTitle": "Health score",
   "healthBreakdownBody": "What makes up the score. Fix the top items to raise it.",
   "healthFixLog": "Log it",
-  "healthFixUpdate": "Update date"
+  "healthFixUpdate": "Update date",
+  "onboardingHaveAccount": "I already have an account",
+  "backupTitle": "Back up your garage",
+  "backupBody": "Saved on this phone only. Sign in with Google to keep it safe and sync it.",
+  "backupLater": "Later",
+  "backupAction": "Back up",
+  "backupDone": "Garage backed up to your Google account",
+  "settingsGuest": "Guest"
 }

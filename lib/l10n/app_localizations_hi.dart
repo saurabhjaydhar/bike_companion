@@ -1215,4 +1215,26 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get healthFixUpdate => 'तारीख़ बदलें';
+
+  @override
+  String get onboardingHaveAccount => 'मेरा पहले से अकाउंट है';
+
+  @override
+  String get backupTitle => 'अपने गैराज का बैकअप लें';
+
+  @override
+  String get backupBody =>
+      'अभी सिर्फ़ इस फ़ोन में है। सुरक्षित रखने और सिंक करने के लिए Google से साइन इन करें।';
+
+  @override
+  String get backupLater => 'बाद में';
+
+  @override
+  String get backupAction => 'बैकअप लें';
+
+  @override
+  String get backupDone => 'गैराज आपके Google अकाउंट में सेव हो गया';
+
+  @override
+  String get settingsGuest => 'मेहमान';
 }

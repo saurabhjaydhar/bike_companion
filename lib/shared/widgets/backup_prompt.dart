@@ -10,6 +10,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
+import 'app_snack.dart';
 import 'clay_icon.dart';
 import 'hud_panel.dart';
 
@@ -30,10 +31,10 @@ Future<bool> backUpWithGoogle(BuildContext context) async {
       await getIt<RestoreService>().restoreIfNeeded(user.uid);
     }
     HapticFeedback.mediumImpact();
-    messenger.showSnackBar(SnackBar(content: Text(l.backupDone)));
+    messenger.showToast(l.backupDone, tone: SnackTone.success);
     return true;
   } catch (e) {
-    messenger.showSnackBar(SnackBar(content: Text(l.authSignInFailed('$e'))));
+    messenger.showToast(l.authSignInFailed('$e'), tone: SnackTone.error);
     return false;
   }
 }

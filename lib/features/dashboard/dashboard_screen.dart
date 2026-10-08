@@ -33,6 +33,7 @@ import 'widgets/log_sheet.dart';
 import 'widgets/vehicle_switcher_sheet.dart';
 import 'widgets/spending_card.dart';
 import '../../shared/widgets/backup_prompt.dart';
+import '../../shared/widgets/app_snack.dart';
 import '../../shared/widgets/clay_icon.dart';
 import '../../shared/widgets/first_time_tips.dart';
 
@@ -111,8 +112,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     await getIt<VehicleRepository>().updateVehicle(updated);
     HapticFeedback.lightImpact();
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(l.dueUpdated)));
+    showAppSnack(context, l.dueUpdated, tone: SnackTone.success);
     await ref.read(dashboardProvider(widget.vehicleId).notifier).refresh();
     ref.invalidate(garageProvider);
     if (mounted) await askReminderPermissionOnce(context);

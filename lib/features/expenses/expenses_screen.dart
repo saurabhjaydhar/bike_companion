@@ -22,6 +22,7 @@ import 'expense_style.dart';
 import 'expenses_provider.dart';
 import 'quick_add_sheet.dart';
 import '../../shared/widgets/clay_icon.dart';
+import '../../shared/widgets/app_snack.dart';
 
 class ExpensesScreen extends ConsumerStatefulWidget {
   final String vehicleId;
@@ -256,20 +257,18 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final l = context.l10n;
     await notifier.deleteExpense(e.id);
-    messenger.showSnackBar(SnackBar(
-      content: Text(l.expensesDeleted),
-      action: SnackBarAction(
-        label: l.commonUndo,
-        onPressed: () => notifier.addExpense(Expense(
-          id: e.id,
-          vehicleId: e.vehicleId,
-          date: e.date,
-          category: e.category,
-          amount: e.amount,
-          note: e.note,
-        )),
-      ),
-    ));
+    messenger.showToast(
+      l.expensesDeleted,
+      actionLabel: l.commonUndo,
+      onAction: () => notifier.addExpense(Expense(
+        id: e.id,
+        vehicleId: e.vehicleId,
+        date: e.date,
+        category: e.category,
+        amount: e.amount,
+        note: e.note,
+      )),
+    );
   }
 
   void _exportCsv(AppLocalizations l, ExpensesState s) {

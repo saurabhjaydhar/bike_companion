@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/services/notification_service.dart';
 import '../../l10n/l10n.dart';
+import 'app_snack.dart';
 
 const _askedKey = 'reminders_permission_asked';
 
@@ -47,9 +48,7 @@ Future<void> askReminderPermissionOnce(BuildContext context) async {
 Future<bool> turnOnReminders(BuildContext context) async {
   final granted = await NotificationService.requestPermission();
   if (!granted && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.remindersEnableInSettings)),
-    );
+    showAppSnack(context, context.l10n.remindersEnableInSettings);
   }
   return granted;
 }

@@ -20,6 +20,7 @@ import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/colour_picker.dart';
+import '../../shared/widgets/app_snack.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../core/services/analytics.dart';
 import '../../shared/widgets/reminder_permission.dart';
@@ -219,8 +220,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
       opened = await launchUrl(uri);
     } catch (_) {}
     if (!opened && mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l.vahanSmsError)));
+      showAppSnack(context, l.vahanSmsError, tone: SnackTone.error);
     }
   }
 
@@ -288,8 +288,7 @@ class _VehicleDetailsScreenState extends ConsumerState<VehicleDetailsScreen> {
         ref.invalidate(dashboardProvider(e.id));
         HapticFeedback.lightImpact();
         if (mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(l.vehicleUpdated)));
+          showAppSnack(context, l.vehicleUpdated, tone: SnackTone.success);
           context.canPop()
               ? context.pop()
               : context.go('/garage/dashboard/${e.id}');

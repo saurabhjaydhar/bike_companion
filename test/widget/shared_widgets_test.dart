@@ -1,4 +1,5 @@
 import 'package:garajo/data/models/health_score.dart';
+import 'package:garajo/shared/widgets/app_snack.dart';
 import 'package:garajo/shared/widgets/empty_state.dart';
 import 'package:garajo/shared/widgets/health_ring.dart';
 import 'package:garajo/shared/widgets/shimmer_box.dart';
@@ -129,6 +130,40 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 1300));
       expect(find.byType(HealthRing), findsOneWidget);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // AppSnack
+  // ---------------------------------------------------------------------------
+  group('AppSnack', () {
+    Future<BuildContext> pumpHost(WidgetTester tester) async {
+      late BuildContext ctx;
+      await tester.pumpWidget(_wrap(Builder(builder: (c) {
+        ctx = c;
+        return const SizedBox();
+      })));
+      return ctx;
+    }
+
+    testWidgets('shows the message', (tester) async {
+      final ctx = await pumpHost(tester);
+      showAppSnack(ctx, 'Odometer updated', tone: SnackTone.success);
+      await tester.pumpAndSettle();
+      expect(find.text('Odometer updated'), findsOneWidget);
+      expect(find.byType(AppSnack), findsOneWidget);
+    });
+
+    testWidgets('action runs its callback and dismisses', (tester) async {
+      final ctx = await pumpHost(tester);
+      var undone = false;
+      showAppSnack(ctx, 'Expense deleted',
+          actionLabel: 'Undo', onAction: () => undone = true);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('UNDO'));
+      await tester.pumpAndSettle();
+      expect(undone, isTrue);
+      expect(find.byType(AppSnack), findsNothing);
     });
   });
 }

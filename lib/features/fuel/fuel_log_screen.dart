@@ -17,6 +17,7 @@ import '../../features/garage/garage_provider.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/first_time_tips.dart';
+import '../../shared/widgets/app_snack.dart';
 import '../../shared/widgets/primary_button.dart';
 import 'fuel_prefill.dart';
 import 'fuel_provider.dart';
@@ -136,10 +137,8 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
     final odometer = _currentOdometer!;
     if (_lastLog != null && odometer <= _lastLog!.odometer) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(context.l10n.fuelOdometerTooLow(_lastLog!.odometer)),
-        backgroundColor: AppColors.danger,
-      ));
+      showAppSnack(context, context.l10n.fuelOdometerTooLow(_lastLog!.odometer),
+          tone: SnackTone.error);
       return;
     }
 
@@ -177,11 +176,8 @@ class _FuelLogScreenState extends ConsumerState<FuelLogScreen> {
 
       HapticFeedback.mediumImpact();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(context.l10n.fuelLogged),
-          backgroundColor: AppColors.success,
-          duration: const Duration(seconds: 2),
-        ));
+        showAppSnack(context, context.l10n.fuelLogged,
+            tone: SnackTone.success, duration: const Duration(seconds: 2));
         context.pop();
       }
     } finally {

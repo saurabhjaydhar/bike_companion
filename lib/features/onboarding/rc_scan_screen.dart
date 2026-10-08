@@ -15,6 +15,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../data/models/rc_details.dart';
 import '../../l10n/l10n.dart';
 import '../../shared/widgets/hud_panel.dart';
+import '../../shared/widgets/app_snack.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// Scan RC: add photos of the front and back of the RC card, then read both
@@ -66,9 +67,8 @@ class _RcScanScreenState extends ConsumerState<RcScanScreen> {
       setState(() => front ? _frontPath = file.path : _backPath = file.path);
     } on PlatformException {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(context.l10n.scanPickerError)));
+        showAppSnack(context, context.l10n.scanPickerError,
+            tone: SnackTone.error);
       }
     }
   }

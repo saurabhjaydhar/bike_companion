@@ -10,6 +10,7 @@ import '../../../data/repositories/vehicle_repository.dart';
 import '../../../l10n/l10n.dart';
 import '../../../main.dart';
 import '../../../shared/widgets/clay_icon.dart';
+import '../../../shared/widgets/app_snack.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../documents/documents_screen.dart';
 import '../../expenses/quick_add_sheet.dart';
@@ -139,8 +140,8 @@ Future<void> _updateOdometer(
   HapticFeedback.lightImpact();
   ref.invalidate(garageProvider);
   if (context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.odometerUpdated)));
+    showAppSnack(context, context.l10n.odometerUpdated,
+        tone: SnackTone.success);
   }
 }
 

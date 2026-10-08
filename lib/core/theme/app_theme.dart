@@ -188,11 +188,24 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         dragHandleColor: isDark ? AppColors.borderDark : AppColors.track,
       ),
+      // Fallback for raw SnackBars; app code uses showAppSnack, which draws
+      // the same carbon capsule with a tone stripe and icon.
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        contentTextStyle: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
+        backgroundColor:
+            isDark ? AppColors.surfaceVariantDark : AppColors.carbon,
+        elevation: isDark ? 0 : 6,
+        contentTextStyle: AppTextStyles.bodyMedium
+            .copyWith(color: AppColors.textPrimaryDark),
+        actionTextColor: AppColors.accent,
+        closeIconColor: AppColors.textSecondaryDark,
+        insetPadding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.sm),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.medium)),
+          borderRadius: BorderRadius.circular(AppRadius.large - 4),
+          side: BorderSide(
+              color: isDark ? AppColors.borderDark : AppColors.carbonEdge),
+        ),
       ),
       progressIndicatorTheme:
           const ProgressIndicatorThemeData(color: AppColors.primary),

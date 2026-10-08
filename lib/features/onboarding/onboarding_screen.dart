@@ -7,6 +7,7 @@ import '../../l10n/l10n.dart';
 import '../../core/services/auth_service.dart';
 import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/app_snack.dart';
 
 /// First-run welcome: three swipeable cards on what the app does, and one
 /// button to add the first vehicle (scan RC, look up by number, or enter
@@ -34,8 +35,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       } catch (_) {
         if (mounted) {
           setState(() => _starting = false);
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.l10n.authOfflineError)));
+          showAppSnack(context, context.l10n.authOfflineError,
+              tone: SnackTone.error);
         }
         return;
       }

@@ -18,6 +18,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
 import '../../shared/widgets/backup_prompt.dart';
+import '../../shared/widgets/app_snack.dart';
 import '../../shared/widgets/first_time_tips.dart';
 import '../../shared/widgets/hud_panel.dart';
 
@@ -222,8 +223,8 @@ class SettingsScreen extends ConsumerWidget {
                   onTap: () async {
                     await Tips.resetAll();
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l.settingsTipsReset)));
+                      showAppSnack(context, l.settingsTipsReset,
+                          tone: SnackTone.success);
                     }
                   },
                 ),
@@ -352,12 +353,8 @@ class SettingsScreen extends ConsumerWidget {
                 );
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l.settingsDeleteAccountError),
-                      backgroundColor: AppColors.danger,
-                    ),
-                  );
+                  showAppSnack(context, l.settingsDeleteAccountError,
+                      tone: SnackTone.error);
                 }
               }
             },
@@ -384,11 +381,8 @@ class SettingsScreen extends ConsumerWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text(l.settingsDataCleared),
-                    backgroundColor: AppColors.danger),
-              );
+              showAppSnack(context, l.settingsDataCleared,
+                  tone: SnackTone.error);
             },
             child: Text(l.commonDelete,
                 style: const TextStyle(color: AppColors.danger)),

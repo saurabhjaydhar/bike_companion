@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/local_data_provider.dart';
 import '../../data/models/vehicle.dart';
 import '../../data/models/health_score.dart';
 import '../../data/repositories/vehicle_repository.dart';
@@ -33,7 +34,10 @@ class GarageItem {
 
 class GarageNotifier extends AsyncNotifier<List<GarageItem>> {
   @override
-  Future<List<GarageItem>> build() => _load();
+  Future<List<GarageItem>> build() {
+    ref.watch(localDataEpochProvider);
+    return _load();
+  }
 
   Future<List<GarageItem>> _load() async {
     final vehicles = await getIt<VehicleRepository>().getAllVehicles();

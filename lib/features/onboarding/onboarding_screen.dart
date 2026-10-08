@@ -4,6 +4,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
+import '../../core/services/account_data_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../main.dart';
 import '../../shared/widgets/primary_button.dart';
@@ -31,8 +32,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (auth.currentUser == null) {
       setState(() => _starting = true);
       try {
-        await auth.signInAnonymously();
-      } catch (_) {
+        final result = await auth.signInAnonymously();
+        await getIt<AccountDataService>().claim(result.user!.uid);
+      } catch (e) {
+        debugPrint('Guest sign-in failed: $e');
         if (mounted) {
           setState(() => _starting = false);
           showAppSnack(context, context.l10n.authOfflineError,

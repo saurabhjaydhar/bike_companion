@@ -43,6 +43,17 @@ class ReminderService {
   static const _serviceDueKey = 'reminders_service_due_notified';
   static const _budgetKey = 'reminders_budget_notified';
 
+  /// Cancels every reminder and forgets per-account reminder settings —
+  /// when the local garage is wiped.
+  Future<void> forgetAll() async {
+    _debounce?.cancel();
+    await NotificationService.cancelAll();
+    final prefs = await SharedPreferences.getInstance();
+    for (final key in [_mutedKey, _serviceDueKey, _budgetKey]) {
+      await prefs.remove(key);
+    }
+  }
+
   /// iOS keeps at most 64 pending notifications; leave a little room.
   static const _maxScheduled = 60;
 

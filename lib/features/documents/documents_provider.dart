@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/local_data_provider.dart';
 import '../../data/models/document.dart';
 import '../../core/services/storage_service.dart';
 import '../../data/repositories/document_repository.dart';
@@ -8,6 +9,7 @@ class DocumentsNotifier
     extends FamilyAsyncNotifier<List<VehicleDocument>, String> {
   @override
   Future<List<VehicleDocument>> build(String arg) async {
+    ref.watch(localDataEpochProvider);
     // Reminders are re-planned by ReminderService after every write.
     return getIt<DocumentRepository>().getDocuments(arg);
   }

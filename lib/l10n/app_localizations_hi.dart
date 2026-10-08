@@ -58,7 +58,24 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'आपका लोकल डेटा इसी डिवाइस पर रहेगा। आप कभी भी फिर से साइन इन कर सकते हैं।';
+      'आपका गैराज आपके Google खाते में बैकअप है। साइन आउट करने पर यह इस फ़ोन से हट जाएगा — वापस पाने के लिए फिर से साइन इन करें।';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'आप Garajo को गेस्ट के रूप में इस्तेमाल कर रहे हैं, इसलिए आपका गैराज सिर्फ़ इसी फ़ोन पर सहेजा है। साइन आउट करने पर यह हमेशा के लिए मिट जाएगा। इसे रखने के लिए पहले Google पर बैकअप लें।';
+
+  @override
+  String get settingsSignOutErase => 'मिटाएं और साइन आउट करें';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'बदलाव बैकअप नहीं हुए';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'कुछ हाल के बदलाव अभी आपके बैकअप तक नहीं पहुंचे हैं। इंटरनेट से जुड़कर फिर कोशिश करें, या अभी साइन आउट करें और उन्हें खो दें।';
+
+  @override
+  String get settingsSignOutAnyway => 'फिर भी साइन आउट करें';
 
   @override
   String get settingsData => 'डेटा';
@@ -71,10 +88,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'इससे सभी वाहन, ईंधन लॉग, सर्विस रिकॉर्ड, खर्च और दस्तावेज़ स्थायी रूप से हट जाएंगे। इसे पूर्ववत नहीं किया जा सकता।';
+      'इससे सभी वाहन, ईंधन लॉग, सर्विस रिकॉर्ड, खर्च और दस्तावेज़ स्थायी रूप से हट जाएंगे — इस फ़ोन से और आपके बैकअप से भी। इसे पूर्ववत नहीं किया जा सकता।';
 
   @override
   String get settingsDataCleared => 'सारा डेटा मिटा दिया गया';
+
+  @override
+  String get settingsClearError =>
+      'आपका डेटा नहीं मिटाया जा सका। अपना कनेक्शन जांचें और फिर कोशिश करें।';
 
   @override
   String get settingsDeleteAccount => 'खाता हटाएं';
@@ -88,7 +109,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'इससे आपका खाता और क्लाउड में सहेजा सब कुछ — वाहन, रिकॉर्ड और दस्तावेज़ों की फ़ोटो — स्थायी रूप से हट जाएगा। इस फ़ोन पर डेटा बना रहेगा। इसे पूर्ववत नहीं किया जा सकता।';
+      'इससे आपका खाता और उसमें मौजूद सब कुछ — वाहन, रिकॉर्ड और दस्तावेज़ों की फ़ोटो, इस फ़ोन पर और क्लाउड में — स्थायी रूप से हट जाएगा। इसे पूर्ववत नहीं किया जा सकता।';
 
   @override
   String get settingsDeleteAccountError =>

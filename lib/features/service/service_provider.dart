@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/local_data_provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/services/health_score_service.dart';
 import '../../data/models/health_score.dart';
@@ -48,7 +49,10 @@ class ServiceState {
 
 class ServiceNotifier extends FamilyAsyncNotifier<ServiceState, String> {
   @override
-  Future<ServiceState> build(String arg) => _load(arg);
+  Future<ServiceState> build(String arg) {
+    ref.watch(localDataEpochProvider);
+    return _load(arg);
+  }
 
   Future<ServiceState> _load(String vehicleId) async {
     final vehicleRepo = getIt<VehicleRepository>();

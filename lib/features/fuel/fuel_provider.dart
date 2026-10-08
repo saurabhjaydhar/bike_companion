@@ -1,12 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/local_data_provider.dart';
 import '../../data/models/fuel_log.dart';
 import '../../data/repositories/fuel_repository.dart';
 import '../../main.dart';
 
 class FuelHistoryNotifier extends FamilyAsyncNotifier<List<FuelLog>, String> {
   @override
-  Future<List<FuelLog>> build(String arg) =>
-      getIt<FuelRepository>().getFuelLogs(arg);
+  Future<List<FuelLog>> build(String arg) {
+    ref.watch(localDataEpochProvider);
+    return getIt<FuelRepository>().getFuelLogs(arg);
+  }
 
   Future<void> refresh() async {
     state = const AsyncLoading();

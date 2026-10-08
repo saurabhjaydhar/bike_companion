@@ -3,9 +3,9 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/services/account_data_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
-import '../../core/services/restore_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
@@ -26,9 +26,13 @@ Future<bool> backUpWithGoogle(BuildContext context) async {
     getIt<FirestoreService>()
         .saveUserProfile(user.uid, name: user.displayName, email: user.email)
         .ignore();
-    // Signed into an existing account: bring its data onto this device too.
+    // Signed into an existing account: the guest's garage moves into it,
+    // and that account's data comes onto this phone too.
+    final account = getIt<AccountDataService>();
     if (result.switched) {
-      await getIt<RestoreService>().restoreIfNeeded(user.uid);
+      await account.adopt(user.uid);
+    } else {
+      await account.claim(user.uid);
     }
     HapticFeedback.mediumImpact();
     messenger.showToast(l.backupDone, tone: SnackTone.success);

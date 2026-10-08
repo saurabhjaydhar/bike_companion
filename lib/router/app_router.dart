@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/app_constants.dart';
 import '../core/providers/active_vehicle_provider.dart';
+import '../core/services/account_data_service.dart';
 import '../core/services/auth_service.dart';
 import '../l10n/l10n.dart';
 import '../main.dart';
@@ -141,7 +142,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     initialLocation: '/home',
-    refreshListenable: refreshNotifier,
+    refreshListenable:
+        Listenable.merge([refreshNotifier, AccountDataService.settingUp]),
     redirect: (context, state) async {
       final isAuthed = authService.currentUser != null;
       final loc = state.matchedLocation;
@@ -152,7 +154,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // whose "Get started" starts a guest session. Sign-in stays one tap
       // away from there.
       if (!isAuthed && !isOnAuth && loc != '/onboarding') return '/onboarding';
-      if (isAuthed && isOnAuth) return '/home';
+      // Stay on the sign-in screen until the account's garage is restored.
+      if (isAuthed && isOnAuth) {
+        return AccountDataService.settingUp.value ? null : '/home';
+      }
+      // Signed out: only the welcome and sign-in screens, both allowed above.
+      if (!isAuthed) return null;
 
       // Onboarding gate — shown once after first sign-in.
       final prefs = await SharedPreferences.getInstance();

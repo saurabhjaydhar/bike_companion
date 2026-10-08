@@ -69,7 +69,7 @@ class AuthService {
 
   /// Deletes the account and everything stored for it in the cloud
   /// (Firestore records, Storage photos), as app stores require. [eraseCloud]
-  /// does the data part; local data on this device stays.
+  /// does the data part; the phone's copy is AccountDataService's job.
   /// Firebase requires a recent sign-in — may throw [FirebaseAuthException]
   /// with code 'requires-recent-login'.
   Future<void> deleteAccount({

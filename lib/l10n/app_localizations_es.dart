@@ -58,7 +58,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'Tus datos locales se quedan en este dispositivo. Vuelve a iniciar sesión cuando quieras.';
+      'Tu garaje está respaldado en tu cuenta de Google. Al cerrar sesión se quitará de este teléfono; vuelve a iniciar sesión para recuperarlo.';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'Estás usando Garajo como invitado, así que tu garaje solo está guardado en este teléfono. Al cerrar sesión se borrará para siempre. Haz una copia en Google antes para conservarlo.';
+
+  @override
+  String get settingsSignOutErase => 'Borrar y cerrar sesión';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'Cambios sin respaldar';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'Algunos cambios recientes aún no han llegado a tu copia de seguridad. Conéctate a internet y vuelve a intentarlo, o cierra sesión ahora y piérdelos.';
+
+  @override
+  String get settingsSignOutAnyway => 'Cerrar sesión de todos modos';
 
   @override
   String get settingsData => 'Datos';
@@ -71,10 +88,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Esto eliminará para siempre todos los vehículos, repostajes, registros de servicio, gastos y documentos. No se puede deshacer.';
+      'Esto eliminará para siempre todos los vehículos, repostajes, registros de servicio, gastos y documentos, en este teléfono y en tu copia de seguridad. No se puede deshacer.';
 
   @override
   String get settingsDataCleared => 'Todos los datos se han borrado';
+
+  @override
+  String get settingsClearError =>
+      'No se pudieron borrar tus datos. Revisa tu conexión y vuelve a intentarlo.';
 
   @override
   String get settingsDeleteAccount => 'Eliminar cuenta';
@@ -88,7 +109,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'Esto elimina para siempre tu cuenta y todo lo guardado en la nube: vehículos, registros y fotos de documentos. Los datos de este teléfono se conservan. No se puede deshacer.';
+      'Esto elimina para siempre tu cuenta y todo lo que contiene: vehículos, registros y fotos de documentos, en este teléfono y en la nube. No se puede deshacer.';
 
   @override
   String get settingsDeleteAccountError =>

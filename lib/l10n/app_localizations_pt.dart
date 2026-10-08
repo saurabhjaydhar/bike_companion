@@ -58,7 +58,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'Os seus dados locais permanecem neste dispositivo. Pode entrar novamente quando quiser.';
+      'Sua garagem está salva na sua conta Google. Ao sair, ela será removida deste telefone — entre novamente para recuperá-la.';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'Você está usando o Garajo como convidado, então sua garagem está salva só neste telefone. Ao sair, ela será apagada para sempre. Faça backup no Google antes para mantê-la.';
+
+  @override
+  String get settingsSignOutErase => 'Apagar e sair';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'Alterações sem backup';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'Algumas alterações recentes ainda não chegaram ao seu backup. Conecte-se à internet e tente novamente, ou saia agora e perca-as.';
+
+  @override
+  String get settingsSignOutAnyway => 'Sair mesmo assim';
 
   @override
   String get settingsData => 'Dados';
@@ -71,10 +88,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Isso excluirá permanentemente todos os veículos, abastecimentos, revisões, despesas e documentos. Não é possível desfazer.';
+      'Isso excluirá permanentemente todos os veículos, abastecimentos, revisões, despesas e documentos, neste telefone e no seu backup. Não é possível desfazer.';
 
   @override
   String get settingsDataCleared => 'Todos os dados foram apagados';
+
+  @override
+  String get settingsClearError =>
+      'Não foi possível apagar seus dados. Verifique sua conexão e tente novamente.';
 
   @override
   String get settingsDeleteAccount => 'Apagar conta';
@@ -88,7 +109,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'Isso exclui permanentemente sua conta e tudo o que está salvo na nuvem — veículos, registros e fotos de documentos. Os dados neste telefone permanecem. Não é possível desfazer.';
+      'Isso exclui permanentemente sua conta e tudo o que há nela — veículos, registros e fotos de documentos, neste telefone e na nuvem. Não é possível desfazer.';
 
   @override
   String get settingsDeleteAccountError =>

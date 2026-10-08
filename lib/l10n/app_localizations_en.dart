@@ -58,7 +58,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'Your local data stays on this device. Sign back in anytime.';
+      'Your garage is backed up to your Google account. Signing out removes it from this phone — sign back in to get it back.';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'You\'re using Garajo as a guest, so your garage is saved only on this phone. Signing out erases it for good. Back it up to Google first to keep it.';
+
+  @override
+  String get settingsSignOutErase => 'Erase and sign out';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'Changes not backed up';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'Some recent changes haven\'t reached your backup yet. Connect to the internet and try again, or sign out now and lose them.';
+
+  @override
+  String get settingsSignOutAnyway => 'Sign out anyway';
 
   @override
   String get settingsData => 'Data';
@@ -71,10 +88,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'This will permanently delete all vehicles, fuel logs, service records, expenses, and documents. This cannot be undone.';
+      'This permanently deletes all vehicles, fuel logs, service records, expenses and documents — on this phone and in your backup. This cannot be undone.';
 
   @override
   String get settingsDataCleared => 'All data cleared';
+
+  @override
+  String get settingsClearError =>
+      'Couldn\'t clear your data. Check your connection and try again.';
 
   @override
   String get settingsDeleteAccount => 'Delete account';
@@ -88,7 +109,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'This permanently deletes your account and everything backed up in the cloud — vehicles, records and document photos. Data on this phone stays. This cannot be undone.';
+      'This permanently deletes your account and everything in it — vehicles, records and document photos, on this phone and in the cloud. This cannot be undone.';
 
   @override
   String get settingsDeleteAccountError =>

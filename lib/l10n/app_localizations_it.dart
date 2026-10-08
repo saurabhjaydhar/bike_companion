@@ -58,7 +58,24 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'I tuoi dati locali restano su questo dispositivo. Puoi accedere di nuovo quando vuoi.';
+      'Il tuo garage è salvato nel tuo account Google. Uscendo verrà rimosso da questo telefono: accedi di nuovo per recuperarlo.';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'Stai usando Garajo come ospite, quindi il tuo garage è salvato solo su questo telefono. Uscendo verrà cancellato per sempre. Fai prima un backup su Google per conservarlo.';
+
+  @override
+  String get settingsSignOutErase => 'Cancella ed esci';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'Modifiche non salvate';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'Alcune modifiche recenti non sono ancora arrivate al tuo backup. Connettiti a internet e riprova, oppure esci ora e perdile.';
+
+  @override
+  String get settingsSignOutAnyway => 'Esci comunque';
 
   @override
   String get settingsData => 'Dati';
@@ -71,10 +88,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Verranno eliminati definitivamente tutti i veicoli, rifornimenti, tagliandi, spese e documenti. L\'operazione è irreversibile.';
+      'Verranno eliminati definitivamente tutti i veicoli, rifornimenti, tagliandi, spese e documenti, su questo telefono e nel tuo backup. L\'operazione è irreversibile.';
 
   @override
   String get settingsDataCleared => 'Tutti i dati sono stati cancellati';
+
+  @override
+  String get settingsClearError =>
+      'Impossibile cancellare i tuoi dati. Controlla la connessione e riprova.';
 
   @override
   String get settingsDeleteAccount => 'Elimina account';
@@ -88,7 +109,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'Vengono eliminati definitivamente il tuo account e tutto ciò che è salvato nel cloud: veicoli, registrazioni e foto dei documenti. I dati su questo telefono restano. L\'operazione è irreversibile.';
+      'Vengono eliminati definitivamente il tuo account e tutto il suo contenuto: veicoli, registrazioni e foto dei documenti, su questo telefono e nel cloud. L\'operazione è irreversibile.';
 
   @override
   String get settingsDeleteAccountError =>

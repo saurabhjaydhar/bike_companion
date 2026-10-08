@@ -58,7 +58,24 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'Deine lokalen Daten bleiben auf diesem Gerät. Du kannst dich jederzeit wieder anmelden.';
+      'Deine Garage ist in deinem Google-Konto gesichert. Beim Abmelden wird sie von diesem Telefon entfernt – melde dich wieder an, um sie zurückzuholen.';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'Du nutzt Garajo als Gast, deine Garage ist also nur auf diesem Telefon gespeichert. Beim Abmelden wird sie endgültig gelöscht. Sichere sie vorher bei Google, um sie zu behalten.';
+
+  @override
+  String get settingsSignOutErase => 'Löschen und abmelden';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'Änderungen nicht gesichert';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'Einige neue Änderungen sind noch nicht in deiner Sicherung angekommen. Verbinde dich mit dem Internet und versuche es erneut, oder melde dich jetzt ab und verliere sie.';
+
+  @override
+  String get settingsSignOutAnyway => 'Trotzdem abmelden';
 
   @override
   String get settingsData => 'Daten';
@@ -71,10 +88,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'Dadurch werden alle Fahrzeuge, Tankstopps, Wartungen, Ausgaben und Dokumente dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden.';
+      'Dadurch werden alle Fahrzeuge, Tankstopps, Wartungen, Ausgaben und Dokumente dauerhaft gelöscht – auf diesem Telefon und in deiner Sicherung. Das kann nicht rückgängig gemacht werden.';
 
   @override
   String get settingsDataCleared => 'Alle Daten gelöscht';
+
+  @override
+  String get settingsClearError =>
+      'Deine Daten konnten nicht gelöscht werden. Prüfe deine Verbindung und versuche es erneut.';
 
   @override
   String get settingsDeleteAccount => 'Konto löschen';
@@ -88,7 +109,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'Dadurch werden dein Konto und alles in der Cloud Gesicherte dauerhaft gelöscht – Fahrzeuge, Einträge und Dokumentfotos. Die Daten auf diesem Telefon bleiben. Das kann nicht rückgängig gemacht werden.';
+      'Dadurch werden dein Konto und alles darin dauerhaft gelöscht – Fahrzeuge, Einträge und Dokumentfotos, auf diesem Telefon und in der Cloud. Das kann nicht rückgängig gemacht werden.';
 
   @override
   String get settingsDeleteAccountError =>

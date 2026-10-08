@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/services/account_data_service.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/services/firestore_service.dart';
-import '../../core/services/storage_service.dart';
-import '../../core/services/sync_service.dart';
 import '../../core/services/reminder_planner.dart';
 import '../../core/services/reminder_service.dart';
 import '../../data/models/vehicle.dart';
@@ -302,25 +301,52 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  /// Runs [work] behind a blocking progress dialog.
+  Future<T> _withProgress<T>(BuildContext context, Future<T> work) async {
+    final nav = Navigator.of(context, rootNavigator: true);
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+    );
+    try {
+      return await work;
+    } finally {
+      nav.pop();
+    }
+  }
+
   void _confirmSignOut(BuildContext context) {
     final l = context.l10n;
+    final isGuest = getIt<AuthService>().isAnonymous;
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialog) => AlertDialog(
         title: Text(l.settingsSignOutTitle),
-        content: Text(l.settingsSignOutBody),
+        content: Text(
+            isGuest ? l.settingsSignOutGuestBody : l.settingsSignOutBody),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialog),
             child: Text(l.commonCancel),
           ),
+          if (isGuest)
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialog);
+                backUpWithGoogle(context);
+              },
+              child: Text(l.backupAction),
+            ),
           TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await getIt<AuthService>().signOut();
-              // Router auth stream fires → redirects to /auth automatically.
+            onPressed: () {
+              Navigator.pop(dialog);
+              _signOut(context);
             },
-            child: Text(l.settingsSignOut,
+            child: Text(isGuest ? l.settingsSignOutErase : l.settingsSignOut,
                 style: const TextStyle(color: AppColors.danger)),
           ),
         ],
@@ -328,29 +354,52 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  Future<void> _signOut(BuildContext context) async {
+    final account = getIt<AccountDataService>();
+    final ready = await _withProgress(context, account.prepareSignOut());
+    if (!ready && context.mounted) {
+      final l = context.l10n;
+      final anyway = await showDialog<bool>(
+        context: context,
+        builder: (dialog) => AlertDialog(
+          title: Text(l.settingsSignOutUnsyncedTitle),
+          content: Text(l.settingsSignOutUnsyncedBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialog, false),
+              child: Text(l.commonCancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialog, true),
+              child: Text(l.settingsSignOutAnyway,
+                  style: const TextStyle(color: AppColors.danger)),
+            ),
+          ],
+        ),
+      );
+      if (anyway != true) return;
+    }
+    // Router auth stream fires → redirects to onboarding automatically.
+    await account.signOut();
+  }
+
   void _confirmDeleteAccount(BuildContext context) {
     final l = context.l10n;
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialog) => AlertDialog(
         title: Text(l.settingsDeleteAccountTitle),
         content: Text(l.settingsDeleteAccountBody),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialog),
             child: Text(l.commonCancel),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialog);
               try {
-                await getIt<AuthService>().deleteAccount(
-                  eraseCloud: (uid) async {
-                    await getIt<SyncService>().clearQueue();
-                    await getIt<FirestoreService>().deleteUserData(uid);
-                    await getIt<StorageService>().deleteUserFiles(uid);
-                  },
-                );
+                await getIt<AccountDataService>().deleteAccount();
               } catch (e) {
                 if (context.mounted) {
                   showAppSnack(context, l.settingsDeleteAccountError,
@@ -370,19 +419,28 @@ class SettingsScreen extends ConsumerWidget {
     final l = context.l10n;
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialog) => AlertDialog(
         title: Text(l.settingsClearTitle),
         content: Text(l.settingsClearBody),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialog),
             child: Text(l.commonCancel),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              showAppSnack(context, l.settingsDataCleared,
-                  tone: SnackTone.error);
+            onPressed: () async {
+              Navigator.pop(dialog);
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await _withProgress(
+                    context, getIt<AccountDataService>().clearAll());
+                messenger.showToast(l.settingsDataCleared,
+                    tone: SnackTone.success);
+                if (context.mounted) context.go('/garage');
+              } catch (_) {
+                messenger.showToast(l.settingsClearError,
+                    tone: SnackTone.error);
+              }
             },
             child: Text(l.commonDelete,
                 style: const TextStyle(color: AppColors.danger)),

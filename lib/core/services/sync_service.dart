@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../constants/app_constants.dart';
 import '../../data/database/app_database.dart';
 import 'firestore_service.dart';
 
@@ -103,13 +104,19 @@ class SyncService {
   Future<void> _backfillOnce() async {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getBool(_backfillKey) ?? false) return;
+    await queueAll();
+    await prefs.setBool(_backfillKey, true);
+  }
+
+  /// Queues every local record for upload — e.g. when a guest's garage
+  /// moves into an existing Google account.
+  Future<void> queueAll() async {
     final db = await _db.db;
     for (final table in ['vehicles', ...childTables]) {
       for (final row in await db.query(table)) {
         await queueUpsert(db, table, Map.of(row));
       }
     }
-    await prefs.setBool(_backfillKey, true);
   }
 
   /// Drops every queued upload — after deleting the account, nothing may
@@ -144,6 +151,9 @@ class SyncService {
   Future<void> _pushOnce() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return; // Must be signed in to sync.
+    // Never upload one account's garage into another's backup.
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getString(SharedPrefKeys.localDataOwner) != uid) return;
 
     final database = await _db.db;
     final rows = await database.query('pending_sync', orderBy: 'created_at ASC');

@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'core/providers/connectivity_provider.dart';
+import 'core/services/account_data_service.dart';
 import 'core/services/auth_service.dart';
 import 'core/services/rc_lookup_service.dart';
 import 'core/services/fcm_service.dart';
@@ -97,6 +98,15 @@ Future<void> _setupDependencies() async {
     getIt<LedgerRepository>(),
   );
   getIt.registerSingleton<ReminderService>(reminders);
+  getIt.registerSingleton<AccountDataService>(AccountDataService(
+    db,
+    getIt<AuthService>(),
+    getIt<SyncService>(),
+    getIt<RestoreService>(),
+    fs,
+    getIt<StorageService>(),
+    reminders,
+  ));
 
   // Every local change is uploaded right away and re-plans reminders.
   final sync = getIt<SyncService>();
@@ -115,6 +125,7 @@ void main() async {
   await _setupDependencies();
   await NotificationService.initialize();
   await FcmService.initialize();
+  await getIt<AccountDataService>().reconcileOnLaunch();
   // Covers reinstalls, restores and anything scheduled by older versions.
   getIt<ReminderService>().refresh();
   runApp(const ProviderScope(child: GarajoApp()));

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../core/constants/app_constants.dart';
+import '../../core/services/account_data_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firestore_service.dart';
-import '../../core/services/restore_service.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../l10n/l10n.dart';
 import '../../main.dart';
@@ -26,6 +24,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     _setLoading(true);
     HapticFeedback.lightImpact();
 
+    AccountDataService.settingUp.value = true;
     try {
       final result = await getIt<AuthService>().signInWithGoogle();
       if (result == null) {
@@ -41,19 +40,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               name: result.user?.displayName, email: result.user?.email)
           .ignore();
 
-      // Restore Firestore data if returning user on a new device
-      final restored = await getIt<RestoreService>().restoreIfNeeded(uid);
-      if (restored) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool(SharedPrefKeys.isOnboardingDone, true);
-      }
-      // Auth stream fires → router redirects automatically
+      // Start from this account's garage: its backup, if it has one.
+      await getIt<AccountDataService>().claim(uid, restore: true);
     } catch (e) {
+      debugPrint('Google sign-in failed: $e');
+      // Without its backup the account would look empty and invite adding
+      // vehicles again — sign back out rather than continue half set up.
+      if (getIt<AuthService>().currentUser != null) {
+        await getIt<AccountDataService>().signOut();
+      }
       if (!mounted) return;
       setState(() {
         _error = context.l10n.authSignInFailed('$e');
         _loading = false;
       });
+    } finally {
+      // Router moves on to the garage now.
+      AccountDataService.settingUp.value = false;
     }
   }
 
@@ -63,9 +66,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     HapticFeedback.lightImpact();
 
     try {
-      await getIt<AuthService>().signInAnonymously();
+      final result = await getIt<AuthService>().signInAnonymously();
+      await getIt<AccountDataService>().claim(result.user!.uid);
       // Auth stream fires → router redirects automatically
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Guest sign-in failed: $e');
       if (!mounted) return;
       setState(() {
         _error = context.l10n.authOfflineError;

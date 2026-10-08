@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/local_data_provider.dart';
 
 import '../../core/services/spending.dart';
 import '../../data/models/expense.dart';
@@ -33,7 +34,10 @@ class ExpensesNotifier extends FamilyAsyncNotifier<ExpensesState, String> {
   SpendPeriod _period = SpendPeriod.current(PeriodKind.month, DateTime.now());
 
   @override
-  Future<ExpensesState> build(String arg) => _load();
+  Future<ExpensesState> build(String arg) {
+    ref.watch(localDataEpochProvider);
+    return _load();
+  }
 
   Future<ExpensesState> _load() async {
     final now = DateTime.now();

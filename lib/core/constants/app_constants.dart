@@ -81,6 +81,10 @@ class SharedPrefKeys {
   static const String locale = 'locale';
   static const String rcScanUseGemini = 'rc_scan_use_gemini';
   static const String backupNudgeDismissedAt = 'backup_nudge_dismissed_at';
+
+  /// Uid of the account the local database belongs to. Only that account's
+  /// session may upload it; any other sign-in starts from an empty garage.
+  static const String localDataOwner = 'local_data_owner';
 }
 
 const List<String> kIndianBrands = [

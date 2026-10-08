@@ -58,7 +58,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsSignOutBody =>
-      'تبقى بياناتك المحلية على هذا الجهاز. يمكنك تسجيل الدخول مجددًا في أي وقت.';
+      'مرآبك محفوظ احتياطيًا في حسابك على Google. سيؤدي تسجيل الخروج إلى إزالته من هذا الهاتف — سجّل الدخول مجددًا لاستعادته.';
+
+  @override
+  String get settingsSignOutGuestBody =>
+      'أنت تستخدم Garajo كضيف، لذا فإن مرآبك محفوظ على هذا الهاتف فقط. سيؤدي تسجيل الخروج إلى مسحه نهائيًا. انسخه احتياطيًا إلى Google أولًا للاحتفاظ به.';
+
+  @override
+  String get settingsSignOutErase => 'مسح وتسجيل الخروج';
+
+  @override
+  String get settingsSignOutUnsyncedTitle => 'تغييرات غير محفوظة احتياطيًا';
+
+  @override
+  String get settingsSignOutUnsyncedBody =>
+      'لم تصل بعض التغييرات الأخيرة إلى نسختك الاحتياطية بعد. اتصل بالإنترنت وحاول مجددًا، أو سجّل الخروج الآن وافقدها.';
+
+  @override
+  String get settingsSignOutAnyway => 'تسجيل الخروج على أي حال';
 
   @override
   String get settingsData => 'البيانات';
@@ -71,10 +88,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsClearBody =>
-      'سيؤدي هذا إلى حذف جميع المركبات وسجلات الوقود والصيانة والمصروفات والمستندات نهائيًا. لا يمكن التراجع عن ذلك.';
+      'سيؤدي هذا إلى حذف جميع المركبات وسجلات الوقود والصيانة والمصروفات والمستندات نهائيًا — من هذا الهاتف ومن نسختك الاحتياطية. لا يمكن التراجع عن ذلك.';
 
   @override
   String get settingsDataCleared => 'تم مسح كل البيانات';
+
+  @override
+  String get settingsClearError =>
+      'تعذّر مسح بياناتك. تحقّق من اتصالك وحاول مجددًا.';
 
   @override
   String get settingsDeleteAccount => 'حذف الحساب';
@@ -87,7 +108,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsDeleteAccountBody =>
-      'سيؤدي هذا إلى حذف حسابك وكل ما تم نسخه احتياطيًا في السحابة نهائيًا — المركبات والسجلات وصور المستندات. تبقى البيانات على هذا الهاتف. لا يمكن التراجع عن ذلك.';
+      'سيؤدي هذا إلى حذف حسابك وكل ما فيه نهائيًا — المركبات والسجلات وصور المستندات، على هذا الهاتف وفي السحابة. لا يمكن التراجع عن ذلك.';
 
   @override
   String get settingsDeleteAccountError =>

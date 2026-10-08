@@ -209,8 +209,38 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSignOutBody.
   ///
   /// In en, this message translates to:
-  /// **'Your local data stays on this device. Sign back in anytime.'**
+  /// **'Your garage is backed up to your Google account. Signing out removes it from this phone — sign back in to get it back.'**
   String get settingsSignOutBody;
+
+  /// No description provided for @settingsSignOutGuestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re using Garajo as a guest, so your garage is saved only on this phone. Signing out erases it for good. Back it up to Google first to keep it.'**
+  String get settingsSignOutGuestBody;
+
+  /// No description provided for @settingsSignOutErase.
+  ///
+  /// In en, this message translates to:
+  /// **'Erase and sign out'**
+  String get settingsSignOutErase;
+
+  /// No description provided for @settingsSignOutUnsyncedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes not backed up'**
+  String get settingsSignOutUnsyncedTitle;
+
+  /// No description provided for @settingsSignOutUnsyncedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Some recent changes haven\'t reached your backup yet. Connect to the internet and try again, or sign out now and lose them.'**
+  String get settingsSignOutUnsyncedBody;
+
+  /// No description provided for @settingsSignOutAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out anyway'**
+  String get settingsSignOutAnyway;
 
   /// No description provided for @settingsData.
   ///
@@ -233,7 +263,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsClearBody.
   ///
   /// In en, this message translates to:
-  /// **'This will permanently delete all vehicles, fuel logs, service records, expenses, and documents. This cannot be undone.'**
+  /// **'This permanently deletes all vehicles, fuel logs, service records, expenses and documents — on this phone and in your backup. This cannot be undone.'**
   String get settingsClearBody;
 
   /// No description provided for @settingsDataCleared.
@@ -241,6 +271,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All data cleared'**
   String get settingsDataCleared;
+
+  /// No description provided for @settingsClearError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t clear your data. Check your connection and try again.'**
+  String get settingsClearError;
 
   /// No description provided for @settingsDeleteAccount.
   ///
@@ -263,7 +299,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDeleteAccountBody.
   ///
   /// In en, this message translates to:
-  /// **'This permanently deletes your account and everything backed up in the cloud — vehicles, records and document photos. Data on this phone stays. This cannot be undone.'**
+  /// **'This permanently deletes your account and everything in it — vehicles, records and document photos, on this phone and in the cloud. This cannot be undone.'**
   String get settingsDeleteAccountBody;
 
   /// No description provided for @settingsDeleteAccountError.

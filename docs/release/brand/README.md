@@ -1,8 +1,9 @@
 # Garajo brand
 
-The **Livery** mark: a slanted motorsport G with chamfered corners and a cyan
-headlight, set against racing stripes. It replaced the earlier round G, which
-was too close in shape to Google's G.
+The **Gauge** mark: the G is a speedometer. An open dial with tick marks,
+the needle swinging into the dial to form the G's bar, and a cyan redline
+light. It replaced the earlier round G with a flat crossbar, which was too
+close in shape to Google's G.
 
 | File | Use |
 |---|---|
